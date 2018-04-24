@@ -60,6 +60,7 @@ contract RangeVoting is IForwarder, AragonApp {
         uint256 snapshotBlock;
         uint256 candidateSupportPct;
         uint256 totalVoters;
+        uint256 totalParticipation;
         string metadata;
         bytes executionScript;
         bool executed;
@@ -412,6 +413,7 @@ contract RangeVoting is IForwarder, AragonApp {
             require(totalSupport <= voterStake);
 
             voteSupport = vote.candidates[cKeys[i]].voteSupport;
+            vote.totalParticipation = vote.totalParticipation.sub(oldVoteSupport[i]);
             voteSupport = voteSupport.sub(oldVoteSupport[i]);
             voteSupport = voteSupport.add(_supports[i]);
             vote.candidates[cKeys[i]].voteSupport = voteSupport;
@@ -423,7 +425,7 @@ contract RangeVoting is IForwarder, AragonApp {
             voteSupport = voteSupport.add(_supports[i]);
             vote.candidates[cKeys[i]].voteSupport = voteSupport;
         }
-
+        vote.totalParticipation = vote.totalParticipation.add(totalSupport);
         vote.voters[msg.sender] = _supports;
     }
 
