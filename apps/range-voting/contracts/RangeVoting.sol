@@ -68,14 +68,12 @@ contract RangeVoting is IForwarder, AragonApp {
         mapping (address => uint256[]) voters;
     }
 
-    mapping (bytes32 => string ) candidateDescriptions;
-
     struct CandidateState {
         bool added;
         bytes metadata;
         uint8 keyArrayIndex;
         uint256 voteSupport;
-        //string description;
+        string description;
     }
 
     Vote[] votes;
@@ -158,8 +156,7 @@ contract RangeVoting is IForwarder, AragonApp {
     *                  must be less than `token.balance[msg.sender]`.
     */
     function vote(uint256 _voteId, uint256[] _supports) external {
-        require(canVote(_voteId, msg.sender));
-        _vote(_voteId, _supports, msg.sender);
+        //needs implementation
     }
 
     /**
@@ -173,7 +170,6 @@ contract RangeVoting is IForwarder, AragonApp {
     }
 
     /**
-    * @param _voteId id for vote structure this 'ballot action' is connected to
     * @notice `addCandidate` allows the `ADD_CANDIDATES_ROLE` to add candidates
     *         (or options) to the current vote.
     * @param _voteId id for vote structure this 'ballot action' is connected to
@@ -185,26 +181,24 @@ contract RangeVoting is IForwarder, AragonApp {
     function addCandidate(uint256 _voteId, bytes _metadata, string _description)
     external auth(ADD_CANDIDATES_ROLE)
     {
-        // Get vote and candidate into storage
+        // Get vote and canddiate into storage
         Vote storage vote = votes[_voteId];
-        bytes32 cKey = keccak256(_description);
-        CandidateState storage candidate = vote.candidates[cKey];
+        CandidateState storage candidate = vote.candidates[keccak256(_description)];
         // Make sure that this candidate has not already been added
         require(candidate.added == false);
         // Set all data for the candidate
         candidate.added = true;
         candidate.keyArrayIndex = uint8(vote.candidateKeys.length++);
         candidate.metadata = _metadata;
-        // double check
-        candidateDescriptions[cKey] = _description;
-        vote.candidateKeys[candidate.keyArrayIndex] = cKey;
+        candidate.description = _description;
     }
 
     /**
-    * @notice `getCandidate` serves as a basic getter using the description
+    * @notice `getCandidate` serves as a basic getter using the description key
     *         to return the struct data.
     * @param _voteId id for vote structure this 'ballot action' is connected to
-    * @param _description The candidate descrciption of the candidate.
+    *         to return the struct data.
+    * @param _description The candidate key used when adding the candidate.
     */
     function getCandidate(uint256 _voteId, string _description)
     external view returns(bool, bytes, uint8, uint256)
@@ -217,17 +211,6 @@ contract RangeVoting is IForwarder, AragonApp {
             candidate.keyArrayIndex,
             candidate.voteSupport
         );
-    }
-
-    /**
-    * @notice `getCandidate` serves as a basic getter using the key
-    *         to return the struct data.
-    * @param _key The bytes32 key used when adding the candidate.
-    */
-    function getCandidateDescription(bytes32 _key)
-    external view returns(string)
-    {
-        return(candidateDescriptions[_key]);
     }
 
 ///////////////////////
@@ -302,25 +285,14 @@ contract RangeVoting is IForwarder, AragonApp {
     *         struct and returns the individual values.
     * @param _voteId The ID of the Vote struct in the `votes` array
     */
-    function getVote(uint256 _voteId) public view returns
-    (
-        bool open,
-        address creator,
-        uint64 startDate,
-        uint256 snapshotBlock,
-        uint256 candidateSupportPct,
-        uint256 totalVoters,
-        string metadata,
-        bytes executionScript,
-        bool executed
-    ) {
+    function getVote(uint256 _voteId) public view returns (bool open, address creator, uint64 startDate, uint256 snapshotBlock, uint256 candidateSupportPct, uint256 totalVoters, string metadata, bytes executionScript, bool executed) {
         Vote storage vote = votes[_voteId];
 
         open = _isVoteOpen(vote);
         creator = vote.creator;
         startDate = vote.startDate;
         snapshotBlock = vote.snapshotBlock;
-        candidateSupportPct = vote.candidateSupportPct;
+        candidateSupportPct = candidateSupportPct;
         totalVoters = vote.totalVoters;
         metadata = vote.metadata;
         executionScript = vote.executionScript;
@@ -390,40 +362,7 @@ contract RangeVoting is IForwarder, AragonApp {
         address _voter
     ) internal
     {
-        Vote storage vote = votes[_voteId];
-
-        // this could re-enter, though we can asume the
-        // governance token is not maliciuous
-        uint256 voterStake = token.balanceOfAt(_voter, vote.snapshotBlock);
-        uint256 totalSupport = 0;
-
-        uint256 voteSupport;
-        uint256[] oldVoteSupport = vote.voters[msg.sender];
-        bytes32[] cKeys = vote.candidateKeys;
-
-        uint256 i = 0;
-        // This is going to cost a lot of gas... it'd be cool if there was
-        // a better way to do this.
-        for (i; i < oldVoteSupport.length; i++) {
-            totalSupport = totalSupport.add(_supports[i]);
-            // Might make sense to move this outside the for loop
-            // Probably safer here but some gas calculations should be done
-            require(totalSupport <= voterStake);
-
-            voteSupport = vote.candidates[cKeys[i]].voteSupport;
-            voteSupport = voteSupport.sub(oldVoteSupport[i]);
-            voteSupport = voteSupport.add(_supports[i]);
-            vote.candidates[cKeys[i]].voteSupport = voteSupport;
-        }
-        for (i; i < _supports.length; i++) {
-            totalSupport = totalSupport.add(_supports[i]);
-            require(totalSupport <= voterStake);
-            voteSupport = vote.candidates[cKeys[i]].voteSupport;
-            voteSupport = voteSupport.add(_supports[i]);
-            vote.candidates[cKeys[i]].voteSupport = voteSupport;
-        }
-
-        vote.voters[msg.sender] = _supports;
+        // Needs implementation
     }
 
     /**
