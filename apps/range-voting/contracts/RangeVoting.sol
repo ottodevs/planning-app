@@ -295,7 +295,24 @@ contract RangeVoting is IForwarder, AragonApp {
     * @return True if the vote is elligible for execution.
     */
     function canExecute(uint256 _voteId) public view returns (bool) {
-        // Needs better implementation
+
+        Vote storage vote = votes[_voteId];
+
+        if (vote.executed)
+          return false;
+
+        // vote ended?
+        if (_isVoteOpen(vote))
+          return false;
+
+        // has candidate support?
+        if (!_isValuePct(vote.voteSupport, vote.totalParticipation, vote.candidateSupportPct))
+          return false;
+
+        // has minimum participation threshold been reached?
+        if (!_isValuePct(vote.totalParticipation, vote.totalVoters, minParticipationPct))
+          return false;
+
         return true;
     }
 
