@@ -212,13 +212,60 @@ contract('RangeVoting App', accounts => {
             xit('throws when RangeVoting after RangeVoting closes', async () => {
             })
 
-            xit('can execute if vote is approved with support and quorum', async () => {
+            it('can not execute if vote has insufficient candidate support', async () => {
+                let voteOne = [2,17,0]
+                let voteTwo = [18,12,1]
+                let voteThree = [30,19,1]
+                await app.addCandidate(voteId, "0x","Apple")
+                await app.addCandidate(voteId, "0x","Orange")
+                await app.addCandidate(voteId, "0x","Banana")
+                await app.vote(voteId, voteOne, { from: holder19 })
+                await app.vote(voteId, voteTwo, { from: holder31 })
+                await app.vote(voteId, voteThree, { from: holder50 })
+                const canExecute = await app.canExecute(voteId)
+                assert.equal(canExecute, false)
+                })
+
+            it('can execute if vote has sufficient candidate support', async () => {
+                let voteOne = [4,15,0]
+                let voteTwo = [20,10,1]
+                let voteThree = [30,15,5]
+                await app.addCandidate(voteId, "0x","Apple")
+                await app.addCandidate(voteId, "0x","Orange")
+                await app.addCandidate(voteId, "0x","Banana")
+                await app.vote(voteId, voteOne, { from: holder19 })
+                await app.vote(voteId, voteTwo, { from: holder31 })
+                await app.vote(voteId, voteThree, { from: holder50 })
+                const canExecute = await app.canExecute(voteId)
+                assert.equal(canExecute, true)
             })
 
-            xit('cannot execute vote if minimum participation not met', async () => {
+            it('cannot execute vote if minimum participation (quorum) not met', async () => {
+                let voteOne = [10,0,0]
+                let voteTwo = [0,10,0]
+                let voteThree = [0,0,10]
+                await app.addCandidate(voteId, "0x","Apple")
+                await app.addCandidate(voteId, "0x","Orange")
+                await app.addCandidate(voteId, "0x","Banana")
+                await app.vote(voteId, voteOne, { from: holder19 })
+                await app.vote(voteId, voteTwo, { from: holder31 })
+                await app.vote(voteId, voteThree, { from: holder50 })
+                const canExecute = await app.canExecute(voteId)
+                assert.equal(canExecute, false)
             })
 
-            xit('cannot execute vote if not support met', async () => {
+            it('can execute vote if minimum participation (quorum) has been met', async () => {
+                let voteOne = [19,0,0]
+                let voteTwo = [0,31,0]
+                let voteThree = [0,0,50]
+                await app.addCandidate(voteId, "0x","Apple")
+                await app.addCandidate(voteId, "0x","Orange")
+                await app.addCandidate(voteId, "0x","Banana")
+                await app.vote(voteId, voteOne, { from: holder19 })
+                await app.vote(voteId, voteTwo, { from: holder31 })
+                await app.vote(voteId, voteThree, { from: holder50 })
+                const canExecute = await app.canExecute(voteId)
+                assert.equal(canExecute, true)
             })
 
             xit('cannot re-execute vote', async () => {
