@@ -18,6 +18,10 @@ const createdVoteId = receipt => receipt.logs.filter(x => x.event == 'StartVote'
 
 const ANY_ADDR = ' 0xffffffffffffffffffffffffffffffffffffffff'
 
+var chai = require('chai'),
+  expect = chai.expect,
+  should = chai.should();
+
 
 contract('RangeVoting App', accounts => {
     let daoFact, app, token, executionTarget = {}
