@@ -217,7 +217,7 @@ contract('RangeVoting App', accounts => {
             xit('throws when RangeVoting after RangeVoting closes', async () => {
             })
 
-            context.only('vote execution check', () => {
+            context('vote execution check', () => {
 
               beforeEach('add candidates', async () => {
                 await app.addCandidate(voteId, '0x', 'Apple')
