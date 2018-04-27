@@ -256,9 +256,9 @@ contract('RangeVoting App', accounts => {
             })
 
             it('can execute vote if minimum participation (quorum) has been met', async () => {
-                let voteOne = [19,0,0]
-                let voteTwo = [0,31,0]
-                let voteThree = [0,0,50]
+                let voteOne = [10,0,0]
+                let voteTwo = [0,20,0]
+                let voteThree = [0,0,40]
                 await app.addCandidate(voteId, "0x","Apple")
                 await app.addCandidate(voteId, "0x","Orange")
                 await app.addCandidate(voteId, "0x","Banana")

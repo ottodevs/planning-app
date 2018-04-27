@@ -292,7 +292,6 @@ contract RangeVoting is IForwarder, AragonApp {
     *         and the vote has reached it's end before the execute
     *         function is called.
     * @param _voteId The ID of the Vote which would be executed.
-    * @return True if the vote is elligible for execution.
     */
     function canExecute(uint256 _voteId) public view returns (bool) {
 
@@ -301,12 +300,12 @@ contract RangeVoting is IForwarder, AragonApp {
         if (vote.executed)
           return false;
 
-        // vote ended?
+        /* // vote ended?
         if (_isVoteOpen(vote))
-          return false;
+          return false; */
 
         //does not pass tests
-        /* bytes32[] storage cKeys = vote.candidateKeys;
+        bytes32[] storage cKeys = vote.candidateKeys;
         uint256 i = 0;
         for (i; i < cKeys.length; i++) {
           bytes32 cKey = cKeys[i];
@@ -319,7 +318,7 @@ contract RangeVoting is IForwarder, AragonApp {
 
         // has minimum participation threshold been reached?
         if (!_isValuePct(vote.totalParticipation, vote.totalVoters, minParticipationPct))
-          return false; */
+          return false;
 
         return true;
     }
