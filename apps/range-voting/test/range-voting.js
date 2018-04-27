@@ -135,9 +135,10 @@ contract('RangeVoting App', accounts => {
                 assert.equal(voteState[1], nonHolder, "is nonHolder")
                 assert.equal(voteState[4].toNumber(), candidateSupportPct.toNumber(), "is candidateSupportPct")
                 assert.equal(voteState[5].toNumber(), tokenBalance.toNumber(), "is token.totalSupply()")
-                assert.equal(voteState[6], 'metadata', "is metadata")
-                assert.equal(voteState[7], script, "is script")
-                assert.equal(voteState[8], false, "is false")
+                assert.equal(voteState[6].toNumber(), 0, "is totalParticipation")
+                assert.equal(voteState[7], 'metadata', "is metadata")
+                assert.equal(voteState[8], script, "is script")
+                assert.equal(voteState[9], false, "is false")
             })
 
             it('holder can add candidates', async () => {
