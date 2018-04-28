@@ -219,83 +219,83 @@ contract('RangeVoting App', accounts => {
 
             context('vote execution check', () => {
 
-              beforeEach('add candidates', async () => {
-                await app.addCandidate(voteId, '0x', 'Apple')
-                await app.addCandidate(voteId, '0x', 'Orange')
-                await app.addCandidate(voteId, '0x', 'Banana')
-              })
+                beforeEach('add candidates', async () => {
+                    await app.addCandidate(voteId, '0x', 'Apple')
+                    await app.addCandidate(voteId, '0x', 'Orange')
+                    await app.addCandidate(voteId, '0x', 'Banana')
+                    })
 
-              it('cannot re-execute vote', async () => {
-                const voteState = await app.getVote(voteId)
-                const executed = voteState[9]
-                const canExecute = await app.canExecute(voteId)
+                it('cannot re-execute vote', async () => {
+                    const voteState = await app.getVote(voteId)
+                    const executed = voteState[9]
+                    const canExecute = await app.canExecute(voteId)
 
-                if (executed) {
-                  canExecute.should.be.false
-                }
-              })
+                    if (executed) {
+                      canExecute.should.be.false
+                    }
+                })
 
-              xit('cannot execute during open vote', async () => {
-                const voteState = await app.getVote(voteId)
-                const open = await voteState[0]
-                const canExecute = await app.canExecute(voteId)
+                xit('cannot execute during open vote', async () => {
+                    const voteState = await app.getVote(voteId)
+                    const open = await voteState[0]
+                    const canExecute = await app.canExecute(voteId)
 
-                if (open) {
-                  canExecute.should.be.false
-                }
-              })
+                    if (open) {
+                        canExecute.should.be.false
+                    }
+                })
 
-              it('can execute if vote has sufficient candidate support', async () => {
-                  let voteOne = [4,15,0]
-                  let voteTwo = [20,10,1]
-                  let voteThree = [30,15,5]
+                it('can execute if vote has sufficient candidate support', async () => {
+                    let voteOne = [4,15,0]
+                    let voteTwo = [20,10,1]
+                    let voteThree = [30,15,5]
 
-                  await app.vote(voteId, voteOne, { from: holder19 })
-                  await app.vote(voteId, voteTwo, { from: holder31 })
-                  await app.vote(voteId, voteThree, { from: holder50 })
+                    await app.vote(voteId, voteOne, { from: holder19 })
+                    await app.vote(voteId, voteTwo, { from: holder31 })
+                    await app.vote(voteId, voteThree, { from: holder50 })
 
-                  const canExecute = await app.canExecute(voteId)
-                  canExecute.should.be.true;
-              })
+                    const canExecute = await app.canExecute(voteId)
+                    canExecute.should.be.true;
+                })
 
-              it('can not execute if vote has insufficient candidate support', async () => {
-                  let voteOne = [2,17,0]
-                  let voteTwo = [18,12,1]
-                  let voteThree = [30,19,1]
+                it('can not execute if vote has insufficient candidate support', async () => {
+                    let voteOne = [2,17,0]
+                    let voteTwo = [18,12,1]
+                    let voteThree = [30,19,1]
 
-                  await app.vote(voteId, voteOne, { from: holder19 })
-                  await app.vote(voteId, voteTwo, { from: holder31 })
-                  await app.vote(voteId, voteThree, { from: holder50 })
+                    await app.vote(voteId, voteOne, { from: holder19 })
+                    await app.vote(voteId, voteTwo, { from: holder31 })
+                    await app.vote(voteId, voteThree, { from: holder50 })
 
-                  const canExecute = await app.canExecute(voteId)
-                  canExecute.should.be.false;
-              })
+                    const canExecute = await app.canExecute(voteId)
+                    canExecute.should.be.false;
+                })
 
-              it('can execute vote if minimum participation (quorum) has been met', async () => {
-                  let voteOne = [10,0,0]
-                  let voteTwo = [0,20,0]
-                  let voteThree = [0,0,40]
+                it('can execute vote if minimum participation (quorum) has been met', async () => {
+                    let voteOne = [10,0,0]
+                    let voteTwo = [0,20,0]
+                    let voteThree = [0,0,40]
 
-                  await app.vote(voteId, voteOne, { from: holder19 })
-                  await app.vote(voteId, voteTwo, { from: holder31 })
-                  await app.vote(voteId, voteThree, { from: holder50 })
+                    await app.vote(voteId, voteOne, { from: holder19 })
+                    await app.vote(voteId, voteTwo, { from: holder31 })
+                    await app.vote(voteId, voteThree, { from: holder50 })
 
-                  const canExecute = await app.canExecute(voteId)
-                  canExecute.should.be.true
-              })
+                    const canExecute = await app.canExecute(voteId)
+                    canExecute.should.be.true
+                })
 
-              it('cannot execute vote if minimum participation (quorum) not met', async () => {
-                  let voteOne = [10,0,0]
-                  let voteTwo = [0,10,0]
-                  let voteThree = [0,0,10]
+                it('cannot execute vote if minimum participation (quorum) not met', async () => {
+                    let voteOne = [10,0,0]
+                    let voteTwo = [0,10,0]
+                    let voteThree = [0,0,10]
 
-                  await app.vote(voteId, voteOne, { from: holder19 })
-                  await app.vote(voteId, voteTwo, { from: holder31 })
-                  await app.vote(voteId, voteThree, { from: holder50 })
+                    await app.vote(voteId, voteOne, { from: holder19 })
+                    await app.vote(voteId, voteTwo, { from: holder31 })
+                    await app.vote(voteId, voteThree, { from: holder50 })
 
-                  const canExecute = await app.canExecute(voteId)
-                  canExecute.should.be.false
-              })
+                    const canExecute = await app.canExecute(voteId)
+                    canExecute.should.be.false
+                })
             })
         })
 

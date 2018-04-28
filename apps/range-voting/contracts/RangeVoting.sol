@@ -298,7 +298,7 @@ contract RangeVoting is IForwarder, AragonApp {
         Vote storage vote = votes[_voteId];
 
         if (vote.executed)
-          return false;
+            return false;
 
         /* // vote ended?
         if (_isVoteOpen(vote))
@@ -308,17 +308,17 @@ contract RangeVoting is IForwarder, AragonApp {
         bytes32[] storage cKeys = vote.candidateKeys;
         uint256 i = 0;
         for (i; i < cKeys.length; i++) {
-          bytes32 cKey = cKeys[i];
-          CandidateState storage candidateState = vote.candidates[cKey];
+            bytes32 cKey = cKeys[i];
+            CandidateState storage candidateState = vote.candidates[cKey];
 
-          // has candidate support?
-          if (!_isValuePct(candidateState.voteSupport, vote.totalParticipation, vote.candidateSupportPct))
-            return false;
+            // has candidate support?
+            if (!_isValuePct(candidateState.voteSupport, vote.totalParticipation, vote.candidateSupportPct))
+                return false;
         }
 
         // has minimum participation threshold been reached?
         if (!_isValuePct(vote.totalParticipation, vote.totalVoters, minParticipationPct))
-          return false;
+            return false;
 
         return true;
     }
