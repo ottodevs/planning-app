@@ -2,6 +2,7 @@
 const { assertRevert } = require('../test-helpers/assertThrow')
 const getBlockNumber = require('../test-helpers/blockNumber')(web3)
 const timeTravel = require('../test-helpers/timeTravel')(web3)
+// const timeTravel = require('@aragon/test-helpers/timeTravel')(web3)
 const { encodeCallScript, EMPTY_SCRIPT } = require('../test-helpers/evmScript')
 const ExecutionTarget = artifacts.require('ExecutionTarget')
 
@@ -235,14 +236,9 @@ contract('RangeVoting App', accounts => {
                     }
                 })
 
-                xit('cannot execute during open vote', async () => {
+                it('cannot execute during open vote', async () => {
                     const voteState = await app.getVote(voteId)
-                    const open = await voteState[0]
                     const canExecute = await app.canExecute(voteId)
-
-                    if (open) {
-                        canExecute.should.be.false
-                    }
                 })
 
                 it('can execute if vote has sufficient candidate support', async () => {
@@ -253,6 +249,18 @@ contract('RangeVoting App', accounts => {
                     await app.vote(voteId, voteOne, { from: holder19 })
                     await app.vote(voteId, voteTwo, { from: holder31 })
                     await app.vote(voteId, voteThree, { from: holder50 })
+
+                    const voteState = await app.getVote(voteId)
+                    console.log(voteState[2].toNumber())
+
+                    const getNow = await app.getNow()
+                    console.log(getNow.toNumber())
+                    console.log(RangeVotingTime)
+
+                    await timeTravel(RangeVotingTime + 1)
+
+                    getNow = await app.getNow()
+                    console.log(getNow.toNumber())
 
                     const canExecute = await app.canExecute(voteId)
                     canExecute.should.be.true;
@@ -267,6 +275,8 @@ contract('RangeVoting App', accounts => {
                     await app.vote(voteId, voteTwo, { from: holder31 })
                     await app.vote(voteId, voteThree, { from: holder50 })
 
+                    await timeTravel(RangeVotingTime + 1)
+
                     const canExecute = await app.canExecute(voteId)
                     canExecute.should.be.false;
                 })
@@ -280,6 +290,8 @@ contract('RangeVoting App', accounts => {
                     await app.vote(voteId, voteTwo, { from: holder31 })
                     await app.vote(voteId, voteThree, { from: holder50 })
 
+                    await timeTravel(RangeVotingTime + 1)
+
                     const canExecute = await app.canExecute(voteId)
                     canExecute.should.be.true
                 })
@@ -292,6 +304,8 @@ contract('RangeVoting App', accounts => {
                     await app.vote(voteId, voteOne, { from: holder19 })
                     await app.vote(voteId, voteTwo, { from: holder31 })
                     await app.vote(voteId, voteThree, { from: holder50 })
+
+                    await timeTravel(RangeVotingTime + 1)
 
                     const canExecute = await app.canExecute(voteId)
                     canExecute.should.be.false

@@ -300,9 +300,9 @@ contract RangeVoting is IForwarder, AragonApp {
         if (vote.executed)
             return false;
 
-        /* // vote ended?
+        // vote ended?
         if (_isVoteOpen(vote))
-          return false; */
+          return false;
 
         //does not pass tests
         bytes32[] storage cKeys = vote.candidateKeys;
@@ -374,6 +374,10 @@ contract RangeVoting is IForwarder, AragonApp {
         return votes[_voteId].voters[_voter];
     }
 
+    // for testing timeTravel
+    function getNow() public view returns (uint64) {
+        return uint64(now);
+    }
 ///////////////////////
 // Internal functions
 ///////////////////////
