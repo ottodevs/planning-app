@@ -6,8 +6,19 @@ module.exports = web3 => s => {
       params: [s],
       id: new Date().getTime()
     }, function(err) {
-      if (err) return reject(err)
-      resolve()
+      if (err) {
+        return reject(err);
+      }
+      web3.currentProvider.sendAsync({
+        jsonrpc: '2.0',
+        method: 'evm_mine',
+        id: new Date().getTime()
+      }, (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      });
     })
   })
 }

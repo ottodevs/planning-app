@@ -2,7 +2,6 @@
 const { assertRevert } = require('../test-helpers/assertThrow')
 const getBlockNumber = require('../test-helpers/blockNumber')(web3)
 const timeTravel = require('../test-helpers/timeTravel')(web3)
-// const timeTravel = require('@aragon/test-helpers/timeTravel')(web3)
 const { encodeCallScript, EMPTY_SCRIPT } = require('../test-helpers/evmScript')
 const ExecutionTarget = artifacts.require('ExecutionTarget')
 
@@ -251,16 +250,8 @@ contract('RangeVoting App', accounts => {
                     await app.vote(voteId, voteThree, { from: holder50 })
 
                     const voteState = await app.getVote(voteId)
-                    console.log(voteState[2].toNumber())
-
-                    const getNow = await app.getNow()
-                    console.log(getNow.toNumber())
-                    console.log(RangeVotingTime)
 
                     await timeTravel(RangeVotingTime + 1)
-
-                    getNow = await app.getNow()
-                    console.log(getNow.toNumber())
 
                     const canExecute = await app.canExecute(voteId)
                     canExecute.should.be.true;

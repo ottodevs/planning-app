@@ -292,6 +292,7 @@ contract RangeVoting is IForwarder, AragonApp {
     *         and the vote has reached it's end before the execute
     *         function is called.
     * @param _voteId The ID of the Vote which would be executed.
+    * @return True if the vote is elligible for execution.
     */
     function canExecute(uint256 _voteId) public view returns (bool) {
 
