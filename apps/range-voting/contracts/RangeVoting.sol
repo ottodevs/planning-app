@@ -374,10 +374,6 @@ contract RangeVoting is IForwarder, AragonApp {
         return votes[_voteId].voters[_voter];
     }
 
-    // for testing timeTravel
-    function getNow() public view returns (uint64) {
-        return uint64(now);
-    }
 ///////////////////////
 // Internal functions
 ///////////////////////
