@@ -38,6 +38,7 @@
     "ganache-cli": "^6.0.3",
     "parcel-bundler": "^1.8.1",
     "planning-app": "^1.0.1",
+    "react-hot-loader": "^4.3.3",
     "react-oauth-popup": "0.0.4",
     "solidity-sha3": "^0.4.1",
     "solium": "^1.0.4",
@@ -48,13 +49,16 @@
     "dev": "npm run sync-assets && parcel app/src/index.html",
     "devchain": "aragon devchain",
     "start": "aragon run && react-scripts start",
-    "start:kit": "aragon run --kit Kit --kit-init @ARAGON_ENS && react-scripts start",
+    "start:kit":
+      "aragon run --kit Kit --kit-init @ARAGON_ENS && react-scripts start",
     "test": "aragon contracts test",
     "compile": "aragon contracts compile",
-    "sync-assets": "rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
+    "sync-assets":
+      "rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
     "build:app": "parcel build app/src/index.html -d public/ --public-url '.'",
     "build:script": "parcel build app/src/script.js -d public/",
-    "build": "npm run compile && npm run sync-assets && npm run build:app && npm run build:script && cd app/ && react-scripts build",
+    "build":
+      "npm run compile && npm run sync-assets && npm run build:app && npm run build:script && cd app/ && react-scripts build",
     "publish": "aragon publish"
   },
   "keywords": [],
