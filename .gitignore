@@ -65,3 +65,6 @@ aragon-ui/
 
 .cache
 
+# vscode
+codealike.json
+
