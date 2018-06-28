@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { theme, Text, Button } from '@aragon/ui'
 import { lerp } from '../utils/math-utils'
 import { Main, Content, Title } from '../style'
+import { BigNumber } from 'bignumber.js'
+import { addTool } from '../stores/ToolStore'
 
 import imgPending from '../assets/transaction-pending.svg'
 import imgSuccess from '../assets/transaction-success.svg'
@@ -12,13 +14,58 @@ class Launch extends React.Component {
   static defaultProps = {
     warm: false,
     positionProgress: 0,
-    contractCreationStatus: 'none',
+  }
+  constructor(props) {
+    super(props)
+    this.state = {
+      active: false,
+      contractCreationStatus: 'none',
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    const { active, app, configurationData } = nextProps
+    // Hacky way to only initialize once
+    if (active && !this.state.active) {
+      this.state.active = true
+      app.initialize(
+        "0xffffffffffffffffffffffffffffffffffffffff",
+        configurationData.supportNeeded * 10**16,
+        configurationData.minAcceptanceQuorum * 10**16,
+        configurationData.voteDuration * 60 * 60,
+      ).subscribe(
+        (data) => {
+          if (data) {
+            this.setState({ contractCreationStatus: 'success' })
+            addTool({
+              label: 'Monthly Reward DAO',
+              description: 'Allocate our monthly reward DAO accross four circles: Governance, Dapp, Social Coding, and Comms',
+              address: '0x45f3...5567',
+              stats: [
+                  {label: 'BALANCE', value: '10 ETH' },
+                  {label: 'BUDGET', value: '5 ETH / Month'}
+              ]
+            })
+          } else {
+            this.setState({ contractCreationStatus: 'error' })
+          }
+        }
+      )
+    }
   }
   handleTemplateSelect = template => {
     this.props.onSelect(template)
   }
   render() {
-    const { positionProgress, warm, contractCreationStatus, onTryAgain } = this.props
+    const {
+      active,
+      app,
+      configurationData,
+      positionProgress,
+      warm,
+      onTryAgain,
+    } = this.props
+    const { contractCreationStatus } = this.state
+
     return (
       <Main>
         <Content
@@ -40,7 +87,8 @@ class Launch extends React.Component {
 
 class SignContent extends React.PureComponent {
   render() {
-    const { contractCreationStatus, onTryAgain } = this.props
+    const { contractCreationStatus, onTryAgain, app } = this.props
+
     return (
       <React.Fragment>
         <Title>
@@ -51,24 +99,23 @@ class SignContent extends React.PureComponent {
 
         <p>
           <Text size="large" color={theme.textSecondary}>
-            Your wallet should open and you need to sign two transactions, one
-            after another.
+            Your wallet should open and you need to sign the transaction to initialize range voting.
           </Text>
         </p>
 
         <Transactions>
-          <Transaction>
+          {/* <Transaction>
             <TransactionTitle>
               <Text weight="bold" color={theme.textSecondary} smallcaps>
                 Token creation
               </Text>
             </TransactionTitle>
             {this.renderTxStatus(contractCreationStatus)}
-          </Transaction>
+          </Transaction> */}
           <Transaction>
             <TransactionTitle>
               <Text weight="bold" color={theme.textSecondary} smallcaps>
-                Vote creation
+                Initializing...
               </Text>
             </TransactionTitle>
             {this.renderTxStatus(contractCreationStatus)}
@@ -83,7 +130,7 @@ class SignContent extends React.PureComponent {
           </TryAgain>
         )}
 
-        {contractCreationStatus !== 'error' && (
+        {contractCreationStatus === 'none' && (
           <Note>
             <Text size="xsmall" color={theme.textSecondary}>
               It might take some time before these transactions get processed,
@@ -162,9 +209,6 @@ const Transactions = styled.div`
 
 const Transaction = styled.div`
   width: 145px;
-  &:first-child {
-    margin-right: 145px;
-  }
 `
 
 const TransactionTitle = styled.h2`
