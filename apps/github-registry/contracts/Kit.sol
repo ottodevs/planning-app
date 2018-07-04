@@ -10,7 +10,7 @@ import "@aragon/apps-voting/contracts/Voting.sol";
 import "@aragon/apps-token-manager/contracts/TokenManager.sol";
 import "@aragon/os/contracts/lib/minime/MiniMeToken.sol";
 
-import "./GithubRegistry.sol";
+import "./RangeVoting.sol";
 
 contract KitBase is APMNamehash {
     ENS public ens;
@@ -29,6 +29,7 @@ contract KitBase is APMNamehash {
     	} else {
     		fac = _fac;
     	}
+        
     }
 
 	function latestVersionAppBase(bytes32 appId) public view returns (address base) {
@@ -53,13 +54,12 @@ contract Kit is KitBase {
 		Kernel dao = fac.newDAO(this);
 		ACL acl = ACL(dao.acl());
 		acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
-
 		address root = msg.sender;
-		bytes32 appId = apmNamehash("app");
+		bytes32 appId = apmNamehash("planning");
 		bytes32 votingAppId = apmNamehash("voting");
 		bytes32 tokenManagerAppId = apmNamehash("token-manager");
 
-		GithubRegistry app = GithubRegistry(dao.newAppInstance(appId, latestVersionAppBase(appId)));
+		RangeVoting app = RangeVoting(dao.newAppInstance(appId, latestVersionAppBase(appId)));
 		Voting voting = Voting(dao.newAppInstance(votingAppId, latestVersionAppBase(votingAppId)));
 		TokenManager tokenManager = TokenManager(dao.newAppInstance(tokenManagerAppId, latestVersionAppBase(tokenManagerAppId)));
 
@@ -75,8 +75,9 @@ contract Kit is KitBase {
 
 		acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
 
-		acl.createPermission(voting, app, app.INCREMENT_ROLE(), voting);
-		acl.createPermission(ANY_ENTITY, app, app.DECREMENT_ROLE(), root);
+		acl.createPermission(voting, app, app.CREATE_VOTES_ROLE(), voting);
+		acl.createPermission(ANY_ENTITY, app, app.ADD_CANDIDATES_ROLE(), root);
+		acl.createPermission(voting, app, app.MODIFY_PARTICIPATION_ROLE(), root);
 		acl.grantPermission(voting, tokenManager, tokenManager.MINT_ROLE());
 
 		// Clean up permissions
@@ -87,7 +88,9 @@ contract Kit is KitBase {
 		acl.grantPermission(root, acl, acl.CREATE_PERMISSIONS_ROLE());
 		acl.revokePermission(this, acl, acl.CREATE_PERMISSIONS_ROLE());
 		acl.setPermissionManager(root, acl, acl.CREATE_PERMISSIONS_ROLE());
+        /*
 
+        */
 		DeployInstance(dao);
 	}
 }

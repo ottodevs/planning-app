@@ -1,4 +1,4 @@
-# Payout engine
+# Range voting
 
 ## Workflow
 For fast frontend development without aragon backend:

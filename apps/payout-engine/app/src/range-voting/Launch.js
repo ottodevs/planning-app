@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { theme, Text, Button } from '@aragon/ui'
 import { lerp } from '../utils/math-utils'
 import { Main, Content, Title } from '../style'
-import { BigNumber } from 'bignumber.js'
 import { addTool } from '../stores/ToolStore'
 
 import imgPending from '../assets/transaction-pending.svg'

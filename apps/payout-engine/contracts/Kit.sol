@@ -10,7 +10,7 @@ import "@aragon/apps-voting/contracts/Voting.sol";
 import "@aragon/apps-token-manager/contracts/TokenManager.sol";
 import "@aragon/os/contracts/lib/minime/MiniMeToken.sol";
 
-import "./PayoutEngine.sol";
+import "./RangeVoting.sol";
 
 contract KitBase is APMNamehash {
     ENS public ens;
@@ -29,7 +29,7 @@ contract KitBase is APMNamehash {
     	} else {
     		fac = _fac;
     	}
-
+        
     }
 
 	function latestVersionAppBase(bytes32 appId) public view returns (address base) {
@@ -59,7 +59,7 @@ contract Kit is KitBase {
 		bytes32 votingAppId = apmNamehash("voting");
 		bytes32 tokenManagerAppId = apmNamehash("token-manager");
 
-		PayoutEngine app = PayoutEngine(dao.newAppInstance(appId, latestVersionAppBase(appId)));
+		RangeVoting app = RangeVoting(dao.newAppInstance(appId, latestVersionAppBase(appId)));
 		Voting voting = Voting(dao.newAppInstance(votingAppId, latestVersionAppBase(votingAppId)));
 		TokenManager tokenManager = TokenManager(dao.newAppInstance(tokenManagerAppId, latestVersionAppBase(tokenManagerAppId)));
 

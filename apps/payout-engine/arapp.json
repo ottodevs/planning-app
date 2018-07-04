@@ -3,15 +3,20 @@
   "version": "1.0.0",
   "roles": [
     {
-      "name": "Start payout role",
-      "id": "START_PAYOUT_ROLE",
+      "name": "Create new votes",
+      "id": "CREATE_VOTES_ROLE",
       "params": []
     },
     {
-      "name": "Set distribution role",
-      "id": "SET_DISTRIBUTION_ROLE",
+      "name": "Add candidates role",
+      "id": "ADD_CANDIDATES_ROLE",
+      "params": []
+    },
+    {
+      "name": "Modify candidate support role",
+      "id": "MODIFY_PARTICIPATION_ROLE",
       "params": []
     }
   ],
-  "path": "contracts/PayoutEngine.sol"
+  "path": "contracts/RangeVoting.sol"
 }
