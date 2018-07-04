@@ -1,4 +1,5 @@
 sudo: required
+dist: trusty
 language: node_js
 cache:
   directories:
@@ -7,10 +8,18 @@ notifications:
   email: false
 node_js:
   - '8'
+install:
+  - npm install -g truffle
+  - npm install -g ganache-cli
+  - npm install
 env:
   - TASK=test
   - TASK=lint
 before_script:
   - npm prune
+  - testrpc > /dev/null &
+  - sleep 5
 script:
   - npm run $TASK
+after_script:
+  - npm run coverage && cat coverage/lcov.info | coveralls
