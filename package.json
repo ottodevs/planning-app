@@ -7,7 +7,10 @@
     "test": "test"
   },
   "scripts": {
-    "test": "truffle test",
+    "install": "npm run bootstrap",
+    "bootstrap": "lerna bootstrap --nohoist=@aragon/os",
+    "test": "lerna run --concurrency=1 --stream test",
+    "lint": "lerna run --scope=@tpt/apps-* lint",
     "coverage": "./node_modules/.bin/solidity-coverage"
   },
   "repository": {
