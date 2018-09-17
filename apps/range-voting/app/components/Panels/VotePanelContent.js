@@ -11,7 +11,7 @@ import {
   Countdown,
   Text,
   theme,
-  Slider,
+  Slider
 } from '@aragon/ui'
 
 import { combineLatest } from '../../rxjs'
@@ -23,14 +23,14 @@ import ProgressBarThick from '../ProgressBarThick'
 
 class VotePanelContent extends React.Component {
   static propTypes = {
-    app: PropTypes.object, // TODO: isRequired?
+    app: PropTypes.object // TODO: isRequired?
   }
   state = {
     userCanVote: false,
     userBalance: null,
     showResults: false,
     voteOptions: [],
-    remaining: 100,
+    remaining: 100
   }
   componentDidMount() {
     this.loadUserCanVote()
@@ -62,7 +62,7 @@ class VotePanelContent extends React.Component {
             parseInt(balance, 10) / Math.pow(10, decimals)
           )
           this.setState({
-            userBalance: adjustedBalance,
+            userBalance: adjustedBalance
           })
         })
     }
@@ -76,7 +76,7 @@ class VotePanelContent extends React.Component {
         .first()
         .subscribe(canVote => {
           this.setState({
-            userCanVote: canVote,
+            userCanVote: canVote
           })
         })
     }
@@ -262,7 +262,7 @@ class VotePanelContent extends React.Component {
 
 const Label = styled(Text).attrs({
   smallcaps: true,
-  color: theme.textSecondary,
+  color: theme.textSecondary
 })`
   display: block;
   margin-bottom: 10px;
@@ -320,7 +320,7 @@ const RedText = styled.span`
   font-size: 14px;
 `
 
-const SecondRedText = RedText.extend`
+const SecondRedText = styled(RedText)`
   float: right;
   margin-top: 0.5rem;
 `
