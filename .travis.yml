@@ -25,8 +25,6 @@ before_install: |
   # avoids bugs around https://github.com/travis-ci/travis-ci/issues/5092
   export PATH=~/cached-bins/node_modules/.bin:$PATH
 
-install: npm run postinstall
-
 cache:
   directories:
     - ~/.npm # cache npm's cache
