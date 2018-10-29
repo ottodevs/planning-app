@@ -14,36 +14,39 @@ node_js: "node" # equivalent to stable, node 10
 
 # `nvm install` happens before the cache is restored, which means
 # we must install our own npm elsewhere (`~/cached-bins`)
-before_install: |
-  # Evaluate with Bash if the npm in cached_bins path has NOT execution permission,
-  [[ ! -x ~/cached-bins/node_modules/.bin/npm ]] && {
-  # then we assume cache missed and install npm@latest and lerna
-  # caching feature creates `~/cached-bins` for us, the private:true is to avoid annoying npm warnings about package.json
-    cd ~/cached-bins && echo '{"private":true}' > package.json && npm install npm@latest lerna --no-package-lock
-    cd -
-  } || true
-  # avoids bugs around https://github.com/travis-ci/travis-ci/issues/5092
-  export PATH=~/cached-bins/node_modules/.bin:$PATH
+# before_install: |
+# Evaluate with Bash if the npm in cached_bins path has NOT execution permission,
+# [[ ! -x ~/cached-bins/node_modules/.bin/npm ]] && {
+# then we assume cache missed and install npm@latest and lerna
+# caching feature creates `~/cached-bins` for us, the private:true is to avoid annoying npm warnings about package.json
+#   cd ~/cached-bins && echo '{"private":true}' > package.json && npm install npm@latest lerna --no-package-lock
+#   cd -
+# } || true
+# # avoids bugs around https://github.com/travis-ci/travis-ci/issues/5092
+# export PATH=~/cached-bins/node_modules/.bin:$PATH
 
-install: npm run postinstall
+install:
+  - yarn global add lerna
+  - lerna bootstrap
 
 cache:
-  directories:
-    - ~/.npm # cache npm's cache
-    - ~/cached-bins # cache latest npm and lerna
+  "yarn"
+  # directories:
+  #   - ~/.npm # cache npm's cache
+  #   - ~/cached-bins # cache latest npm and lerna
 
 jobs:
   include:
-    - script: travis_wait 60 npm run coverage
-      after_success: npm run coveralls
+    - script: travis_wait 60 yarn coverage
+      after_success: yarn coveralls
       env: "COVERAGE=true"
 
     - &node
-      script: npm run test
+      script: yarn test
       node_js: "lts/*"
 
     - stage: lint
-      script: npm run lint
+      script: yarn lint
 
     - stage: precache
       script: true

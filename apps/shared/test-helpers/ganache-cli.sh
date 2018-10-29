@@ -64,10 +64,10 @@ elif [ "$TRUFFLE_TEST" = true ]; then
 	truffle test --network rpc "$@" | grep -v 'Compiling'
 	result=$?
 elif [ "$START_KIT" = true ] || [ "$RESTART_KIT" = true ]; then
-	npm run publish:apps && npm run start:kit
+	yarn publish:apps && yarn start:kit
 	result=$?
 elif [ "$DEV" = true ]; then
-	npm run publish:http && npm run start:kit
+	yarn publish:http && yarn start:kit
 	result=$?
 fi
 

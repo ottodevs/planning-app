@@ -21,33 +21,33 @@ lerna info versioning independent
 
 ### Before doing anything run the install script to avoid dependency errors:
 
-- `npm i` : Installs root project dependencies and then bootstraps all independent app dependencies.
+- `yarn` : Installs root project dependencies and then bootstraps all independent app dependencies.
 
 ### Then, run one of the handy scripts depending of the needs:
 
 #### To start frontend development:
 
-- `npm run dev:<app_name>`
+- `yarn dev:<app_name>`
 
   - where `<app_name>` can be one of:
-    - `address` for Address Book App (`npm run dev:address`)
-    - `projects` for Projects App (`npm run dev:projects`)
-    - `allocations` for Allocations App (`npm run dev:allocations`)
-    - `range` for Range Voting App (`npm run dev:range`)
+    - `address` for Address Book App (`yarn dev:address`)
+    - `projects` for Projects App (`yarn dev:projects`)
+    - `allocations` for Allocations App (`yarn dev:allocations`)
+    - `range` for Range Voting App (`yarn dev:range`)
 
 #### To start blockchain, smart contract or Aragon os development:
 
-- `npm run start:<app_name>`
+- `yarn start:<app_name>`
 
   - where `<app_name>` can be one of:
-    - `address` for Address Book App (`npm run start:address`)
-    - `projects` for Projects App (`npm run start:projects`)
-    - `allocations` for Allocations App (`npm run start:allocations`)
-    - `range` for Range Voting App (`npm run start:range`)
+    - `address` for Address Book App (`yarn start:address`)
+    - `projects` for Projects App (`yarn start:projects`)
+    - `allocations` for Allocations App (`yarn start:allocations`)
+    - `range` for Range Voting App (`yarn start:range`)
 
 #### To run everything working together in the Aragon Wrapper:
 
-- `npm start`
+- `yarn start`
 
 This script checks/install dependencies through lerna bootstrap, then concurrently starts a local development blockchain to deploy the individual apps there calling `aragon apm publish` on each app, also with help of lerna.
 When individual apps are deployed, the aragon/cli --kit option compiles and deploys the PlanningKit dao template sitting in contracts folder.
@@ -60,36 +60,36 @@ Finally, the script launches the Aragon Wrapper with the complete planning suite
 
 ## Troubleshooting
 
-- If something stops working because, you know, things break, the right way to debug the problem is to run the same `npm start` steps one by one:
-- `npm run bootstrap`
+- If something stops working because, you know, things break, the right way to debug the problem is to run the same `yarn start` steps one by one:
+- `yarn bootstrap`
   Check if some dependency is not installed or available
-- `npm run publish:apps`
-  To debug if the individual apps are being published, if more control is needed, individual app publishing can be called by `cd apps/app_folder && npm run publish`
-- `npm run devchain or npm run devchain:reset`
-  Is needed to be run in another terminal window to be able to deploy all apps together. `npm start` script does this by using concurrently npm package.
+- `yarn publish:apps`
+  To debug if the individual apps are being published, if more control is needed, individual app publishing can be called by `cd apps/app_folder && yarn publish`
+- `yarn devchain or yarn devchain:reset`
+  Is needed to be run in another terminal window to be able to deploy all apps together. `yarn start` script does this by using concurrently yarn package.
 - If previous steps where succesful, then run: `aragon run --kit PlanningKit --kit-init @ARAGON_ENS`
   To deploy the kit and launch the Aragon Wrapper in the browser.
-  It needs the same local blockchain to find the locally deployed apps, so better to keep the devchain open and running (Again, with `npm start` is not needed (but allowed) because is launched in parallel with concurrently).
+  It needs the same local blockchain to find the locally deployed apps, so better to keep the devchain open and running (Again, with `yarn start` is not needed (but allowed) because is launched in parallel with concurrently).
 
-- `npm run clean`
+- `yarn clean`
   Just if the other steps don't work call this and start over with a clean state, maybe combined with `rm -rf ~/.ipfs ~/.aragon` to delete the local machine state (this does not delete any key, just local data that then will be downloaded again).
 
 #### Incomplete npm script list:
 
-| Command                   | Description                                   |
-| ------------------------- | --------------------------------------------- |
-| `npm run bootstrap`       | Bootstrap the full project deps               |
-| `npm run clean`           | Delete temp git state (build and dep folders) |
-| `npm run dev:address`     | Start Address Book app frontend development   |
-| `npm run dev:projects`    | Start Projects app frontend development       |
-| `npm run dev:allocations` | Start Allocatioons app frontend development   |
-| `npm run dev:range`       | Start Range Voting app frontend development   |
-| `npm run devchain`        | Start a local development blockchain          |
-| `npm run devchain:reset`  | Reset local blockchain and start new one      |
-| `npm i` or `npm install`  | Launch the bootstrap script                   |
-| `npm run publish:apps`    | Deploy all apps to local ipfs apm             |
-| `npm run start`           | Start the full planning app with DAO kit      |
-| `npm run start:kit`       | Deploy and start the DAO Kit with everything  |
+| Command                  | Description                                   |
+| ------------------------ | --------------------------------------------- |
+| `yarn bootstrap`         | Bootstrap the full project deps               |
+| `yarn clean`             | Delete temp git state (build and dep folders) |
+| `yarn dev:address`       | Start Address Book app frontend development   |
+| `yarn dev:projects`      | Start Projects app frontend development       |
+| `yarn dev:allocations`   | Start Allocatioons app frontend development   |
+| `yarn dev:range`         | Start Range Voting app frontend development   |
+| `yarn devchain`          | Start a local development blockchain          |
+| `yarn devchain:reset`    | Reset local blockchain and start new one      |
+| `yarn` or `yarn install` | Launch the bootstrap script                   |
+| `yarn publish:apps`      | Deploy all apps to local ipfs apm             |
+| `yarn start`             | Start the full planning app with DAO kit      |
+| `yarn start:kit`         | Deploy and start the DAO Kit with everything  |
 
 #### Apps Loading Bug (Is actually a Metamask issue)
 
@@ -101,7 +101,7 @@ Finally, the script launches the Aragon Wrapper with the complete planning suite
 _Tip: Look at letter g to quickly know if aragon fonts were loaded and applied_
 
 - Aragon puts all the files in the app in the ipfs folder, so files must be correctly built to the dist folder, this happens in all single apps.
-- Aragon provides the command `copy-aragon-ui-assets` and we use `npm run sync-assets` to call it. The problem is that is easy to have errors configuring the path in AragonApp component (from @aragon/ui), because is not documented where the slashes go or things like that, even some original Aragon apps have or had this error.
+- Aragon provides the command `copy-aragon-ui-assets` and we use `yarn sync-assets` to call it. The problem is that is easy to have errors configuring the path in AragonApp component (from @aragon/ui), because is not documented where the slashes go or things like that, even some original Aragon apps have or had this error.
 - The right way to configure AragonApp is like this:
 
 ```js

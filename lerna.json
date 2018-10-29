@@ -8,7 +8,8 @@
       "progress": true
     }
   },
-  "hoist": true,
   "packages": ["apps/*", "apps/shared/*"],
+  "npmClient": "yarn",
+  "useWorkspaces": true,
   "version": "independent"
 }

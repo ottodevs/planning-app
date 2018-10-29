@@ -18,17 +18,17 @@ Node.js LTS or greater required.
 
 ```bash
 # Bootstrap project dependencies:
-$ npm i
+$ yarn install
 
 # Start a local blockchain and deploy
 # aragon dao kit with all apps:
-$ npm start
+$ yarn start
 
 # Develop single app react frontend:
-$ npm run dev:projects
+$ yarn dev:projects
 
 # Develop single app with backend and aragon wrapper:
-$ npm run start:range
+$ yarn start:range
 
 # current app name aliases: {address, projects, payout, range}
 ```
@@ -53,7 +53,7 @@ The Planning Suite is a collection of six Aragon Apps that supports the followin
   - **Dynamic Payout:** Payroll contract that allows for dynamic allocations that are determined using range voting.
   - **Payout Engine:** Pay sharing contract using a percentage-based distribution system, where the percentages are determined using range voting.
 - **Address Book:** Maintain a list of Ethereum addresses (external contacts/collaborators) mapped to human-readable names.
-  - **Fixed Payout:** The address book will enable a more user-friendly way to access common addresses a DAO uses, making it easier to  setup Fixed Payouts in various Aragon apps.
+  - **Fixed Payout:** The address book will enable a more user-friendly way to access common addresses a DAO uses, making it easier to setup Fixed Payouts in various Aragon apps.
 - **Range Voting:** Vote on the percentage of an allocation that distinct tasks, projects, or people should receive. Unique forwarding pattern allows for data to be added to EVM scripts within Aragon.
 - **Projects:** Allow Github issues to be collectively prioritized in addition to applying bulk bounties.
   - **Github Integration:** Before we can utilize the decentralized git tool, it would be ideal to have an integration with a Github-based bounty system to provide immediate utility to Aragon DAOs.
@@ -63,7 +63,6 @@ The Planning Suite is a collection of six Aragon Apps that supports the followin
     - **On-Chain Estimates:** Consensus or range voting contract is utilized for members to collectively estimate the value of task bounties. (Forwards to Consensus app).
 - **Consensus:** Allow for special voting sessions to be created, where the aim is to reach consensus among the voting session participants.
 - **Rewards:** Distributes payments to token holders based on the number of tokens one has earned in a specific cycle of time (one-time reward) or based on the total tokens one holds (dividend).
-
 
 #### Please review the [White Paper](http://goo.gl/eXAybm) for full details.
 
