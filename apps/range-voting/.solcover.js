@@ -2,10 +2,11 @@ module.exports = {
   norpc: true,
   // TODO: Change this hack when the feel to update solidity-coverage upstream
   // rsync is needed so symlinks are resolved on copy of lerna packages
-  copyPackages: ['@tpt/test-helpers'],
+  testCommand:
+    'node --max-old-space-size=4096 ../../../node_modules/.bin/truffle test --network coverage',
   skipFiles: [
     'test/TestRangeVoting.sol',
     'test/mocks/ExecutionTarget.sol',
-    'test/mocks/RangeVotingMock.sol',
+    'test/mocks/RangeVotingMock.sol'
   ]
 }
