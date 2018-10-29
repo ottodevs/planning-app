@@ -5,7 +5,7 @@ module.exports = {
   testCommand:
     'node --max-old-space-size=4096 ../../../node_modules/.bin/truffle test --network coverage',
   skipFiles: [
-    'test/TestRangeVoting.sol',
+    'test/TestImports.sol',
     'test/mocks/ExecutionTarget.sol',
     'test/mocks/RangeVotingMock.sol'
   ]
