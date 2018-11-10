@@ -36,6 +36,7 @@
     "test:address": "cd apps/address-book && npm test",
     "test:allocations": "cd apps/allocations && npm test",
     "test:projects": "cd apps/projects && npm test",
+    "test:projects:e2e": "cd apps/projects && npm run test:e2e",
     "test:range": "cd apps/range-voting && npm test",
     "lint": "lerna run lint --no-bail && lerna exec --scope=@tpt/apps-* --stream -- npx eslint app",
     "lint:fix": "lerna exec --scope=@tpt/apps-* --stream -- npx eslint app --fix",
