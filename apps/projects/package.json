@@ -10,7 +10,7 @@
     "console": "truffle dev",
     "coverage": "SOLIDITY_COVERAGE=true npm run ganache-cli:test",
     "dev": "npm run sync-assets && parcel app/index.html --port 3333",
-    "ganache-cli:test": "../shared/test-helpers/ganache-cli.sh",
+    "ganache-cli:test": "../../packages/test-helpers/ganache-cli.sh",
     "lint": "solium --dir ./contracts",
     "prepublishOnly": "truffle compile --all",
     "publish:http": "npm run publish:http-copy-files && aragon apm publish --http localhost:3333 --http-served-from ./dist",

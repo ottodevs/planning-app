@@ -4,7 +4,7 @@
   "description": "Aragon Planning Suite developed by Space Decentral and Giveth",
   "scripts": {
     "coverage": "SOLIDITY_COVERAGE=true npm run ganache-cli:test",
-    "ganache-cli:test": "../shared/test-helpers/ganache-cli.sh",
+    "ganache-cli:test": "../../packages/test-helpers/ganache-cli.sh",
     "lint": "solium --dir ./contracts",
     "start:kit": "aragon run --kit PlanningKit --kit-init @ARAGON_ENS",
     "test:gas": "GAS_REPORTER=true npm test",
