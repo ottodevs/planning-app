@@ -11,7 +11,9 @@
     "coverage": "SOLIDITY_COVERAGE=true npm run ganache-cli:test",
     "dev": "npm run sync-assets && parcel app/index.html --port 3333",
     "ganache-cli:test": "../../packages/test-helpers/ganache-cli.sh",
-    "lint": "solium --dir ./contracts",
+    "lint": "npm run lint:sol && npm run lint:js",
+    "lint:sol": "solium --dir contracts",
+    "lint:js": "eslint . --fix",
     "prepublishOnly": "truffle compile --all",
     "publish:http": "npm run publish:http-copy-files && aragon apm publish --http localhost:3333 --http-served-from ./dist",
     "publish:http-copy-files": "npm run build:script && mkdir -p dist/images && cp images/icon.svg dist/images/",
@@ -20,6 +22,7 @@
     "sync-assets": "copy-aragon-ui-assets ./dist",
     "test:e2e": "cypress open",
     "test:unit": "npx jest test/**/*.spec.js",
+    "test:unit:watch": "npm run test:unit -- --watchAll",
     "test:gas": "GAS_REPORTER=true npm test",
     "test": "TRUFFLE_TEST=true npm run ganache-cli:test"
   },
