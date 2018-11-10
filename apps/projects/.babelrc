@@ -4,6 +4,6 @@
     "transform-class-properties",
     "transform-runtime",
     ["styled-components", { "displayName": true }],
-    "react-hot-loader/babel"
-  ]
+    "react-hot-loader/babel",
+    "syntax-dynamic-import"
 }
