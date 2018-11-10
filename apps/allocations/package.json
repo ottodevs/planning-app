@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@aragon/client": "1.0.0-beta.9",
-    "@aragon/ui": "ottodevs/aragon-ui#5b17efa",
+    "@aragon/ui": "^0.27.0",
     "bignumber.js": "^7.2.1",
     "prop-types": "15.6.2",
     "react": "16.6.1",
@@ -56,7 +56,7 @@
     "parcel-bundler": "1.9.7",
     "prettier": "1.14.2",
     "react-hot-loader": "4.3.12",
-    "solium": "^1.1.8",
+    "solium": "1.1.8",
     "stylelint": "9.5.0",
     "stylelint-config-standard": "18.2.0",
     "stylelint-config-styled-components": "0.1.1",
