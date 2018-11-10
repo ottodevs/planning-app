@@ -58,6 +58,7 @@
     "parcel-bundler": "1.9.7",
     "prettier": "1.14.2",
     "react-hot-loader": "4.3.12",
+    "solium": "^1.1.8",
     "stylelint": "9.5.0",
     "stylelint-config-standard": "18.2.0",
     "stylelint-config-styled-components": "0.1.1",
