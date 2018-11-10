@@ -19,6 +19,7 @@
     "start": "aragon run",
     "sync-assets": "copy-aragon-ui-assets ./dist",
     "test:e2e": "cypress open",
+    "test:unit": "npx jest test/**/*.spec.js",
     "test:gas": "GAS_REPORTER=true npm test",
     "test": "TRUFFLE_TEST=true npm run ganache-cli:test"
   },
@@ -48,6 +49,7 @@
     "eslint": "5.5.0",
     "eslint-config-prettier": "3.0.1",
     "eslint-plugin-react": "7.11.1",
+    "jest": "^23.6.0",
     "parcel-bundler": "1.9.7",
     "prettier": "1.14.2",
     "react-hot-loader": "4.3.12",
