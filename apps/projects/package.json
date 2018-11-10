@@ -21,7 +21,7 @@
     "start": "aragon run",
     "sync-assets": "copy-aragon-ui-assets ./dist",
     "test:e2e": "cypress open",
-    "test:unit": "npx jest test/**/*.spec.js",
+    "test:unit": "npx jest app/test/**/*.spec.js",
     "test:unit:watch": "npm run test:unit -- --watchAll",
     "test:gas": "GAS_REPORTER=true npm test",
     "test": "TRUFFLE_TEST=true npm run ganache-cli:test"
@@ -69,7 +69,10 @@
     "stylelint-processor-styled-components": "1.3.2"
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "<rootDir>test/setup.js"
+    "setupTestFrameworkScriptFile": "<rootDir>/app/test/config/jest.setup.js",
+    "moduleNameMapper": {
+      "\\.(svg)$": "<rootDir>/app/test/config/assetsTransformer.js"
+    }
   },
   "author": "",
   "repository": {
