@@ -1,11 +1,15 @@
-import Aragon, { providers } from '@aragon/client'
+import Aragon from '@aragon/client'
 import { first, of } from 'rxjs' // Make sure observables have .first
 import { combineLatest } from 'rxjs'
 import { empty } from 'rxjs/observable/empty'
 
 import { GraphQLClient } from 'graphql-request'
 
-const authToken = ''
+// const authToken = ''
+const authToken = authToken => {
+  console.log('Authtoken from script called!', authToken)
+}
+
 const client = new GraphQLClient('https://api.github.com/graphql', {
   headers: {
     Authorization: 'Bearer ' + authToken,
@@ -56,8 +60,8 @@ let appState
 app.events().subscribe(handleEvents)
 
 app.state().subscribe(state => {
-  console.log('Projects: entered state subscription:\n', state)
-  appState = state ? state : { repos: [] }
+  appState = state ? state : { repos: [], token: '' }
+  console.log('Projects: entered state subscription:\n', appState)
   //appState = state
 })
 
