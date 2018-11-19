@@ -16,15 +16,21 @@ const StyledTitle = styled(Text)`
   z-index: 1;
 `
 
-const Title = ({ text, shadow }) => (
-  <StyledTitle size="xxlarge" shadow={shadow}>
-    {text}
-  </StyledTitle>
-)
+export default class Title extends React.Component {
+  static propTypes = {
+    text: PropTypes.string.isRequired,
+    shadow: PropTypes.bool,
+  }
 
-Title.propTypes = {
-  text: PropTypes.string.isRequired,
-  shadow: PropTypes.bool,
+  shouldComponentUpdate(nextProps, nextState) {
+    return false
+  }
+
+  render() {
+    return (
+      <StyledTitle size="xxlarge" shadow={this.props.shadow}>
+        {this.props.text}
+      </StyledTitle>
+    )
+  }
 }
-
-export default Title

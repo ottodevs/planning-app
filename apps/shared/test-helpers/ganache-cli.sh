@@ -32,13 +32,12 @@ start_testrpc() {
 	elif [ "$TRUFFLE_TEST" = true ]; then
 		ganache-cli -i 15 --gasLimit 50000000 --port "$testrpc_port" >/dev/null &
 	elif [ "$START_KIT" = true ]; then
-		aragon devchain --port "$testrpc_port" &
+		aragon devchain --port "$testrpc_port" >/dev/null &
 	elif [ "$RESTART_KIT" = true ]; then
 		rm -rf ~/.ipfs
-		aragon devchain --reset --port "$testrpc_port" &
+		aragon devchain --reset --port "$testrpc_port" >/dev/null &
 	elif [ "$DEV" = true ]; then
-		aragon devchain --reset --port "$testrpc_port" &
-		lerna run dev --parallel --scope=@tpt/apps-* &
+		aragon devchain --reset --port "$testrpc_port" >/dev/null &
 	fi
 
 	testrpc_pid=$!
@@ -64,13 +63,21 @@ elif [ "$TRUFFLE_TEST" = true ]; then
 	truffle test --network rpc "$@" | grep -v 'Compiling'
 	result=$?
 elif [ "$START_KIT" = true ] || [ "$RESTART_KIT" = true ]; then
-	npm run publish:apps && npm run start:kit
+	npm run publish:apps >/dev/null && npm run start:kit
 	result=$?
 elif [ "$DEV" = true ]; then
-	npm run publish:http && npm run start:kit
+	echo "👩‍💻 | Publishing dapps in http provider mode"
+	lerna run publish:http --scope=@tpt/apps-* >/dev/null
+	echo "👨‍🎨 | Running app frontends"
+	lerna run dev --parallel --scope=@tpt/apps-* &
+	echo "🚀   | Deploying and starting the DAO Kit"
+	cd apps/planning-app-kit && aragon run --kit PlanningKit --kit-init @ARAGON_ENS
 	result=$?
 fi
 
-kill -9 $testrpc_pid
-
-exit $result
+if [ "$result" = "130" ]; then
+	echo ' process was terminated by pressing Ctrl+C'
+	exit 0
+else
+	echo "terminated with exit code $result"
+fi

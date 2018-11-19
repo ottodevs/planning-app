@@ -3,15 +3,22 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Button } from '@aragon/ui'
 
-const AppTitleButton = ({ caption, onClick }) => (
-  <StyledButton mode="strong" onClick={onClick}>
-    {caption}
-  </StyledButton>
-)
+export default class AppTitleButton extends React.Component {
+  static propTypes = {
+    caption: PropTypes.string,
+    onClick: PropTypes.func,
+  }
+  render() {
+    return (
+      <StyledButton mode="strong" onClick={this.props.onClick}>
+        {this.props.caption}
+      </StyledButton>
+    )
+  }
 
-AppTitleButton.propTypes = {
-  caption: PropTypes.string,
-  onClick: PropTypes.func
+  shouldComponentUpdate(nextProps, nextState) {
+    return false
+  }
 }
 
 const StyledButton = styled(Button)`
@@ -20,6 +27,3 @@ const StyledButton = styled(Button)`
   right: 30px;
   z-index: 2;
 `
-
-export default AppTitleButton
-

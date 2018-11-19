@@ -9,8 +9,7 @@ const StyledTabBar = styled.nav`
   border-bottom: 1px solid ${theme.contentBorder};
 `
 
-const TabBar = props => {
-  const { activeIndex, children, onSelectTab } = props
+const TabBar = ({ activeIndex, children, onSelectTab }) => {
   const tabs = React.Children.map(children, (child, index) =>
     React.cloneElement(child, {
       isActive: index === activeIndex,

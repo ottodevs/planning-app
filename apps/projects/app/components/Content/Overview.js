@@ -4,30 +4,29 @@ import styled from 'styled-components'
 
 import { Project, Empty } from '../Card'
 
-const Overview = ({ projects, onNewProject, onSelect, app }) => {
-  const projectsEmpty = projects.length === 0
-  console.log('Overview projects:', projects)
-  if (projectsEmpty) {
-    return <Empty action={onNewProject} />
+export default class Overview extends React.Component {
+  static propTypes = {
+    projects: PropTypes.arrayOf(PropTypes.object).isRequired,
   }
-
-  const projectsMap = projects.map((project, index) => (
-    <Project
-      key={index}
-      label={project.metadata.name}
-      description={project.metadata.description}
-      // id={projectId}
-      // name={data.name}
-      commits={project.metadata.commits}
-      contributors={project.metadata.collaborators}
-      // url={data.url}
-    />
-  ))
-  return <StyledProjects>{projectsMap}</StyledProjects>
-}
-
-Overview.propTypes = {
-  projects: PropTypes.arrayOf(PropTypes.object).isRequired,
+  render() {
+    const projectsEmpty = this.props.projects.length === 0
+    if (projectsEmpty) {
+      return <Empty action={this.props.onNewProject} />
+    }
+    const projectsMap = this.props.projects.map((project, index) => (
+      <Project
+        key={index}
+        label={project.metadata.name}
+        description={project.metadata.description}
+        commits={project.metadata.commits}
+        contributors={project.metadata.collaborators}
+      />
+    ))
+    return <StyledProjects>{projectsMap}</StyledProjects>
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    return false
+  }
 }
 
 const StyledProjects = styled.div`
@@ -38,5 +37,3 @@ const StyledProjects = styled.div`
   justify-content: start;
   padding: 30px;
 `
-
-export default Overview

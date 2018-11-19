@@ -10,7 +10,7 @@ const StyledTab = styled.div`
   cursor: pointer;
   height: 37px;
   margin-right: 50px;
-  transition: all 0.5s cubic-bezier(0.38, 0.8, 0.32, 1.07);
+  transition: all 0.3s cubic-bezier(0.38, 0.8, 0.32, 1.07);
   &.active {
     cursor: default;
     text-shadow: 0.1px 0 0 ${theme.textPrimary}, -0.1px 0 0 ${theme.textPrimary};

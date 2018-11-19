@@ -1,24 +1,27 @@
-import { AragonApp, observe, SidePanel } from '@aragon/ui'
+import { AragonApp, observe, SidePanel, Text } from '@aragon/ui'
+// import Aragon, { providers } from '@aragon/client'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { hot } from 'react-hot-loader'
 import styled from 'styled-components'
-
+import { useRedirectHandler } from '../../hooks'
 import { AppContent } from '.'
 import { Title } from '../Shared'
 import { NewProject } from '../Panel'
 
 const ASSETS_URL = 'aragon-ui-assets/'
 
+const REDIRECT_URI = 'http://localhost:3333'
+
 class App extends React.Component {
   static propTypes = {
-    app: PropTypes.object.isRequired,
-    repos: PropTypes.arrayOf(PropTypes.object),
+    // app: PropTypes.object.isRequired,
+    // repos: PropTypes.arrayOf(PropTypes.object),
+    // TODO: Just expose a boolean when GraphQl client is ready (User Signed In == true)
+    // token: PropTypes.string,
   }
 
   state = {
-    repos: [],
-    activeIndex: 0,
     panel: {
       visible: false,
     },
@@ -42,10 +45,16 @@ class App extends React.Component {
     // console.log('hex:', window.web3.toHex('MDEyOk9yZ2FuaXphdGlvbjM0MDE4MzU5'))
 
     // this.props.app.addRepo(this.props.userAccount, '0x012026678901')
-    this.props.app.addRepo(
-      web3.toHex('MDQ6VXNlcjUwMzAwNTk='),
-      web3.toHex('MDEwOlJlcG9zaXRvcnkxNDkxMzQ4NTk=')
-    )
+    // this.props.app.addRepo(
+    //   web3.toHex('MDQ6VXNlcjUwMzAwNTk='),
+    //   web3.toHex('MDEwOlJlcG9zaXRvcnkxNDkxMzQ4NTk=')
+    // )
+  }
+
+  githubSignIn = () => {
+    const popup = githubPopup(this.state.popup)
+    this.setState({ popup: popup })
+    console.log('github')
   }
 
   newIssue = () => {
@@ -53,32 +62,53 @@ class App extends React.Component {
   }
 
   newProject = () => {
-    console.log('newproject', this.props)
+    // const cche = this.props.app.cache('state', { token: 'something' })
+    // console.log(
+    //   '[projects->app.js->newProject()]: token stored, response:',
+    //   cche
+    // )
+    // this.props.app.rpc.send('cache', ['set', 'github', { token: 'sometokee' }])
+    // this.props.app.cache('state', { token: Math.random().toString() })
+    // this.props.app.addToken()
+    // this.props.app.notify('hello', 'title')
 
-    this.setState({
+    this.setState((_, props) => ({
       panel: {
         visible: true,
         content: NewProject,
         data: {
           heading: 'New Project',
-          onCreateProject: this.createProject,
+          // onCreateProject: this.createProject,
+          handleSignIn: this.githubSignIn,
+          // githubToken: props.token,
         },
       },
-    })
+    }))
   }
 
   closePanel = () => {
     this.setState({ panel: { visible: false } })
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return true
+    // return (
+    //   nextState.panel !== this.state.panel ||
+    //   nextProps.repos !== this.props.repos ||
+    //   nextProps.token !== this.props.token
+    // )
+  }
+
   render() {
     const { panel } = this.state
     const PanelContent = panel.content
 
-    return (
-      <StyledAragonApp publicUrl={ASSETS_URL}>
-        <Title text="Projects" shadow />
+    console.log('app state and props', this.state, this.props)
 
+    return (
+      <StyledAragonApp>
+        <Title text="Projects" shadow />
+        {/* <ObservedRepos observable={this.props.observable} /> */}
         <AppContent
           app={this.props.app}
           projects={this.props.repos !== undefined ? this.props.repos : []}
@@ -88,7 +118,6 @@ class App extends React.Component {
           activeIndex={this.state.activeIndex}
           changeActiveIndex={this.changeActiveIndex}
         />
-
         <SidePanel
           title={(panel.data && panel.data.heading) || ''}
           opened={panel.visible}
@@ -101,6 +130,12 @@ class App extends React.Component {
   }
 }
 
+// const ObservedRepos = observe(state$ => state$, {})(state => {
+//   console.log('new token received!', state)
+
+//   return <Text>{state.token}</Text>
+// })
+
 const StyledAragonApp = styled(AragonApp).attrs({
   publicUrl: ASSETS_URL,
 })`
@@ -110,8 +145,9 @@ const StyledAragonApp = styled(AragonApp).attrs({
   align-items: stretch;
   justify-content: stretch;
 `
+// export default observe(
+//   observable => observable.map(state => ({ ...state })),
+//   {}
+// )(hot(module)(useRedirectHandler(App)))
 
-export default observe(
-  observable => observable.map(state => ({ ...state })),
-  {}
-)(hot(module)(App))
+export default useRedirectHandler(App)
