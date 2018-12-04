@@ -70,3 +70,5 @@ codealike.json
 */**/coverageEnv
 */**/coverage.json
 */**/coverage
+
+.docz

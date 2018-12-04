@@ -3,7 +3,7 @@
   "name": "planning-suite-monorepo",
   "devDependencies": {
     "coveralls": "3.0.2",
-    "lerna": "^3.4.3"
+    "docz": "0.12.13"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
@@ -42,7 +42,9 @@
     "lint:address": "cd apps/address-book && npm run lint",
     "lint:allocations": "cd apps/allocations && npm run lint",
     "lint:projects": "cd apps/projects && npm run lint",
-    "lint:range": "cd apps/range-voting && npm run lint"
+    "lint:range": "cd apps/range-voting && npm run lint",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build"
   },
   "dependencies": {
     "@aragon/cli": "5.0.0"
