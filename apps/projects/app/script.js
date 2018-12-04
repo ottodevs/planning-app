@@ -69,7 +69,7 @@ const initClient = authToken => {
 // TODO: Handle cases where checking validity of token fails (revoked, etc)
 
 github().subscribe(result => {
-  console.log('github object received from cache:', result)
+  // console.log('github object received from cache:', result)
   if (result) {
     result.token && initClient(result.token)
     return
@@ -79,7 +79,7 @@ github().subscribe(result => {
 app.events().subscribe(handleEvents)
 
 app.state().subscribe(state => {
-  console.log('Projects: entered state subscription:\n', state)
+  // console.log('Projects: entered state subscription:\n', state)
   appState = state ? state : { repos: [] }
   //appState = state
 })
@@ -95,26 +95,26 @@ async function handleEvents(response) {
   switch (response.event) {
   case 'RepoAdded':
     nextState = await syncRepos(appState, response.returnValues)
-    console.log('RepoAdded Received', response.returnValues, nextState)
+    // console.log('RepoAdded Received', response.returnValues, nextState)
     break
   case 'RepoRemoved':
     nextState = await syncRepos(appState, response.returnValues)
-    console.log('RepoRemoved Received', response.returnValues, nextState)
+    // console.log('RepoRemoved Received', response.returnValues, nextState)
 
     break
   case 'BountyAdded':
     nextState = await syncRepos(appState, response.returnValues)
-    console.log('BountyAdded Received', response.returnValues, nextState)
+    // console.log('BountyAdded Received', response.returnValues, nextState)
 
     break
   default:
-    console.log('Unknown event catched:', response)
+    // console.log('Unknown event catched:', response)
   }
   app.cache('state', nextState)
 }
 
 async function syncRepos(state, { id, ...eventArgs }) {
-  console.log('syncRepos: arguments from events:', ...eventArgs)
+  // console.log('syncRepos: arguments from events:', ...eventArgs)
 
   const transform = ({ ...repo }) => ({
     ...repo,
@@ -134,10 +134,10 @@ async function syncRepos(state, { id, ...eventArgs }) {
  ***********************/
 
 function loadRepoData(id) {
-  console.log('loadRepoData entered')
+  // console.log('loadRepoData entered')
   return new Promise(resolve => {
     combineLatest(app.call('getRepo', id)).subscribe(([{ _owner, _repo }]) => {
-      console.log('loadRepoData:', _owner, _repo)
+      // console.log('loadRepoData:', _owner, _repo)
       let [owner, repo] = [toAscii(_owner), toAscii(_repo)]
       getRepoData(repo).then(
         ({
@@ -167,12 +167,12 @@ function loadRepoData(id) {
 
 async function checkReposLoaded(repos, id, transform) {
   const repoIndex = repos.findIndex(repo => repo.id === id)
-  console.log('checkReposLoaded, repoIndex:', repos, id)
+  // console.log('checkReposLoaded, repoIndex:', repos, id)
   const { metadata, ...data } = await loadRepoData(id)
 
   if (repoIndex === -1) {
     // If we can't find it, load its data, perform the transformation, and concat
-    console.log('repo not found: retrieving from chain')
+    // console.log('repo not found: retrieving from chain')
     return repos.concat(
       await transform({
         id,

@@ -63,7 +63,7 @@ class ConnectedApp extends React.Component {
         .sendAndObserveResponses('cache', ['get', 'github'])
         .pluck('result')
         .subscribe(github => {
-          console.log('github object received from backend cache:', github)
+          // console.log('github object received from backend cache:', github)
 
           this.setState({
             github: github,

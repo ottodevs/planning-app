@@ -8,7 +8,7 @@ let appState
 app.events().subscribe(handleEvents)
 
 app.state().subscribe(state => {
-  console.log('Allocations: entered state subscription:\n', state)
+  // console.log('Allocations: entered state subscription:\n', state)
   appState = state ? state : { accounts: [] }
   //appState = state
 })
