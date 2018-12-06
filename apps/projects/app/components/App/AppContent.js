@@ -19,18 +19,23 @@ import AppTitleButton from '../App/AppTitleButton'
 */
 
 // TODO: Dynamic component loading
-
-const AppContent = props => {
+const AppContent = ({
+  activeIndex,
+  changeActiveIndex,
+  onNewIssue,
+  onNewProject,
+  ...otherProps
+}) => {
   const contentData = [
     {
       tabName: 'Overview',
       TabComponent: Overview,
-      tabButton: { caption: 'New Project', onClick: props.onNewProject },
+      tabButton: { caption: 'New Project', onClick: onNewProject },
     },
     {
       tabName: 'Issues',
       TabComponent: Issues,
-      tabButton: { caption: 'New Issue', onClick: props.onNewIssue },
+      tabButton: { caption: 'New Issue', onClick: onNewIssue },
     },
     {
       tabName: 'Settings',
@@ -38,8 +43,8 @@ const AppContent = props => {
     },
   ]
 
-  var appTitleButton = contentData[props.activeIndex].tabButton
-    ? contentData[props.activeIndex].tabButton
+  var appTitleButton = contentData[activeIndex].tabButton
+    ? contentData[activeIndex].tabButton
     : null
 
   return (
@@ -52,8 +57,8 @@ const AppContent = props => {
       )}
 
       <TabbedView
-        activeIndex={props.activeIndex}
-        changeActiveIndex={props.changeActiveIndex}
+        activeIndex={activeIndex}
+        changeActiveIndex={changeActiveIndex}
       >
         <TabBar>
           {contentData.map(({ tabName }) => (
@@ -62,7 +67,7 @@ const AppContent = props => {
         </TabBar>
         <TabContent>
           {contentData.map(({ TabComponent }) => (
-            <TabComponent key={TabComponent} {...props} />
+            <TabComponent key={TabComponent} {...otherProps} />
           ))}
         </TabContent>
       </TabbedView>
@@ -71,12 +76,12 @@ const AppContent = props => {
 }
 
 AppContent.propTypes = {
-  projects: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onNewProject: PropTypes.func.isRequired,
-  onNewIssue: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
   activeIndex: PropTypes.number.isRequired,
   changeActiveIndex: PropTypes.func.isRequired,
+  onNewIssue: PropTypes.func.isRequired,
+  onNewProject: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  projects: PropTypes.arrayOf(PropTypes.object).isRequired,
 }
 
 export default AppContent

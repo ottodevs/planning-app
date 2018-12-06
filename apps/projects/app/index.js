@@ -1,51 +1,26 @@
+import 'react-devtools'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Aragon, { providers } from '@aragon/client'
-import ApolloClient from 'apollo-boost'
-import { InMemoryCache } from 'apollo-cache-inmemory'
 
 import App from './components/App/App'
 
-// import { projectsMockData } from './utils/mockData'
+if (process.env.NODE_ENV !== 'production') {
+  const { whyDidYouUpdate } = require('why-did-you-update')
+  whyDidYouUpdate(React)
+}
 
-// if (process.env.NODE_ENV !== 'production') {
-//   const { whyDidYouUpdate } = require('why-did-you-update')
-//   whyDidYouUpdate(React)
-// }
+const app = new Aragon(new providers.WindowMessage(window.parent))
 
 // TODO: Convert to stateless functional component
-class ConnectedApp extends React.Component {
-  state = {
-    app: new Aragon(new providers.WindowMessage(window.parent)),
-    observable: null,
-    userAccount: '',
-    // ...projectsMockData,
-    github: { token: null },
-    client: new ApolloClient({
-      uri: 'https://api.github.com/graphql',
-      request: operation => {
-        const { token } = this.state.github
-        if (token) {
-          operation.setContext({
-            headers: {
-              authorization: `Bearer ${token}`,
-            },
-          })
-        }
-      },
-      cache: new InMemoryCache(),
-    }),
-  }
+class ProjectsApp extends React.PureComponent {
   componentDidMount() {
     window.addEventListener('message', this.handleWrapperMessage)
   }
   componentWillUnmount() {
     window.removeEventListener('message', this.handleWrapperMessage)
   }
-  // handshake between Aragon Core and the iframe,
-  // since iframes can lose messages that were sent before they were ready
   handleWrapperMessage = ({ data }) => {
-    const { app } = this.state
     if (data.from !== 'wrapper') {
       return
     }
@@ -56,7 +31,7 @@ class ConnectedApp extends React.Component {
       })
       app.accounts().subscribe(accounts => {
         this.setState({
-          userAccount: accounts[0] || '',
+          userAccount: accounts[0],
         })
       })
       app.rpc
@@ -78,4 +53,7 @@ class ConnectedApp extends React.Component {
     return <App {...this.state} />
   }
 }
-ReactDOM.render(<ConnectedApp />, document.getElementById('projects'))
+
+const domTarget = document.getElementById('projects')
+
+ReactDOM.render(<ProjectsApp />, domTarget)

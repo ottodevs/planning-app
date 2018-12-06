@@ -21,11 +21,28 @@ const toAscii = hex => {
 
   return str
 }
-
+// TODO: Move to frontend, show only smart contract data if no API token or scrape basic info
+// Maybe do a free contract call with something like: function x(repoName, repoCommits, repoContribs) external view { emit AddedRepo(repoName,...) }
+// TODO: handle EDGE CASE: new repo with no branches fails with defaultBranchRef not found!
+// TODO: Use framents or nodes(ids:["MD3fefere=", "MDewrriwjref="]) { ... on Repository  {issues etc} }
 const repoData = id => `{
+    rateLimit {
+      cost
+      remaining
+      resetAt
+    }
     node(id: "${id}") {
       ... on Repository {
         name
+        issues(first: 10) {
+          edges {
+            node {
+              title
+              number
+              id
+            }
+          }
+        }
         description
         defaultBranchRef {
             target {
@@ -141,9 +158,11 @@ function loadRepoData(id) {
       let [owner, repo] = [toAscii(_owner), toAscii(_repo)]
       getRepoData(repo).then(
         ({
+          rateLimit,
           node: {
             name,
             description,
+            issues,
             collaborators: { totalCount: collaborators },
             defaultBranchRef: {
               target: {
@@ -152,12 +171,15 @@ function loadRepoData(id) {
             },
           },
         }) => {
+          const mappedIssues = issues.edges.map(({ node }) => node)
           let metadata = {
             name,
             description,
             collaborators,
             commits,
+            issues: mappedIssues,
           }
+          console.log('Github API rate limit info:', rateLimit)
           resolve({ owner, repo, metadata })
         }
       )

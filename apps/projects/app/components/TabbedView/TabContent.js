@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
 const StyledTabContent = styled.main`
-  overflow-x: hidden;
-  flex-grow: 1;
+  overflow: hidden;
 `
 
 export default class TabContent extends PureComponent {
