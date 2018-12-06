@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "planning-suite-monorepo",
+  "name": "planning-suite",
   "devDependencies": {
     "coveralls": "3.0.2",
     "docz": "0.12.13",
