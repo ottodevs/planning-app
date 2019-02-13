@@ -1,10 +1,12 @@
+import '@babel/polyfill'
+
 import Aragon, { providers } from '@aragon/client'
 import { first, of } from 'rxjs' // Make sure observables have .first
 import { combineLatest } from 'rxjs'
 import { empty } from 'rxjs/observable/empty'
 
-import { GraphQLClient } from 'graphql-request'
-import { STATUS } from './utils/github'
+// import { GraphQLClient } from 'graphql-request'
+// import { STATUS } from './utils/github'
 
 const toAscii = hex => {
   // Find termination
@@ -77,18 +79,17 @@ const github = () => {
 // TODO: Handle cases where checking validity of token fails (revoked, etc)
 
 github().subscribe(result => {
-  console.log('script github object received from cache:', result)
+  console.log('[projects/script] github received from cache:', result)
   if (result) {
-    console.log(result)
     // result.token && initClient(result.token)
     return
-  } else app.cache('github', { status: STATUS.INITIAL })
+  } else app.cache('github', { status: 'initial' })
 })
 
 app.events().subscribe(handleEvents)
 
 app.state().subscribe(state => {
-  state && console.log('[Projects script] state subscription:\n', state)
+  state && console.log('[projects/script] received state:', state)
   appState = state ? state : { repos: [], bountySettings: {} }
 })
 
@@ -101,31 +102,31 @@ app.state().subscribe(state => {
 async function handleEvents(response) {
   let nextState
   switch (response.event) {
-  case 'RepoAdded':
-    // console.log('[Projects] event RepoAdded')
-    nextState = await syncRepos(appState, response.returnValues)
-    break
-  case 'RepoRemoved':
-    console.log('[Projects] RepoRemoved', response.returnValues)
-    nextState = await syncRepos(appState, response.returnValues)
-    break
-  case 'RepoUpdated':
-    console.log('[Projects] RepoUpdated', response.returnValues)
-    nextState = await syncRepos(appState, response.returnValues)
-  case 'BountyAdded':
-    console.log('[Projects] BountyAdded', response.returnValues)
-    nextState = await syncRepos(appState, response.returnValues)
-    break
-  case 'IssueCurated':
-    console.log('[Projects] IssueCurated', response.returnValues)
-    nextState = await syncRepos(appState, response.returnValues)
-    break
-  case 'BountySettingsChanged':
-    // console.log('[Projects] BountySettingsChanged')
-    nextState = await syncSettings(appState) // No returnValues on this
-    break
-  default:
-    console.log('[Projects] Unknown event catched:', response)
+    case 'RepoAdded':
+      console.log('[projects/script] RepoAdded')
+      nextState = await syncRepos(appState, response.returnValues)
+      break
+    case 'RepoRemoved':
+      console.log('[projects/script] RepoRemoved', response.returnValues)
+      nextState = await syncRepos(appState, response.returnValues)
+      break
+    case 'RepoUpdated':
+      console.log('[projects/script] RepoUpdated', response.returnValues)
+      nextState = await syncRepos(appState, response.returnValues)
+    case 'BountyAdded':
+      console.log('[projects/script] BountyAdded', response.returnValues)
+      nextState = await syncRepos(appState, response.returnValues)
+      break
+    case 'IssueCurated':
+      console.log('[projects/script] IssueCurated', response.returnValues)
+      nextState = await syncRepos(appState, response.returnValues)
+      break
+    case 'BountySettingsChanged':
+      console.log('[projects/script] BountySettingsChanged')
+      nextState = await syncSettings(appState) // No returnValues on this
+      break
+    default:
+      console.log('[projects/script] unknown event received:', response)
   }
   app.cache('state', nextState)
 }
@@ -140,7 +141,7 @@ async function syncRepos(state, { repoId, ...eventArgs }) {
     let updatedState = await updateState(state, repoId, transform)
     return updatedState
   } catch (err) {
-    console.error('updateState failed to return:', err)
+    console.error('[projects/script] updateState failed', err)
   }
 }
 
@@ -150,7 +151,7 @@ async function syncSettings(state) {
     state.bountySettings = settings
     return state
   } catch (err) {
-    console.error('[Projects script] syncSettings settings failed:', err)
+    console.error('[projects/script] syncSettings failed', err)
   }
 }
 
@@ -231,7 +232,7 @@ async function updateState(state, id, transform) {
     console.error(
       'Update repos failed to return:',
       err,
-      'here\'s what returned in NewRepos',
+      "here's what returned in NewRepos",
       newRepos
     )
   }

@@ -7,8 +7,10 @@
   },
   "prettier.eslintIntegration": true,
   "prettier.stylelintIntegration": true,
+  "solidity.enabledAsYouTypeCompilationErrorCheck": true,
+  "solidity.linter": "solium",
   "solidity.packageDefaultDependenciesContractsDirectory": "",
-  "solidity.packageDefaultDependenciesDirectory": "",
+  "solidity.packageDefaultDependenciesDirectory": "node_modules",
   "solidity.soliumRules": {
     "security/no-low-level-calls": "off",
     "security/no-inline-assembly": "off",
@@ -42,5 +44,5 @@
     "visibility-first": "error",
     "linebreak-style": "error"
   },
-  "solidity.validationDelay": 0
+  "solidity.validationDelay": 1500
 }

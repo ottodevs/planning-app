@@ -12,12 +12,13 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": ["react"],
+  "plugins": ["react", "react-hooks"],
   "rules": {
     "indent": ["error", 2],
     "linebreak-style": ["error", "unix"],
     "quotes": ["error", "single"],
     "react/no-typos": 1,
-    "semi": ["error", "never"]
+    "semi": ["error", "never"],
+    "react-hooks/rules-of-hooks": "error"
   }
 }
