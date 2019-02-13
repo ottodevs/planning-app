@@ -1,6 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
+import React, { Suspense } from 'react'
+import { useQuery } from 'react-apollo-hooks'
 import { gql } from 'apollo-boost'
+
+import styled from 'styled-components'
 import { Query } from 'react-apollo'
 import {
   Button,
@@ -17,9 +19,32 @@ import { DropDownButton as ActionsMenu, FilterBar } from '../Shared'
 import { Issue, Empty } from '../Card'
 import { GET_ISSUES } from '../../utils/gql-queries.js'
 
+import ErrorBoundary from '../App/ErrorBoundary'
+
 // import ethereumLoadingAnimation from '../Shared/assets/svg/ethereum-loading.svg'
 
-class Issues extends React.PureComponent {
+const Issues = props => {
+  console.log('the props tiguan', props)
+  const reposIds = props.projects.map(project => project.data._repo)
+  console.log('repos:', reposIds)
+  const { data, error } = useQuery(GET_ISSUES, {
+    variables: { reposIds },
+    suspend: false,
+  })
+
+  if (error) {
+    return (
+      <div>
+        Error!
+        {error}
+      </div>
+    )
+  }
+
+  return <div>{JSON.stringify(data)}</div>
+}
+
+class IssuesOld extends React.PureComponent {
   state = {
     selectedIssues: [],
     allSelected: false,
@@ -130,6 +155,10 @@ class Issues extends React.PureComponent {
     })
   }
 
+  handleIssueClick = issue => {
+    this.props.onIssueClicked(issue)
+  }
+
   handleTextFilter = e => {
     this.setState({ textFilter: e.target.value, reload: !this.state.reload })
   }
@@ -210,7 +239,7 @@ class Issues extends React.PureComponent {
   )
 
   render() {
-    const { projects, onNewProject, activeIndex } = this.props
+    const { projects, onNewProject, onIssueClicked } = this.props
     // better return early if we have no projects added?
     if (projects.length === 0) return <Empty action={onNewProject} />
 
@@ -229,58 +258,63 @@ class Issues extends React.PureComponent {
     //console.log('current issues props:', this.props, 'and state:', this.state)
 
     return (
-      <Query
-        fetchPolicy="cache-first"
-        query={GET_ISSUES}
-        variables={{ reposIds }}
-        onError={console.error}
-      >
-        {({ data, loading, error, refetch }) => {
-          if (data && data.nodes) {
-            let issues = flattenIssues(data.nodes)
-            let issuesFiltered = this.applyFilters(issues)
-            return (
-              <StyledIssues>
-                {this.actionsMenu()}
-                <FilterBar
-                  handleSelectAll={this.toggleSelectAll(issuesFiltered)}
-                  allSelected={allSelected}
-                  issues={issues}
-                  issuesFiltered={issuesFiltered}
-                  handleFiltering={this.handleFiltering}
-                  activeIndex={this.props.activeIndex}
-                />
-                <IssuesScrollView>
-                  {shapeIssues(issuesFiltered).map(issue => (
-                    <Issue
-                      isSelected={this.state.selectedIssues
-                        .map(selectedIssue => selectedIssue.id)
-                        .includes(issue.id)}
-                      onClick={() => {
-                        this.handleIssueClick(issue)
-                      }}
-                      onSelect={() => {
-                        this.handleIssueSelection(issue)
-                      }}
-                      key={issue.id}
-                      {...issue}
-                    />
-                  ))}
-                </IssuesScrollView>
-              </StyledIssues>
-            )
-          }
+      <ErrorBoundary>
+        <Query
+          fetchPolicy="cache-first"
+          query={GET_ISSUES}
+          variables={{ reposIds }}
+          onError={console.error}
+        >
+          {({ data, loading, error, refetch }) => {
+            if (data && data.nodes) {
+              let issues = flattenIssues(data.nodes)
+              let issuesFiltered = this.applyFilters(issues)
+              return (
+                <StyledIssues>
+                  {this.actionsMenu()}
+                  <FilterBar
+                    handleSelectAll={this.toggleSelectAll(issuesFiltered)}
+                    allSelected={allSelected}
+                    issues={issues}
+                    issuesFiltered={issuesFiltered}
+                    handleFiltering={this.handleFiltering}
+                  />
+                  <IssuesScrollView>
+                    <ScrollWrapper>
+                      {shapeIssues(issuesFiltered).map(issue => (
+                        <Issue
+                          onClick={() => {
+                            this.handleIssueClick(issue)
+                          }}
+                          isSelected={this.state.selectedIssues
+                            .map(selectedIssue => selectedIssue.id)
+                            .includes(issue.id)}
+                          onSelect={() => {
+                            this.handleIssueSelection(issue)
+                          }}
+                          key={issue.id}
+                          {...issue}
+                        />
+                      ))}
+                    </ScrollWrapper>
+                  </IssuesScrollView>
+                </StyledIssues>
+              )
+            }
 
-          if (loading) return this.queryLoading()
+            if (loading) return this.queryLoading()
 
-          if (error) return this.queryError(error, refetch)
-        }}
-      </Query>
+            if (error) return this.queryError(error, refetch)
+          }}
+        </Query>
+      </ErrorBoundary>
     )
   }
 }
 
 const StyledIssues = styled.div`
+  /* overflow-y: hidden; */
+  height: auto;
   display: flex;
   flex-direction: column;
   padding: 15px 30px;
@@ -307,11 +341,27 @@ const StyledIssues = styled.div`
   } */
 `
 
-const IssuesScrollView = styled.div`
-  overflow-y: auto;
-  flex-grow: 1;
+const ScrollWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: stretch;
+  overflow: auto;
+  flex-grow: 1;
+  > :first-child {
+    border-radius: 3px 3px 0 0;
+  }
+  > :last-child {
+    border-radius: 0 0 3px 3px;
+    margin-bottom: 10px;
+  }
+`
+
+// TODO: Calculate height with flex (maybe to add pagination at bottom?)
+const IssuesScrollView = styled.div`
+  height: 75vh;
+  position: relative;
+  overflow: auto;
 `
 
 const ActionLabel = styled.span`

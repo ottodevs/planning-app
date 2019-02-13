@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import styled from 'styled-components'
 
 import { TabbedView, TabBar, TabContent, Tab } from '../TabbedView'
 import { Issues, Overview, Settings } from '../Content'
@@ -60,6 +61,7 @@ const AppContent = props => {
             <Tab key={tabName}>{tabName}</Tab>
           ))}
         </TabBar>
+
         <TabContent>
           {contentData.map(({ TabComponent }, i) => (
             <TabComponent key={i} {...props} />

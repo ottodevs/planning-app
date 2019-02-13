@@ -22,27 +22,26 @@ const toAscii = hex => {
   return str
 }
 
-const repoData = id => `{
-    node(id: "${id}") {
-      ... on Repository {
-        name
-        url
-        description
-        defaultBranchRef {
-            target {
-              ...on Commit {
-                history {
-                  totalCount
-                }
-              }
-            }
-          }
-        collaborators {
-          totalCount
-        }
-      }
-    }
-}`
+// const repoData = id => `{
+//     node(id: "${id}") {
+//       ... on Repository {
+//         name
+//         description
+//         defaultBranchRef {
+//             target {
+//               ...on Commit {
+//                 history {
+//                   totalCount
+//                 }
+//               }
+//             }
+//           }
+//         collaborators {
+//           totalCount
+//         }
+//       }
+//     }
+// }`
 
 const app = new Aragon()
 let appState
@@ -57,30 +56,31 @@ const github = () => {
     .pluck('result')
 }
 
-let client
-const getRepoData = repo => {
-  try {
-    let data = client.request(repoData(repo))
-    return data
-  } catch (err) {
-    console.error('getRepoData failed: ', err)
-  }
-}
+// let client
+// const getRepoData = repo => {
+//   try {
+//     let data = client.request(repoData(repo))
+//     return data
+//   } catch (err) {
+//     console.error('getRepoData failed: ', err)
+//   }
+// }
 
-const initClient = authToken => {
-  client = new GraphQLClient('https://api.github.com/graphql', {
-    headers: {
-      Authorization: 'Bearer ' + authToken,
-    },
-  })
-}
+// const initClient = authToken => {
+//   client = new GraphQLClient('https://api.github.com/graphql', {
+//     headers: {
+//       Authorization: 'Bearer ' + authToken,
+//     },
+//   })
+// }
 
 // TODO: Handle cases where checking validity of token fails (revoked, etc)
 
 github().subscribe(result => {
-  console.log('github object received from cache:', result)
+  console.log('script github object received from cache:', result)
   if (result) {
-    result.token && initClient(result.token)
+    console.log(result)
+    // result.token && initClient(result.token)
     return
   } else app.cache('github', { status: STATUS.INITIAL })
 })
@@ -102,7 +102,7 @@ async function handleEvents(response) {
   let nextState
   switch (response.event) {
   case 'RepoAdded':
-    console.log('[Projects] event RepoAdded')
+    // console.log('[Projects] event RepoAdded')
     nextState = await syncRepos(appState, response.returnValues)
     break
   case 'RepoRemoved':
@@ -121,7 +121,7 @@ async function handleEvents(response) {
     nextState = await syncRepos(appState, response.returnValues)
     break
   case 'BountySettingsChanged':
-    console.log('[Projects] BountySettingsChanged')
+    // console.log('[Projects] BountySettingsChanged')
     nextState = await syncSettings(appState) // No returnValues on this
     break
   default:
@@ -131,7 +131,7 @@ async function handleEvents(response) {
 }
 
 async function syncRepos(state, { repoId, ...eventArgs }) {
-  console.log('syncRepos: arguments from events:', eventArgs)
+  // console.log('syncRepos: arguments from events:', eventArgs)
 
   const transform = ({ ...repo }) => ({
     ...repo,
@@ -164,22 +164,22 @@ function loadRepoData(id) {
   return new Promise(resolve => {
     app.call('getRepo', id).subscribe(({ owner, index }) => {
       const [_repo, _owner] = [toAscii(id), toAscii(owner)]
-      getRepoData(_repo).then(({ node }) => {
-        const commits = node.defaultBranchRef
-          ? node.defaultBranchRef.target.history.totalCount
-          : 0
-        const description = node.description
-          ? node.description
-          : '(no description available)'
-        const metadata = {
-          name: node.name,
-          url: node.url,
-          description: description,
-          collaborators: node.collaborators.totalCount,
-          commits,
-        }
-        resolve({ _repo, _owner, index, metadata })
-      })
+      // getRepoData(_repo).then(({ node }) => {
+      //   const commits = node.defaultBranchRef
+      //     ? node.defaultBranchRef.commits
+      //     : 0
+      //   const description = node.description
+      //     ? node.description
+      //     : '(no description available)'
+      //   const metadata = {
+      //     name: node.name,
+      //     description: description,
+      //     collaborators: node.collaborators.totalCount,
+      //     commits,
+      //   }
+      resolve({ _repo, _owner, index })
+      // resolve({ _repo, _owner, index, metadata })
+      // })
     })
   })
 }
@@ -194,13 +194,13 @@ function loadSettings() {
 
 async function checkReposLoaded(repos, id, transform) {
   const repoIndex = repos.findIndex(repo => repo.id === id)
-  console.log('this is the repo index:', repoIndex)
-  console.log('checkReposLoaded, repoIndex:', repos, id)
+  // console.log('this is the repo index:', repoIndex)
+  // console.log('checkReposLoaded, repoIndex:', repos, id)
   const { metadata, ...data } = await loadRepoData(id)
 
   if (repoIndex === -1) {
     // If we can't find it, load its data, perform the transformation, and concat
-    console.log('repo not found in the cache: retrieving from chain')
+    // console.log('repo not found in the cache: retrieving from chain')
     return repos.concat(
       await transform({
         id,
@@ -209,7 +209,7 @@ async function checkReposLoaded(repos, id, transform) {
       })
     )
   } else {
-    console.log('repo found: ' + repoIndex)
+    // console.log('repo found: ' + repoIndex)
     const nextRepos = Array.from(repos)
     nextRepos[repoIndex] = await transform({
       id,
@@ -221,7 +221,7 @@ async function checkReposLoaded(repos, id, transform) {
 }
 
 async function updateState(state, id, transform) {
-  console.log('update state: ' + state + ', id: ' + id)
+  // console.log('update state: ' + state + ', id: ' + id)
   const { repos = [] } = state
   try {
     let newRepos = await checkReposLoaded(repos, id, transform)

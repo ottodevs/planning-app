@@ -32,9 +32,9 @@ const PanelManager = ({ activePanel = null, onClose, ...panelProps }) => {
       opened={!!activePanel}
       onClose={onClose}
     >
-      <Suspense fallback={<div>Loading Panel...</div>}>
+      {/* <Suspense fallback={<div>Loading Panel...</div>}> */}
         {PanelComponent && <PanelComponent {...panelProps} />}
-      </Suspense>
+      {/* </Suspense> */}
     </SidePanel>
   )
 }

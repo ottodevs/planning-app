@@ -1,9 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Aragon, { providers } from '@aragon/client'
-import ApolloClient from 'apollo-boost'
+// import ApolloClient from 'apollo-boost'
 
-import App from './components/App/App'
+// import { App } from './components/App'
+import Projects from './Projects'
 
 // import { projectsMockData } from './utils/mockData'
 
@@ -20,20 +21,20 @@ class ConnectedApp extends React.Component {
     userAccount: '',
     // ...projectsMockData,
     github: { token: null },
-    client: new ApolloClient({
-      uri: 'https://api.github.com/graphql',
-      request: operation => {
-        const { token } = this.state.github
-        if (token) {
-          operation.setContext({
-            headers: {
-              accept: 'application/vnd.github.starfire-preview+json', // needed to create issues
-              authorization: `bearer ${token}`,
-            },
-          })
-        }
-      },
-    }),
+    // client: new ApolloClient({
+    //   uri: 'https://api.github.com/graphql',
+    //   request: operation => {
+    //     const { token } = this.state.github
+    //     if (token) {
+    //       operation.setContext({
+    //         headers: {
+    //           accept: 'application/vnd.github.starfire-preview+json', // needed to create issues
+    //           authorization: `bearer ${token}`,
+    //         },
+    //       })
+    //     }
+    //   },
+    // }),
   }
   componentDidMount() {
     window.addEventListener('message', this.handleWrapperMessage)
@@ -74,9 +75,9 @@ class ConnectedApp extends React.Component {
     window.parent.postMessage({ from: 'app', name, value }, '*')
   }
   render() {
-    return <App {...this.state} />
+    return <Projects {...this.state.github} />
   }
 }
 // module.hot.accept(
-ReactDOM.render(<ConnectedApp />, document.getElementById('projects'))
+ReactDOM.render(<Projects />, document.getElementById('projects'))
 // )

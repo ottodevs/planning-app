@@ -11,15 +11,14 @@ const AppTitleButton = ({ caption, onClick }) => (
 
 AppTitleButton.propTypes = {
   caption: PropTypes.string,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 }
 
 const StyledButton = styled(Button)`
   position: absolute;
-  top: 10px;
+  top: -35px;
   right: 30px;
   z-index: 2;
 `
 
 export default AppTitleButton
-

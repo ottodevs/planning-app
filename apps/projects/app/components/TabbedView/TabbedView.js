@@ -8,6 +8,7 @@ const StyledTabbedView = styled.div`
   flex-direction: column;
   align-items: stretch;
   justify-content: stretch;
+  overflow: hidden;
 `
 
 export default class TabbedView extends PureComponent {

@@ -135,8 +135,6 @@ class Settings extends React.Component {
       bountyArbiter,
     } = this.state
 
-    console.log('bounteysee', bountyCurrency)
-
     // TODO: hourglass in case settings are still being loaded
     if (!('baseRate' in this.props.bountySettings))
       return <div>Loading settings...</div>
@@ -212,7 +210,7 @@ const BountyDeadline = ({
     </Text.Block>
     <StyledInputDropDown>
       <NumberFormat
-        customInput={StyledNumberInput}
+        customInput={CustomNumberInput}
         fixedDecimalScale
         decimalScale={0}
         value={bountyDeadlineT}
@@ -316,7 +314,7 @@ const BaseRate = ({ baseRate, onChange }) => (
     </Text.Block>
     <Field label="RATE PER HOUR">
       <NumberFormat
-        customInput={StyledNumberInput}
+        customInput={CustomNumberInput}
         fixedDecimalScale
         decimalScale={2}
         value={baseRate}
@@ -344,7 +342,7 @@ const ExperienceLevel = ({
       {expLevels.map((exp, index) => (
         <Field key={index} label={'LEVEL ' + index}>
           <NumberFormat
-            customInput={StyledNumberInput}
+            customInput={CustomNumberInput}
             fixedDecimalScale
             decimalScale={2}
             value={exp.mul}
@@ -385,6 +383,8 @@ const StyledNumberInput = styled(TextInput)`
   text-align: right;
   font-size: 16px;
 `
+
+const CustomNumberInput = props => <StyledNumberInput {...props} />
 // https://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
 
 // TODO: Refactor styles
