@@ -44,7 +44,7 @@ class NewIssue extends React.PureComponent {
 
   // })
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_prevProps, prevState) {
     if (this.state !== prevState) {
       const state = { ...this.state }
 
@@ -135,10 +135,12 @@ class NewIssue extends React.PureComponent {
     // TODO: hide button when no repos managed: prompt to create new project
     // TODO: Put SidePanel inside the component?
 
-    const reGet = [{
-      query: GET_ISSUES,
-      variables: { reposIds }
-    }]
+    const reGet = [
+      {
+        query: GET_ISSUES,
+        variables: { reposIds },
+      },
+    ]
 
     return (
       <Mutation

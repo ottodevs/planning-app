@@ -157,18 +157,18 @@ class NewBountyAllocation extends React.Component {
                         <IBValue>
                           {issue.id in bounties &&
                             bounties[issue.id]['hours'] > 0 && (
-                            <IBValueShow>
-                              <FieldTitle>Value</FieldTitle>
-                              <Badge style={{ marginLeft: '5px' }}>
-                                {bountyHours[bounties[issue.id]['hours']] *
+                              <IBValueShow>
+                                <FieldTitle>Value</FieldTitle>
+                                <Badge style={{ marginLeft: '5px' }}>
+                                  {bountyHours[bounties[issue.id]['hours']] *
                                     rate *
                                     bountyExp[
                                       bounties[issue.id]['exp']
                                     ].mul.toFixed(2)}{' '}
-                                {bountySettings.bountyCurrency}
-                              </Badge>
-                            </IBValueShow>
-                          )}
+                                  {bountySettings.bountyCurrency}
+                                </Badge>
+                              </IBValueShow>
+                            )}
                         </IBValue>
                       </IssueBounty>
                       <IBDetails open={bounties[issue.id]['detailsOpen']}>
