@@ -22,8 +22,14 @@ class App extends React.Component {
   }
 
   createEntity = entity => {
-    this.props.app.addEntry(entity.address, entity.name, entity.type)
-    this.closePanel()
+    console.log('AddressBook createEntity', entity)
+    this.props.app.addEntry(
+      entity.address,
+      web3.toHex(entity.name),
+      web3.toHex(entity.type)
+    )
+    // this.props.app.addEntry('0xb4124cEB3451635DAcedd11767f004d8a28c6eE7', 'Starfleet with spaces', 'Group')
+    // this.closePanel()
   }
 
   removeEntity = address => {

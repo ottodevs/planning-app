@@ -11,6 +11,22 @@ const { assertRevert } = require('@tps/test-helpers/assertThrow')
 
 const ANY_ADDR = ' 0xffffffffffffffffffffffffffffffffffffffff'
 
+const toAscii = hex => {
+  // Find termination
+  let str = ''
+  let i = 0,
+    l = hex.length
+  if (hex.substring(0, 2) === '0x') {
+    i = 2
+  }
+  for (; i < l; i += 2) {
+    let code = parseInt(hex.substr(i, 2), 16)
+    str += String.fromCharCode(code)
+  }
+
+  return str.replace(/\0/g, '') // removes 'null' \u0000 chars
+}
+
 contract('AddressBook App', accounts => {
   let daoFact = {},
     app = {}
@@ -51,8 +67,6 @@ contract('AddressBook App', accounts => {
       receipt.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy
     )
 
-    await app.initialize()
-
     await acl.createPermission(
       ANY_ADDR,
       app.address,
@@ -72,20 +86,37 @@ contract('AddressBook App', accounts => {
   context('main context', () => {
     let starfleet = accounts[0]
 
+    it('should initialize', async () => {
+      await app.initialize()
+    })
+
+    it('should fail on reinitialization', async () => {
+      return assertRevert(async () => {
+        await app.initialize()
+      })
+    })
+
     it('should add a new entry', async () => {
-      const receipt = await app.addEntry(starfleet, 'Starfleet', 'Group')
+      const receipt = await app.addEntry(
+        starfleet,
+        'Starfleet with spaces',
+        'Group'
+      )
       const addedAddress = receipt.logs.filter(l => l.event == 'EntryAdded')[0]
-        .args.addr
+        .args.entryAddress
       assert.equal(addedAddress, starfleet)
     })
     it('should get the previously added entry', async () => {
-      entry1 = await app.getEntry(starfleet)
-      assert.equal(entry1[0], starfleet)
-      assert.equal(entry1[1], 'Starfleet')
-      assert.equal(entry1[2], 'Group')
+      const entry1 = await app.getEntry(starfleet)
+      assert.equal(toAscii(entry1[0]), 'Starfleet with spaces')
+      assert.equal(toAscii(entry1[1]), 'Group')
+      assert.equal(entry1[2], 0)
     })
     it('should remove the previously added entry', async () => {
       await app.removeEntry(starfleet)
+      assertRevert(async () => {
+        await app.getEntry(starfleet)
+      })
     })
     it('should allow to use the same name from previously removed entry', async () => {
       await app.addEntry(accounts[1], 'Starfleet', 'Dejavu')
@@ -95,20 +126,9 @@ contract('AddressBook App', accounts => {
     })
   })
   context('invalid operations', () => {
-    let [borg, jeanluc] = accounts.splice(1, 2)
+    const [borg, jeanluc] = accounts.splice(1, 2)
     before(async () => {
       app.addEntry(borg, 'Borg', 'Individual')
-    })
-
-    it('should revert when adding duplicate address', async () => {
-      assertRevert(async () => {
-        await app.addEnty(borg, 'Burg', 'N/A')
-      })
-    })
-    it('should revert when adding duplicate name', async () => {
-      assertRevert(async () => {
-        await app.addEntry(jeanluc, 'Borg', 'Captain')
-      })
     })
     it('should revert when removing not existant entry', async () => {
       assertRevert(async () => {
@@ -118,6 +138,16 @@ contract('AddressBook App', accounts => {
     it('should revert when getting not existant entry', async () => {
       assertRevert(async () => {
         await app.getEntry(jeanluc)
+      })
+    })
+    it('should revert when adding duplicate name', async () => {
+      assertRevert(async () => {
+        await app.addEntry(jeanluc, 'Borg', 'Captain')
+      })
+    })
+    it('should revert when adding duplicate address', async () => {
+      assertRevert(async () => {
+        await app.addEnty(borg, 'Cylon', 'N/A')
       })
     })
   })
