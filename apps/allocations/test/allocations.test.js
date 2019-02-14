@@ -8,6 +8,8 @@ const {
 
 const Allocations = artifacts.require('Allocations')
 
+// TODO: Allocations tests should not be loading Standardbounty and related artifacts
+
 const { assertRevert } = require('@tps/test-helpers/assertThrow')
 const timetravel = require('@tps/test-helpers/timeTravel')(web3)
 
@@ -93,7 +95,7 @@ contract('Allocations App', accounts => {
     //   receipt.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy
     // )
 
-    await app.initialize( 0x0, { from: accounts[0] })
+    await app.initialize(0x0, { from: accounts[0] })
   })
 
   context('app creation and funded Payout', () => {
@@ -122,6 +124,8 @@ contract('Allocations App', accounts => {
         0x0
       )).logs[0].args.accountId.toNumber()
 
+      // TODO: Are we accepting funding before or funding with msg.value it is not clear???
+      // TODO: We should test both cases
       await app.fund(allocationId, {
         from: empire,
         value: web3.toWei(0.01, 'ether'),
@@ -142,6 +146,11 @@ contract('Allocations App', accounts => {
         false,
         0,
         web3.toWei(0.01, 'ether')
+        // TODO: Just in case we need to fund with msg.value
+        // {
+        //   from: empire,
+        //   value: web3.toWei(0.01, 'ether'),
+        // }
       )
     })
 
@@ -378,6 +387,7 @@ contract('Allocations App', accounts => {
         0x0
       )).logs[0].args.accountId.toNumber()
     })
+    // TODO: This test is not working as expected since we disabled contract guards related period
     it('cannot occur more frequently than daily', async () => {
       supports = [300, 400, 300]
       totalsupport = 1000

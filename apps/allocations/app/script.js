@@ -26,6 +26,9 @@ async function handleEvents({ event, returnValues }) {
   let nextState = null
   switch (event) {
   case 'PayoutExecuted':
+    console.log('[Allocations script] PayoutExecuted', returnValues)
+    nextState = await syncAccounts(appState, returnValues)
+    break
   case 'NewAccount':
     nextState = await syncAccounts(appState, returnValues)
     break
@@ -47,6 +50,7 @@ async function handleEvents({ event, returnValues }) {
   if (nextState !== null) {
     app.cache('state', nextState)
   }
+  app.cache('state', nextState)
 }
 
 async function syncAccounts(state, { accountId }) {

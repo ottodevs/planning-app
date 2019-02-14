@@ -144,7 +144,7 @@ contract Allocations is AragonApp, Fundable {
     * @dev This is the function that sets up who the candidates will be, and
     *      where the funds will go for the payout. This is where the payout
     *      object needs to be created in the payouts array.
-    * @notice Create a new account so you can begin creating allocations.
+    * @notice Create a new account `_metadata` so you can begin creating allocations limited to `_limit` `_token`.
     * @param _metadata Any relevent label for the payout
     *
     */
@@ -227,31 +227,31 @@ contract Allocations is AragonApp, Fundable {
     ) public payable isInitialized auth(SET_DISTRIBUTION_ROLE)
     {
         Payout storage payout = payouts[_payoutId];
-        payout.candidateAddresses = _candidateAddresses;
-        require(_amount <= payout.limit);  
-        payout.informational = _informational;
-        payout.recurring = _recurring;
-        if (!_informational) {
-            payout.balance.add(msg.value);
-            require(payout.balance >= _amount, "payout account underfunded");
-            require(payout.limit >= _amount, "payout limit too low for amount");
-        } else {
-            require(msg.value == 0, "cannot fund informational allocation");
+        // Guard and revert early is always better
+        if (_informational) {
+            require(msg.value == 0 && _amount == 0, "NOT_FUNDING_INFORMATIONAL");
+            require(_recurring == false && _period == 0, "NOT_RECURRING_INFORMATIONAL");
             payout.balance = 0;
-        }
+            payout.informational = true;
+        } else {
+            require(_amount <= payout.limit, "AMOUNT_GREATER_THAN_PAYOUT_LIMIT");
+            payout.balance.add(msg.value); // Fund value before checking total balance
+            require(_amount <= payout.balance, "PAYOUT_ACCOUNT_UNDERFUNDED");
         if (_recurring) {
+                // minimum granularity is a single day
+                // disabled for testing shorter
+                // require(_period > 86399);
             payout.period = _period;
-            // minimum granularity is a single day
-            // This check is disabled currently to enable testing of shorter times
-            //require(payout.period > 86399);
-            payout.startTime = block.timestamp; 
+                payout.startTime = block.timestamp; // solium-disable-line security/no-block-members
         } else {
             payout.period = 0;
         }
-
+        }
+        payout.candidateAddresses = _candidateAddresses;
         payout.distSet = true;
+        payout.amount = _amount; // TODO: review this if we need this
+        payout.recurring = _recurring; // This field may be redundant 
         payout.supports = _supports;
-        payout.amount = _amount;
         emit SetDistribution(_payoutId);
     }
 

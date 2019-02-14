@@ -27,12 +27,12 @@ class App extends React.Component {
   }
   createAccount = ({ limit, ...account }) => {
     account.balance = 0
-    account.limit = parseInt(limit)*10e17
+    account.limit = parseInt(limit) * 10e17
     this.props.app.newPayout(account.description, account.limit, 0x0)
     this.closePanel()
     console.info('App.js: Account Created:')
     console.table(account)
-    this.setState({})    
+    this.setState({})
   }
 
   submitAllocation = allocation => {
@@ -52,7 +52,7 @@ class App extends React.Component {
     )
     console.info('App.js: Allocation submitted:')
     console.table(allocation)
-    this.closePanel()   
+    this.closePanel()
   }
 
   onExecutePayout = id => {
@@ -81,7 +81,10 @@ class App extends React.Component {
   newAllocation = (address, description, id, limit) => {
     // The whole entries vs entities thing needs to be fixed; these are too close
     //const userEntity = {addr: '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', data: {entryAddress: '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', name: 'Bob', entryType: 'user'}}
-    const promptEntity = {addr: 0x0, data: {entryAddress: 0x0, name: 'Select an entry', entryType: 'prompt'}}
+    const promptEntity = {
+      addr: 0x0,
+      data: { entryAddress: 0x0, name: 'Select An Entry', entryType: 'prompt' },
+    }
     const entriesList = [promptEntity].concat(this.props.entries)
     let entities = this.props.entries !== undefined ? entriesList : []
     this.setState({
@@ -95,13 +98,13 @@ class App extends React.Component {
           heading: 'New Allocation',
           subHeading: description,
           onSubmitAllocation: this.submitAllocation,
-          entities: entities
+          entities: entities,
         },
       },
     })
   }
 
-  closePanel = () => {       
+  closePanel = () => {
     this.setState({ panel: { visible: false } })
   }
 
