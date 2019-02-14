@@ -144,7 +144,9 @@ class Decisions extends React.Component {
     })
   }
   handleVote = (voteId, supports) => {
-    this.props.app.vote(voteId, supports)
+    console.log('these are the votes:', supports, voteId)
+    this.props.app.vote(voteId, [30, 10, 5])
+    // this.props.app.vote(voteId, supports)
     this.handleVoteClose()
   }
   handleVoteClose = () => {
@@ -185,7 +187,7 @@ class Decisions extends React.Component {
           open: !vote.data.executed && isBefore(new Date(), endDate),
           quorum: safeDiv(vote.data.minAcceptQuorum, pctBase),
           quorumProgress: getQuorumProgress(vote.data),
-          description: vote.data.metadata
+          description: vote.data.metadata,
         }
       })
       : votes

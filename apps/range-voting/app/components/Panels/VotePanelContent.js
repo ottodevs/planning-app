@@ -46,32 +46,21 @@ class VotePanelContent extends React.Component {
     }
   }
   handleVoteSubmit = () => {
-    const optionsArray = []
-
+    let optionsArray = []
     this.state.voteOptions.forEach(element => {
       let voteWeight = element.sliderValue
-        ? Math.round(
-          parseFloat(
-            (element.sliderValue * this.state.userBalance).toFixed(2)
-          )
-        )
+        ? element.sliderValue * this.state.userBalance
         : 0
       optionsArray.push(voteWeight)
     })
-    // TODO: Let these comments here for a while to be sure we are working with correct values:
-    console.log('Sum of values:', optionsArray.reduce((a, b) => a + b, 0))
-    console.log('userBalance', this.state.userBalance)
-    console.log(
-      'onVote voteId:',
-      this.props.vote.voteId,
-      'optionsArray',
-      optionsArray
-    )
     this.props.onVote(this.props.vote.voteId, optionsArray)
   }
+
   executeVote = () => {
+    console.log('executing:', this.props.vote)
     this.props.app.executeVote(this.props.vote.voteId)
   }
+
   loadUserBalance = () => {
     const { tokenContract, user } = this.props
     if (tokenContract && user) {
@@ -153,18 +142,11 @@ class VotePanelContent extends React.Component {
       type,
     } = vote.data
 
-    // TODO: Show decimals for vote participation only when needed
-    const voterParticipation = (participationPct * 10e15).toFixed(2)
-
-    // TODO: This block is wrong and has no sense
     if (!voteOptions.length) {
       this.state.voteOptions = options
     }
 
-    let totalSupport = 0
-    options.forEach(option => {
-      totalSupport = totalSupport + parseFloat(option.value, 10)
-    })
+    const totalSupport = options.reduce((acc, option) => acc + option.value, 0)
 
     const showInfo = type === 'allocation' || type === 'curation'
     const truncatedCreator = `${creator.slice(0, 6)}...${creator.slice(-4)}`
@@ -251,7 +233,7 @@ class VotePanelContent extends React.Component {
               <Label>Voter participation</Label>
             </h2>
             <p>
-              {voterParticipation / 10 ** 16}%{' '}
+              {participationPct}%{' '}
               <Text size="small" color={theme.negative}>
                 ({minParticipationPct / 10 ** 16}% required)
               </Text>
