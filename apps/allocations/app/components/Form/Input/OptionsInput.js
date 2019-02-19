@@ -18,8 +18,8 @@ class OptionsInput extends React.Component {
     name: PropTypes.string.isRequired,
     value: PropTypes.array.isRequired,
     onChange: PropTypes.func.isRequired,
-    validator: PropTypes.func,
-    error: PropTypes.bool,
+    // validator: PropTypes.func,
+    // error: PropTypes.bool,
   }
 
   addOption = () => {
@@ -43,7 +43,7 @@ class OptionsInput extends React.Component {
   removeOption = option => {
     const { name, value } = this.props
     let index = value.indexOf(option)
-    // Double exclamation to make sure is reemoved
+    // Double exclamation to make sure is removed
     !!value.splice(index, 1) &&
       this.props.onChange({
         target: { name, value },

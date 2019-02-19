@@ -30,18 +30,18 @@ const Account = ({
     onNewAllocation(proxy, description, id, limit)
   }
 
-  const manageParameters = () => {
-    onManageParameters(proxy)
-  }
+  // const manageParameters = () => {
+  //   onManageParameters(proxy)
+  // }
 
   const executePayout = () => {
     console.info('App.js: Executing Payout:')
     app.runPayout(id)
   }
-  /*Need a better solution that this, should be handled in
+  /* Need a better solution that this, should be handled in
   App.js using token manager once more tokens are supported */
   function translateToken(token) {
-    if (token == 0x0) {
+    if (token === 0x0) {
       return 'ETH'
     }
   }
@@ -49,7 +49,7 @@ const Account = ({
   const truncatedProxy = `${proxy.slice(0, 6)}...${proxy.slice(-4)}`
   const translatedToken = translateToken(token)
 
-  //TODO: use {etherScanBaseUrl instead of hard coded rinkeby}
+  // TODO: use {etherScanBaseUrl instead of hard coded rinkeby}
   return (
     <StyledCard>
       <MenuContainer>
@@ -66,9 +66,7 @@ const Account = ({
       </MenuContainer>
       <IconContainer />
       <TitleContainer>
-        <CardTitle>
-          {description}
-        </CardTitle>
+        <CardTitle>{description}</CardTitle>
         <CardAddress>
           <SafeLink
             href={`https://rinkeby.etherscan.io/address/${proxy}`}
@@ -85,10 +83,12 @@ const Account = ({
             Balance
           </Text>
           <StatsValue>
-            {' ' + BigNumber(balance)
+            {' ' +
+              BigNumber(balance)
               .div(BigNumber(10e17))
               .dp(3)
-              .toString()} {translatedToken}
+                .toString()}{' '}
+            {translatedToken}
           </StatsValue>
         </StyledStats>
         <StyledStats>
@@ -96,10 +96,12 @@ const Account = ({
             Limit
           </Text>
           <StatsValue>
-            {' ' + BigNumber(limit)
+            {' ' +
+              BigNumber(limit)
               .div(BigNumber(10e17))
               .dp(3)
-              .toString()} {translatedToken}/ Allocation
+                .toString()}{' '}
+            {translatedToken}/ Allocation
           </StatsValue>
         </StyledStats>
       </StatsContainer>

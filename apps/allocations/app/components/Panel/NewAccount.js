@@ -15,7 +15,7 @@ const INITIAL_STATE = {
 
 class NewAccount extends React.Component {
   static propTypes = {
-    heading: PropTypes.string,
+    // heading: PropTypes.string,
     onCreateAccount: PropTypes.func.isRequired,
   }
 

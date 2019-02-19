@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import styled from 'styled-components'
 
 import { DropDown, Info } from '@aragon/ui'
 
@@ -17,7 +16,7 @@ import {
 // TODO: Extract to shared
 const AVAILABLE_TOKENS = ['ETH', 'ANT', 'GIV', 'FTL', '🦄']
 const ALLOCATION_TYPES = ['Informational', 'Token Transfer']
-const PAYOUT_TYPES = ['One-Time', 'Monthly']
+// const PAYOUT_TYPES = ['One-Time', 'Monthly']
 const INITIAL_STATE = {
   description: '',
   votingTokens: null,
@@ -65,7 +64,7 @@ class NewAllocation extends React.Component {
 
   isAddressError = (entities, addr) => {
     const isAddress = /^(0x)?[0-9a-f]{40}$/i.test(addr) // TODO: replace by: web3.isAddress(addr)
-    console.log('[isAddressError] entitites', entities, 'addr', addr)
+    console.log('[isAddressError] entities', entities, 'addr', addr)
     const isDuplicated =
       entities.length > 1 && entities.map(entity => entity.addr).includes(addr)
     const isEmpty = !addr || addr.length === 0 || addr === 0x0
@@ -171,13 +170,13 @@ class NewAllocation extends React.Component {
                   onChange={this.changeField}
                 />
                 {// temporarily check > 1 because the first is "Select an entry msg"
-                  this.props.entities.length > 1 && (
-                    <SettingsInput
-                      name="addressSetting"
-                      text="Use address book for options"
-                      onChange={this.changeField}
-                    />
-                  )}
+                this.props.entities.length > 1 && (
+                  <SettingsInput
+                    name="addressSetting"
+                    text="Use address book for options"
+                    onChange={this.changeField}
+                  />
+                )}
               </div>
             }
           />
@@ -270,22 +269,22 @@ class NewAllocation extends React.Component {
   }
 }
 
-const RecurringDropDown = ({ dropDown }) => {
-  return (
-    <StyledRecurringDropDown>
-      <DropDown {...dropDown} wide />
-    </StyledRecurringDropDown>
-  )
-}
+// const RecurringDropDown = ({ dropDown }) => {
+//   return (
+//     <StyledRecurringDropDown>
+//       <DropDown {...dropDown} wide />
+//     </StyledRecurringDropDown>
+//   )
+// }
 
-const StyledRecurringDropDown = styled.div`
-  margin-left: 17px;
-  width: 162px;
-`
+// const StyledRecurringDropDown = styled.div`
+//   margin-left: 17px;
+//   width: 162px;
+// `
 
 export default NewAllocation
 
 // TODO: Add Warning message, amount input and date picker input
-// FormFields: Warning* , descrription, alloocation type, amount, options
+// FormFields: Warning* , description, allocation type, amount, options
 // if allocation type token... show warning y amount
 // if freq > one time, show date picker

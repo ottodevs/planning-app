@@ -17,15 +17,15 @@ class MultiDropdown extends React.Component {
     const { name, value, entities } = this.props
     let newValue = {
       addr: entities[index].addr,
-      index: index
+      index: index,
     }
-    if(this.props.validator(value, newValue.addr)) {
-      this.props.onChange({ target: { name: 'addressError', value: true} })
+    if (this.props.validator(value, newValue.addr)) {
+      this.props.onChange({ target: { name: 'addressError', value: true } })
     } else {
-      this.props.onChange({ target: { name: 'addressError', value: false} })
+      this.props.onChange({ target: { name: 'addressError', value: false } })
     }
-    this.setState({ activeItem: index})
-    if(name === 'optionsInput'){
+    this.setState({ activeItem: index })
+    if (name === 'optionsInput') {
       this.props.onChange({ target: { name: 'optionsInput', value: newValue } })
     } else {
       value[this.props.index] = newValue
@@ -38,14 +38,15 @@ class MultiDropdown extends React.Component {
   render() {
     return (
       <DropDown
-        items={this.props.entities.map(entity => this.nameWrapper(entity.data.name))}
+        items={this.props.entities.map(entity =>
+          this.nameWrapper(entity.data.name)
+        )}
         active={this.props.activeItem}
         onChange={this.onChangeInput}
-        wide={true}
+        wide
       />
     )
   }
 }
-
 
 export default MultiDropdown

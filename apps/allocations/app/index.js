@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import Aragon, { providers } from '@aragon/client'
 import App from './components/App/App'
 
-//import { allocationsMockData } from './utils/mockData'
+// import { allocationsMockData } from './utils/mockData'
 
 // if (process.env.NODE_ENV !== 'production') {
 //   const { whyDidYouUpdate } = require('why-did-you-update')

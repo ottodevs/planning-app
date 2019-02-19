@@ -10,7 +10,7 @@ const NewAccountButton = ({ onClick }) => (
 )
 
 NewAccountButton.propTypes = {
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 }
 
 const StyledButton = styled(Button)`

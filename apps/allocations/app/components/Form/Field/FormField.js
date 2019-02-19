@@ -37,7 +37,6 @@ const FormField = ({ input, label, hint, required, separator }) => {
 }
 
 FormField.propTypes = {
-  children: PropTypes.node,
   label: PropTypes.string,
   required: PropTypes.bool,
   hint: PropTypes.string,

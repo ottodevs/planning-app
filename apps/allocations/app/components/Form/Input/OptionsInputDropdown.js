@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import { IconAdd, TextInput, theme, unselectable } from '@aragon/ui'
+import { IconAdd, theme } from '@aragon/ui'
 import MultiDropDown from './MultiDropdown'
 import IconRemove from '../../../assets/components/IconRemove'
 
@@ -9,7 +9,7 @@ const {
   disabled,
   contentBackgroundActive,
   contentBorderActive,
-  contentBorder,
+  // contentBorder,
   textSecondary,
 } = theme
 
@@ -54,7 +54,7 @@ class OptionsInputDropdown extends React.Component {
   removeOption = option => {
     const { name, value } = this.props
     let index = value.indexOf(option)
-    // Double exclamation to make sure is reemoved
+    // Double exclamation to make sure is removed
     !!value.splice(index, 1) &&
       this.props.onChange({
         target: { name, value },
@@ -99,24 +99,24 @@ class OptionsInputDropdown extends React.Component {
   }
 }
 
-const StyledInput = styled(TextInput)`
-  ${unselectable}; /* it is possible to select the placeholder without this */
-  ::placeholder {
-    color: ${theme.contentBorderActive};
-  }
-  :focus {
-    border-color: ${contentBorderActive};
-    ::placeholder {
-      color: ${contentBorderActive};
-    }
-  }
-  :read-only {
-    cursor: default;
-    :focus {
-      border-color: ${contentBorder};
-    }
-  }
-`
+// const StyledInput = styled(TextInput)`
+//   ${unselectable}; /* it is possible to select the placeholder without this */
+//   ::placeholder {
+//     color: ${theme.contentBorderActive};
+//   }
+//   :focus {
+//     border-color: ${contentBorderActive};
+//     ::placeholder {
+//       color: ${contentBorderActive};
+//     }
+//   }
+//   :read-only {
+//     cursor: default;
+//     :focus {
+//       border-color: ${contentBorder};
+//     }
+//   }
+// `
 
 const StyledOptionsInput = styled.div`
   display: flex;
