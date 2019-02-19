@@ -12,10 +12,10 @@ import {
   theme,
 } from '@aragon/ui'
 
-const colors = {
-  iconColor: theme.textTertiary,
-  labelColor: theme.textPrimary,
-}
+// const colors = {
+//   iconColor: theme.textTertiary,
+//   labelColor: theme.textPrimary,
+// }
 
 const Project = ({
   id,
@@ -26,9 +26,8 @@ const Project = ({
   url,
   contributors,
   onRemoveProject,
-  changeActiveIndex
+  changeActiveIndex,
 }) => {
-
   const removeProject = () => {
     console.log('removeProject')
     onRemoveProject(id)
@@ -38,7 +37,10 @@ const Project = ({
 
   const clickContext = e => {
     e.stopPropagation()
-    changeActiveIndex({ tabIndex: 1, tabData: { filterIssuesByRepoId: repoId }})
+    changeActiveIndex({
+      tabIndex: 1,
+      tabData: { filterIssuesByRepoId: repoId },
+    })
   }
 
   return (
@@ -67,9 +69,7 @@ const Project = ({
       </MenuContainer>
       <CardTitle>{label}</CardTitle>
       <CardDescription>
-        <CardDescriptionText>
-          {description}
-        </CardDescriptionText>
+        <CardDescriptionText>{description}</CardDescriptionText>
       </CardDescription>
       <StyledStats>
         <StatsContainer>

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { isDate, format as formatDate } from 'date-fns'
+import { format as formatDate } from 'date-fns'
 
 import { TextInput } from '@aragon/ui'
 import DatePicker from './DatePicker'
@@ -18,7 +18,7 @@ const IconWrapper = styled.div`
   height: 14px;
 `
 const TextInputDate = styled(TextInput).attrs({
-  readOnly: true
+  readOnly: true,
 })`
   width: 123px;
   height: 32px;
@@ -36,10 +36,10 @@ class DateInput extends React.PureComponent {
 
   state = {
     showPicker: false,
-    value: this.props.value
+    value: this.props.value,
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     document.removeEventListener('mousedown', this.handleClickOutside)
   }
 
@@ -51,12 +51,12 @@ class DateInput extends React.PureComponent {
     this.wrapperRef = node
   }
 
-  handleClick = (event) => {
+  handleClick = event => {
     event.stopPropagation()
     this.setState({ showPicker: true })
   }
 
-  handleClickOutside = (event) => {
+  handleClickOutside = event => {
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
       this.setState({ showPicker: false })
     }
@@ -67,18 +67,13 @@ class DateInput extends React.PureComponent {
     this.setState({ showPicker: false })
   }
 
-  render () {
+  render() {
     const { value } = this.props
     const formattedValue = formatDate(value, this.props.format)
 
     return (
-      <Container
-        ref={this.setWrapperRef}
-      >
-        <TextInputDate
-          value={formattedValue}
-          onClick={this.handleClick}
-        />
+      <Container ref={this.setWrapperRef}>
+        <TextInputDate value={formattedValue} onClick={this.handleClick} />
 
         <IconWrapper onClick={this.handleClick}>
           <IconCalendar />
@@ -88,7 +83,7 @@ class DateInput extends React.PureComponent {
           <DatePicker
             currentDate={value}
             onSelect={this.handleSelect}
-            overlay={true}
+            overlay
           />
         )}
       </Container>
@@ -99,13 +94,13 @@ class DateInput extends React.PureComponent {
 DateInput.propTypes = {
   format: PropTypes.string,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.any
+  value: PropTypes.any,
 }
 
 DateInput.defaultProps = {
   value: new Date(),
   format: 'LL/dd/yyyy',
-  onChange: () => {}
+  onChange: () => {},
 }
 
 export default DateInput

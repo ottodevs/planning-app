@@ -8,7 +8,7 @@ import { CheckBox } from '../../Shared'
 class SettingsInput extends React.Component {
   static propTypes = {
     // key: PropTypes.number.isRequired, // TODO: Check the use of this required prop
-    name: PropTypes.func,
+    // name: PropTypes.func,
     text: PropTypes.string.isRequired,
   }
 

@@ -2,7 +2,15 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Button, Text, theme } from '@aragon/ui'
 
-const Form = ({ children, onSubmit, submitText, heading, subHeading, separator, submitDisabled }) => {
+const Form = ({
+  children,
+  onSubmit,
+  submitText,
+  heading,
+  subHeading,
+  separator,
+  submitDisabled,
+}) => {
   return (
     // TODO: Fix the SidePanel 2 lines heading thing
     <React.Fragment>

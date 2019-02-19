@@ -5,7 +5,7 @@ import { theme, unselectable } from '@aragon/ui'
 import { IconArrowDown } from '../../Shared'
 
 const BASE_HEIGHT = 40
-const BASE_WIDTH = 193
+// const BASE_WIDTH = 193
 
 // TODO: This should extend the StyledDropDownItem
 // TODO: Fix shadow to 0.03 and hover
@@ -67,9 +67,7 @@ const DropDownItems = styled.div`
     }
   }
 `
-/**
- * TODO: Document each component with this kind of comments
- */
+// TODO: Document each component with this kind of comments
 class DropDown extends React.PureComponent {
   state = { opened: false }
 

@@ -25,12 +25,20 @@ const AppContent = props => {
     {
       tabName: 'Overview',
       TabComponent: Overview,
-      tabButton: { caption: 'New Project', onClick: props.onNewProject, disabled: () => false },
+      tabButton: {
+        caption: 'New Project',
+        onClick: props.onNewProject,
+        disabled: () => false,
+      },
     },
     {
       tabName: 'Issues',
       TabComponent: Issues,
-      tabButton: { caption: 'New Issue', onClick: props.onNewIssue, disabled: () => props.projects.length ? false : true },
+      tabButton: {
+        caption: 'New Issue',
+        onClick: props.onNewIssue,
+        disabled: () => !props.projects.length,
+      },
     },
     {
       tabName: 'Settings',
@@ -54,8 +62,7 @@ const AppContent = props => {
 
       <TabbedView
         activeIndex={props.activeIndex}
-        changeActiveIndex={props.changeActiveIndex}
-      >
+        changeActiveIndex={props.changeActiveIndex}>
         <TabBar>
           {contentData.map(({ tabName }) => (
             <Tab key={tabName}>{tabName}</Tab>
@@ -73,9 +80,10 @@ const AppContent = props => {
 
 AppContent.propTypes = {
   projects: PropTypes.arrayOf(PropTypes.object).isRequired,
-  bountyIssues: PropTypes.arrayOf(PropTypes.object).isRequired,
-  tokens: PropTypes.arrayOf(PropTypes.object).isRequired,
-  bountySettings: PropTypes.object.isRequired,
+  // TODO: Use props or remove
+  // bountyIssues: PropTypes.arrayOf(PropTypes.object).isRequired,
+  // tokens: PropTypes.arrayOf(PropTypes.object).isRequired,
+  // bountySettings: PropTypes.object.isRequired,
   onNewProject: PropTypes.func.isRequired,
   onNewIssue: PropTypes.func.isRequired,
   activeIndex: PropTypes.object.isRequired,

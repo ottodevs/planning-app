@@ -178,81 +178,81 @@ class Repo extends React.Component {
   }
 }
 
-const RepoCard = styled.div`
-  border-bottom: 1px #d1d5da solid;
-  padding: 16px;
-  margin-bottom: 16px;
-`
+// const RepoCard = styled.div`
+//   border-bottom: 1px #d1d5da solid;
+//   padding: 16px;
+//   margin-bottom: 16px;
+// `
 
-const SearchContainer = styled.div`
-  border-bottom: 1px solid #d1d5da;
-  padding: 16px 0 16px 0;
-`
+// const SearchContainer = styled.div`
+//   border-bottom: 1px solid #d1d5da;
+//   padding: 16px 0 16px 0;
+// `
 
-const SearchBox = styled.input`
-  min-height: 34px;
-  width: 300px;
-  font-size: 14px;
-  padding: 6px 8px;
-  background-color: #fff;
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  border: 1px solid #d1d5da;
-  border-radius: 3px;
-  outline: none;
-  box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075);
-`
+// const SearchBox = styled.input`
+//   min-height: 34px;
+//   width: 300px;
+//   font-size: 14px;
+//   padding: 6px 8px;
+//   background-color: #fff;
+//   background-repeat: no-repeat;
+//   background-position: right 8px center;
+//   border: 1px solid #d1d5da;
+//   border-radius: 3px;
+//   outline: none;
+//   box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075);
+// `
 
-const Date = styled.p`
-  font-size: 12px;
-  color: #586069;
-  margin-left: 10px;
-  margin-bottom: 0;
-`
+// const Date = styled.p`
+//   font-size: 12px;
+//   color: #586069;
+//   margin-left: 10px;
+//   margin-bottom: 0;
+// `
 
-const InfoContainer = styled.div`
-  display: flex;
-`
+// const InfoContainer = styled.div`
+//   display: flex;
+// `
 
-const Circle = styled.div`
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  background: #f1e05a;
-  margin-right: 5px;
-  top: 2px;
-  position: relative;
-`
+// const Circle = styled.div`
+//   height: 12px;
+//   width: 12px;
+//   border-radius: 50%;
+//   background: #f1e05a;
+//   margin-right: 5px;
+//   top: 2px;
+//   position: relative;
+// `
 
-const RepoDescription = styled.p`
-  font-size: 14px;
-  color: #586069;
-  margin: 4px 0 10px 0;
-`
+// const RepoDescription = styled.p`
+//   font-size: 14px;
+//   color: #586069;
+//   margin: 4px 0 10px 0;
+// `
 
-const RepoLink = styled.a`
-  font-weight: 600;
-  color: #0366d6;
-  cursor: pointer;
-  font-size: 20px;
-`
+// const RepoLink = styled.a`
+//   font-weight: 600;
+//   color: #0366d6;
+//   cursor: pointer;
+//   font-size: 20px;
+// `
 
-const RepoDetails = styled.span`
-  color: #586069;
-  font-size: 12px;
-  margin-bottom: 0;
-`
+// const RepoDetails = styled.span`
+//   color: #586069;
+//   font-size: 12px;
+//   margin-bottom: 0;
+// `
 
-const Icon = styled.i`
-  margin-left: 16px;
-`
+// const Icon = styled.i`
+//   margin-left: 16px;
+// `
 
-const ScrollWrapper = styled.div`
-  /* position: relative; */
-  /* z-index: 1; */
-  /* max-height: 40%; */
-  overflow: auto;
-`
+// const ScrollWrapper = styled.div`
+//   /* position: relative; */
+//   /* z-index: 1; */
+//   /* max-height: 40%; */
+//   overflow: auto;
+// `
 const Loading = () => (
   <div
     style={{
@@ -260,7 +260,7 @@ const Loading = () => (
       justifyContent: 'center',
       alignItems: 'center',
       height: '100%',
-      flexDirection: 'column'
+      flexDirection: 'column',
     }}
   >
     <LoadingAnimation style={{ marginBottom: '32px' }} />

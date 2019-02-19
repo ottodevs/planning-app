@@ -71,14 +71,16 @@ class ConnectedApp extends React.Component {
           })
 
           if (this.state.github.token) {
-            this.state.client.query({
-              query: CURRENT_USER
-            }).then(({data}) => {
-              this.setState({
-                githubCurrentUser: data.viewer
+            this.state.client
+              .query({
+                query: CURRENT_USER,
               })
-              console.log('viewer: ', data)
-            })
+              .then(({ data }) => {
+                this.setState({
+                  githubCurrentUser: data.viewer,
+                })
+                console.log('viewer: ', data)
+              })
           }
         })
     }

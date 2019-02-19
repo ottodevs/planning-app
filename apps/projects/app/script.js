@@ -1,16 +1,18 @@
 import '@babel/polyfill'
 
+import Aragon from '@aragon/client'
+
 import { GraphQLClient } from 'graphql-request'
 import { STATUS } from './utils/github'
 import VaultJSON from '../build/contracts/Vault.json'
 import tokenSymbolAbi from './abi/token-symbol.json'
-import { isNullOrUndefined } from 'util'
 
 const toAscii = hex => {
   // Find termination
   let str = ''
-  let i = 0,
-    l = hex.length
+  let i = 0
+
+  let l = hex.length
   if (hex.substring(0, 2) === '0x') {
     i = 2
   }
@@ -45,7 +47,7 @@ const repoData = id => `{
 }`
 
 const app = new Aragon()
-let appState, vault, bounties, tokens
+let appState, vault
 
 /**
  * Observe the github object.
@@ -81,7 +83,6 @@ github().subscribe(result => {
   console.log('github object received from cache:', result)
   if (result) {
     result.token && initClient(result.token)
-    return
   } else app.cache('github', { status: STATUS.INITIAL })
 })
 
@@ -89,7 +90,7 @@ app.events().subscribe(handleEvents)
 
 app.state().subscribe(state => {
   state && console.log('[Projects script] state subscription:\n', state)
-  appState = state ? state : { repos: [], bountySettings: {}, tokens: [] }
+  appState = state || { repos: [], bountySettings: {}, tokens: [] }
   if (!vault) {
     // this should be refactored to be a "setting"
     app.call('vault').subscribe(response => {
@@ -108,35 +109,37 @@ app.state().subscribe(state => {
 async function handleEvents(response) {
   let nextState
   switch (response.event) {
-  case 'RepoAdded':
-    console.log('[Projects] event RepoAdded')
-    nextState = await syncRepos(appState, response.returnValues)
-    break
-  case 'RepoRemoved':
-    console.log('[Projects] RepoRemoved', response.returnValues)
-    nextState = await syncRepos(appState, response.returnValues)
-    break
-  case 'RepoUpdated':
-    console.log('[Projects] RepoUpdated', response.returnValues)
-    nextState = await syncRepos(appState, response.returnValues)
-  case 'BountyAdded':
-    console.log('[Projects] BountyAdded', response.returnValues)
-    nextState = await syncIssues(appState, response.returnValues)
-    console.log('Bounty Added State Change', nextState)
-    break
-  case 'IssueCurated':
-    console.log('[Projects] IssueCurated', response.returnValues)
-    nextState = await syncRepos(appState, response.returnValues)
-    break
-  case 'BountySettingsChanged':
-    console.log('[Projects] BountySettingsChanged')
-    nextState = await syncSettings(appState) // No returnValues on this
-    break
-  case 'VaultDeposit':
-    console.log('[Projects] VaultDeposit')
-    nextState = await syncTokens(appState, response.returnValues)   
-  default:
-    console.log('[Projects] Unknown event catched:', response)
+    case 'RepoAdded':
+      console.log('[Projects] event RepoAdded')
+      nextState = await syncRepos(appState, response.returnValues)
+      break
+    case 'RepoRemoved':
+      console.log('[Projects] RepoRemoved', response.returnValues)
+      nextState = await syncRepos(appState, response.returnValues)
+      break
+    case 'RepoUpdated':
+      console.log('[Projects] RepoUpdated', response.returnValues)
+      nextState = await syncRepos(appState, response.returnValues)
+      break
+    case 'BountyAdded':
+      console.log('[Projects] BountyAdded', response.returnValues)
+      nextState = await syncIssues(appState, response.returnValues)
+      console.log('Bounty Added State Change', nextState)
+      break
+    case 'IssueCurated':
+      console.log('[Projects] IssueCurated', response.returnValues)
+      nextState = await syncRepos(appState, response.returnValues)
+      break
+    case 'BountySettingsChanged':
+      console.log('[Projects] BountySettingsChanged')
+      nextState = await syncSettings(appState) // No returnValues on this
+      break
+    case 'VaultDeposit':
+      console.log('[Projects] VaultDeposit')
+      nextState = await syncTokens(appState, response.returnValues)
+      break
+    default:
+      console.log('[Projects] Unknown event caught:', response)
   }
   app.cache('state', nextState)
 }
@@ -162,7 +165,12 @@ async function syncIssues(state, { repoId, issueNumber, ...eventArgs }) {
     ...repo,
   })
   try {
-    let updatedState = await updateIssueState(state, repoId, issueNumber, transform)
+    let updatedState = await updateIssueState(
+      state,
+      repoId,
+      issueNumber,
+      transform
+    )
     return updatedState
   } catch (err) {
     console.error('updateIssueState failed to return:', err)
@@ -179,11 +187,11 @@ async function syncSettings(state) {
   }
 }
 
-async function syncTokens(state, {token}) {
+async function syncTokens(state, { token }) {
   try {
     let tokens = state.tokens
     const tokenIndex = tokens.findIndex(token => token.addr === token)
-    if(tokenIndex == -1) {
+    if (tokenIndex === -1) {
       let newToken = await loadToken(token)
       tokens.push(newToken)
     }
@@ -199,7 +207,6 @@ async function syncTokens(state, {token}) {
  *                     *
  ***********************/
 
-
 function loadToken(token) {
   let tokenContract = app.external(token, tokenSymbolAbi)
   return new Promise(resolve => {
@@ -208,7 +215,7 @@ function loadToken(token) {
       symbol &&
         resolve({
           addr: token,
-          symbol: symbol
+          symbol: symbol,
         })
     })
   })
@@ -240,10 +247,19 @@ function loadRepoData(id) {
 
 function loadIssueData(repoId, issueNumber) {
   return new Promise(resolve => {
-    app.call('getIssue', repoId, issueNumber).subscribe(({ hasBounty, standardBountyId, balance, token}) => {
-      const [_repo, _issueNumber] = [toAscii(repoId), toAscii(issueNumber)]
-      resolve({ _repo, _issueNumber, balance, hasBounty, token, standardBountyId})
-    })
+    app
+      .call('getIssue', repoId, issueNumber)
+      .subscribe(({ hasBounty, standardBountyId, balance, token }) => {
+        const [_repo, _issueNumber] = [toAscii(repoId), toAscii(issueNumber)]
+        resolve({
+          _repo,
+          _issueNumber,
+          balance,
+          hasBounty,
+          token,
+          standardBountyId,
+        })
+      })
   })
 }
 
@@ -284,7 +300,9 @@ async function checkReposLoaded(repos, id, transform) {
 }
 
 async function checkIssuesLoaded(issues, repoId, issueNumber, transform) {
-  const issueIndex = issues.findIndex(issue => issue.issueNumber === issueNumber)
+  const issueIndex = issues.findIndex(
+    issue => issue.issueNumber === issueNumber
+  )
   console.log('this is the issue index:', issueIndex)
   console.log('checkIssuesLoaded, issueNumber:', issues, issueNumber)
   const data = await loadIssueData(repoId, issueNumber)
@@ -296,7 +314,7 @@ async function checkIssuesLoaded(issues, repoId, issueNumber, transform) {
     return issues.concat(
       await transform({
         issueNumber,
-        data: data
+        data: data,
       })
     )
   } else {
@@ -304,7 +322,7 @@ async function checkIssuesLoaded(issues, repoId, issueNumber, transform) {
     const nextIssues = Array.from(issues)
     nextIssues[issueIndex] = await transform({
       issueNumber,
-      data: data
+      data: data,
     })
     return nextIssues
   }
@@ -321,8 +339,8 @@ async function updateState(state, id, transform) {
     console.error(
       'Update repos failed to return:',
       err,
-      'here\'s what returned in NewRepos',
-      newRepos
+      "here's what returned in state",
+      state
     )
   }
 }
@@ -331,15 +349,20 @@ async function updateIssueState(state, repoId, issueNumber, transform) {
   console.log('update state: ', state, ', id: ', repoId)
   const { issues = [] } = state
   try {
-    let newIssues = await checkIssuesLoaded(issues, repoId, issueNumber, transform)
+    let newIssues = await checkIssuesLoaded(
+      issues,
+      repoId,
+      issueNumber,
+      transform
+    )
     let newState = { ...state, issues: newIssues }
     return newState
   } catch (err) {
     console.error(
       'Update issues failed to return:',
       err,
-      'here\'s what returned in newIssues',
-      newIssues
+      "here's what returned in state",
+      state
     )
   }
 }

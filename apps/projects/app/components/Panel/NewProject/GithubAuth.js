@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text, Info, theme, Field, TextInput, Button } from '@aragon/ui'
+import { Text, Button } from '@aragon/ui'
 
 // TODO: Github icon on the button
 // TODO: Fix styles

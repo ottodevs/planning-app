@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { gql } from 'apollo-boost'
+// import { gql } from 'apollo-boost'
 import { Query } from 'react-apollo'
 import {
   Button,
@@ -37,7 +37,9 @@ class Issues extends React.PureComponent {
   componentWillMount() {
     if ('filterIssuesByRepoId' in this.props.activeIndex.tabData) {
       let { filters } = this.state
-      filters.projects[this.props.activeIndex.tabData.filterIssuesByRepoId] = true
+      filters.projects[
+        this.props.activeIndex.tabData.filterIssuesByRepoId
+      ] = true
       this.setState({ filters })
     }
   }
@@ -84,7 +86,7 @@ class Issues extends React.PureComponent {
         return true
       return false
     })
-    //console.log('FILTER PROJECT: ', issuesByProject)
+    // console.log('FILTER PROJECT: ', issuesByProject)
 
     const issuesByLabel = issuesByProject.filter(issue => {
       // if there are no labels to filter by, pass all
@@ -104,7 +106,7 @@ class Issues extends React.PureComponent {
         return true
       return false
     })
-    //console.log('FILTER LABEL: ', issuesByLabel)
+    // console.log('FILTER LABEL: ', issuesByLabel)
 
     const issuesByMilestone = issuesByLabel.filter(issue => {
       // if there are no MS filters, all issues pass
@@ -118,7 +120,7 @@ class Issues extends React.PureComponent {
         return true
       return false
     })
-    //console.log('FILTER MS: ', issuesByMilestone)
+    // console.log('FILTER MS: ', issuesByMilestone)
 
     // last but not least, if there is any text in textFilter...
     if (textFilter) {
@@ -145,10 +147,7 @@ class Issues extends React.PureComponent {
 
   actionsMenu = () => (
     <div>
-      <TextInput 
-        placeholder="Search Issues"
-        onChange={this.handleTextFilter}
-      />
+      <TextInput placeholder="Search Issues" onChange={this.handleTextFilter} />
       <ActionsMenu enabled={!!this.state.selectedIssues.length}>
         <ContextMenuItem
           onClick={this.handleCurateIssues}
@@ -214,7 +213,7 @@ class Issues extends React.PureComponent {
   )
 
   render() {
-    const { projects, onNewProject, activeIndex, tokens, bountyIssues } = this.props
+    const { projects, onNewProject, tokens, bountyIssues } = this.props
     // better return early if we have no projects added?
     if (projects.length === 0) return <Empty action={onNewProject} />
     let bountyIssueObj = {}
@@ -236,26 +235,25 @@ class Issues extends React.PureComponent {
       nodes && [].concat(...nodes.map(node => node.issues.nodes))
 
     const shapeIssues = issues =>
-      issues.map(({ __typename, repository: { name }, ...fields }) => 
-      {
-        if(bountyIssueObj[fields.number]){
+      issues.map(({ __typename, repository: { name }, ...fields }) => {
+        if (bountyIssueObj[fields.number]) {
           let data = bountyIssueObj[fields.number].data
           console.log('Bounty Issue Info:', data)
 
-          return { 
+          return {
             ...fields,
             ...bountyIssueObj[fields.number].data,
             repo: name,
-            symbol: tokenObj[data.token]
-          }          
+            symbol: tokenObj[data.token],
+          }
         }
-        return { 
+        return {
           ...fields,
           repo: name,
         }
       })
 
-    //console.log('current issues props:', this.props, 'and state:', this.state)
+    // console.log('current issues props:', this.props, 'and state:', this.state)
 
     return (
       <Query

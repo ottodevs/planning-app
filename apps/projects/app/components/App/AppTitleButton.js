@@ -11,7 +11,7 @@ const AppTitleButton = ({ caption, onClick, disabled }) => (
 
 AppTitleButton.propTypes = {
   caption: PropTypes.string,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 }
 
 const StyledButton = styled(Button)`
@@ -22,4 +22,3 @@ const StyledButton = styled(Button)`
 `
 
 export default AppTitleButton
-

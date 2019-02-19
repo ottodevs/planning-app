@@ -3,14 +3,11 @@ import React from 'react'
 import styled from 'styled-components'
 
 import {
-  Field,
   Text,
-  TextInput,
   DropDown,
   theme,
   Badge,
   Table,
-  TableHeader,
   TableRow,
   TableCell,
 } from '@aragon/ui'
@@ -24,8 +21,6 @@ const bountyDeadline = ['-', 'yesterday', 'last week']
 const bountyAvail = ['-', '1', '2', '3']
 
 class NewBountyAllocation extends React.Component {
-
-  
   static propTypes = {
     /** array of issues to allocate bounties on */
     issues: PropTypes.arrayOf(
@@ -34,7 +29,7 @@ class NewBountyAllocation extends React.Component {
         level: PropTypes.string,
         title: PropTypes.string,
         number: PropTypes.number,
-        repo: PropTypes.string,        
+        repo: PropTypes.string,
       })
     ),
     /** base rate in pennies */
@@ -58,7 +53,7 @@ class NewBountyAllocation extends React.Component {
         deadline: 0,
         avail: 0,
         detailsOpen: 0,
-        size: 0
+        size: 0,
       }
     })
     this.state = {
@@ -70,7 +65,7 @@ class NewBountyAllocation extends React.Component {
   configBounty = (id, key, val) => {
     const { bounties } = this.state
     // arrow clicked - it's simple value reversal case, 1 indicates details are open, 0 - closed
-    if (key == 'detailsOpen') {
+    if (key === 'detailsOpen') {
       bounties[id][key] = 1 - bounties[id][key]
     } else {
       bounties[id][key] = val
@@ -79,14 +74,17 @@ class NewBountyAllocation extends React.Component {
     console.log('configBounty: ', bounties)
   }
 
-  updateSize = (id) => {
+  updateSize = id => {
     const { bounties } = this.state
     const rate = this.props.bountySettings.baseRate
     console.log('Update Size')
     console.log(rate)
     console.log(bountyHours[bounties[id]['hours']])
     console.log(bountyExp[bounties[id]['exp']])
-    let size = bountyHours[bounties[id]['hours']] * rate * bountyExp[bounties[id]['exp']].mul
+    let size =
+      bountyHours[bounties[id]['hours']] *
+      rate *
+      bountyExp[bounties[id]['exp']].mul
     bounties[id]['size'] = size
     this.setState({ bounties })
   }
@@ -123,13 +121,11 @@ class NewBountyAllocation extends React.Component {
     this.props.onSubmit(this.state.bounties)
   }
 
-
   render() {
-    
     const { bounties } = this.state
     const { bountySettings } = this.props
 
-    const rate = bountySettings.baseRate
+    // const rate = bountySettings.baseRate
     let a = bountySettings.expLevels.split('\t')
     for (let i = 0; i < a.length; i += 2)
       bountyExp.push({ mul: a[i] / 100, name: a[i + 1] })
@@ -139,8 +135,7 @@ class NewBountyAllocation extends React.Component {
       <Form
         onSubmit={this.submitBounties}
         description={this.props.description}
-        submitText="Submit Bounty Allocation"
-      >
+        submitText="Submit Bounty Allocation">
         {/* Not currently implemented:
         <FormField
           label="Description"
@@ -153,7 +148,7 @@ class NewBountyAllocation extends React.Component {
               wide
             />
           }
-        />*/}
+        /> */}
         <FormField
           label="Issues"
           hint="Enter the estimated hours per issue"
@@ -188,14 +183,14 @@ class NewBountyAllocation extends React.Component {
                         <IBValue>
                           {issue.id in bounties &&
                             bounties[issue.id]['hours'] > 0 && (
-                            <IBValueShow>
-                              <FieldTitle>Value</FieldTitle>
-                              <Badge style={{ marginLeft: '5px' }}>
-                                {bounties[issue.id]['size'].toFixed(2)}{' '}
-                                {bountySettings.bountyCurrency}
-                              </Badge>
-                            </IBValueShow>
-                          )}
+                              <IBValueShow>
+                                <FieldTitle>Value</FieldTitle>
+                                <Badge style={{ marginLeft: '5px' }}>
+                                  {bounties[issue.id]['size'].toFixed(2)}{' '}
+                                  {bountySettings.bountyCurrency}
+                                </Badge>
+                              </IBValueShow>
+                            )}
                         </IBValue>
                       </IssueBounty>
                       <IBDetails open={bounties[issue.id]['detailsOpen']}>
@@ -307,9 +302,10 @@ const IBValueShow = styled.div`
     margin: 10px 0;
   }
 `
+// TODO: Check browser support for place-self
 const IBArrow = styled.div`
   grid-area: arrow;
-  place-self: center; // TODO: Check browser support for this
+  place-self: center;
 `
 const IBHoursInput = styled.div`
   display: inline-flex;

@@ -11,6 +11,9 @@ import PanelManager, { PANELS } from '../Panel'
 import { STATUS } from '../../utils/github'
 import ErrorBoundary from './ErrorBoundary'
 
+// TODO: We shouldn't rely on global, instead use web3-utils
+const web3 = global.web3
+
 const ASSETS_URL = './aragon-ui-assets/'
 
 const GITHUB_URI = 'https://github.com/login/oauth/authorize'
@@ -25,28 +28,28 @@ let CLIENT_ID = ''
 let REDIRECT_URI = ''
 let AUTH_URI = ''
 
-let ipfs = ipfsClient({ host: 'localhost', port: '5001', protocol: 'http'})
+let ipfs = ipfsClient({ host: 'localhost', port: '5001', protocol: 'http' })
 
 switch (window.location.origin) {
-case 'http://localhost:3333':
-  console.log('Github OAuth: Using local http provider deployment')
-  CLIENT_ID = 'd556542aa7a03e640409'
-  REDIRECT_URI = 'http://localhost:3333'
-  AUTH_URI = 'https://tps-github-auth.now.sh/authenticate'
-  // TODO: change auth service to be more explicit to:
-  // AUTH_URI = 'https://dev-tps-github-auth.now.sh/authenticate'
-  break
-case 'http://localhost:8080':
-  console.log('Github OAuth: Using local IPFS deployment')
-  CLIENT_ID = '686f96197cc9bb07a43d'
-  REDIRECT_URI = window.location.href
-  AUTH_URI = 'https://local-tps-github-auth.now.sh/authenticate'
-  break
-default:
-  console.log(
-    'Github OAuth: Scenario not implemented yet, Github API disabled for the current Projects App deployment'
-  )
-  break
+  case 'http://localhost:3333':
+    console.log('Github OAuth: Using local http provider deployment')
+    CLIENT_ID = 'd556542aa7a03e640409'
+    REDIRECT_URI = 'http://localhost:3333'
+    AUTH_URI = 'https://tps-github-auth.now.sh/authenticate'
+    // TODO: change auth service to be more explicit to:
+    // AUTH_URI = 'https://dev-tps-github-auth.now.sh/authenticate'
+    break
+  case 'http://localhost:8080':
+    console.log('Github OAuth: Using local IPFS deployment')
+    CLIENT_ID = '686f96197cc9bb07a43d'
+    REDIRECT_URI = window.location.href
+    AUTH_URI = 'https://local-tps-github-auth.now.sh/authenticate'
+    break
+  default:
+    console.log(
+      'Github OAuth: Scenario not implemented yet, Github API disabled for the current Projects App deployment'
+    )
+    break
 }
 
 export const githubPopup = (popup = null) => {
@@ -54,7 +57,7 @@ export const githubPopup = (popup = null) => {
   if (popup === null || popup.closed) {
     popup = window.open(
       // TODO: Improve readability here: encode = (params: Object) => (JSON.stringify(params).replace(':', '=').trim())
-      // encode uurl params
+      // encode url params
       `${GITHUB_URI}?client_id=${CLIENT_ID}&scope=public_repo&redirect_uri=${REDIRECT_URI}`,
       // `${REDIRECT_URI}/?code=232r3423`, // <= use this to avoid spamming github for testing purposes
       'githubAuth',
@@ -92,8 +95,8 @@ const getURLParam = param => {
 
 /**
  * Sends an http request to the AUTH_URI with the auth code obtained from the oauth flow
- * @param {string} code
- * @returns {string} The authentation token obtained from the auth server
+ * @param {string} code auth Code to interchange by an auth token
+ * @returns {string} The authentication token obtained from the auth server
  */
 const getToken = async code => {
   console.log('getToken entered')
@@ -117,7 +120,7 @@ class App extends React.PureComponent {
 
   state = {
     repos: [],
-    activeIndex: { tabIndex: 0, tabData: {}},
+    activeIndex: { tabIndex: 0, tabData: {} },
   }
 
   componentDidMount() {
@@ -227,50 +230,52 @@ class App extends React.PureComponent {
     console.log('bounty allocation submitted', issues)
     let bountySymbol = this.props.bountySettings.bountyCurrency
     let bountyToken
-    this.props.tokens.forEach(
-      token => {
-        if(token.symbol === bountySymbol) {
-          bountyToken = token.addr
-        }
-      })
-    const emptyAddrArray = [
-      '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7',
-      '0xd00cc82a132f421bA6414D196BC830Db95e2e7Dd',
-      '0x89c199302bd4ebAfAa0B5Ee1Ca7028C202766A7F',
-      '0xd28c35a207c277029ade183b6e910e8d85206c07',
-      '0xee6bd04c6164d7f0fa1cb03277c855639d99a7f6',
-      '0xb1d048b756f7d432b42041715418b48e414c8f50',
-      '0x6945b970fa107663378d242de245a48c079a8bf6',
-      '0x83ac654be75487b9cfcc80117cdfb4a4c70b68a1',
-      '0x690a63d7023780ccbdeed33ef1ee62c55c47460d',
-      '0xb1afc07af31795d61471c169ecc64ad5776fa5a1',
-      '0x4aafed050dc1cf7e349accb7c2d768fd029ece62',
-      '0xd7a5846dea118aa76f0001011e9dc91a8952bf19',
-    ]
+    this.props.tokens.forEach(token => {
+      if (token.symbol === bountySymbol) {
+        bountyToken = token.addr
+      }
+    })
 
-    
+    // TODO: delete if not used
+    // const emptyAddrArray = [
+    //   '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7',
+    //   '0xd00cc82a132f421bA6414D196BC830Db95e2e7Dd',
+    //   '0x89c199302bd4ebAfAa0B5Ee1Ca7028C202766A7F',
+    //   '0xd28c35a207c277029ade183b6e910e8d85206c07',
+    //   '0xee6bd04c6164d7f0fa1cb03277c855639d99a7f6',
+    //   '0xb1d048b756f7d432b42041715418b48e414c8f50',
+    //   '0x6945b970fa107663378d242de245a48c079a8bf6',
+    //   '0x83ac654be75487b9cfcc80117cdfb4a4c70b68a1',
+    //   '0x690a63d7023780ccbdeed33ef1ee62c55c47460d',
+    //   '0xb1afc07af31795d61471c169ecc64ad5776fa5a1',
+    //   '0x4aafed050dc1cf7e349accb7c2d768fd029ece62',
+    //   '0xd7a5846dea118aa76f0001011e9dc91a8952bf19',
+    // ]
+
     let content = ipfs.types.Buffer.from(issues.toString())
     console.log(content)
     console.log(ipfs)
     console.log(ipfs.files)
     let results = await ipfs.add(content)
     console.log(results)
-    
-    let repos = {}, repo
+
+    let repos = {}
+    let repo
     for (var key in issues) {
-      if(repos[issues[key].repo] == undefined) { repos[issues[key].repo] = [] }
+      if (repos[issues[key].repo] === undefined) {
+        repos[issues[key].repo] = []
+      }
       repos[issues[key].repo].push({
-        ...issues[key]
+        ...issues[key],
       })
     }
     console.log('bounty allocation submitted', repos)
-    for (var key in repos) {
-
-      repo = repos[key]
+    for (var repoKey in repos) {
+      repo = repos[repoKey]
       let ipfsString = ''
       let content, results
       await repo.forEach(async r => {
-        console.log('String Builder')        
+        console.log('String Builder')
         console.log(r)
         content = ipfs.types.Buffer.from(r.toString())
         results = await ipfs.add(content)
@@ -278,26 +283,29 @@ class App extends React.PureComponent {
         ipfsString += results[0].hash
         console.log(ipfsString)
       })
-      
+
       repo = repos[key]
       console.log(repo)
       console.log(key)
       const tokenArray = new Array(repo.length).fill(bountyToken)
 
-      console.log('Bounty data',
+      console.log(
+        'Bounty data',
         web3.toHex('MDEwOlJlcG9zaXRvcnkxMjY4OTkxNDM='),
-        repo.map( (issue) => issue.number),
-        repo.map( (issue) => issue.size),
-        repo.map( (issue) => issue.deadline),
+        repo.map(issue => issue.number),
+        repo.map(issue => issue.size),
+        repo.map(issue => issue.deadline),
         new Array(repo.length).fill(true),
         tokenArray,
         ipfsString
       )
       this.props.app.addBounties(
         web3.toHex('MDEwOlJlcG9zaXRvcnkxMjY4OTkxNDM='),
-        repo.map( (issue) => issue.number),
-        repo.map( (issue) => issue.size),
-        repo.map( (issue) => {return ( Date.now() + 8600 )} ),
+        repo.map(issue => issue.number),
+        repo.map(issue => issue.size),
+        repo.map(issue => {
+          return Date.now() + 8600
+        }),
         new Array(repo.length).fill(true),
         tokenArray,
         ipfsString
@@ -310,7 +318,7 @@ class App extends React.PureComponent {
       panelProps: {
         onSubmit: this.onSubmitWork,
         githubCurrentUser: this.props.githubCurrentUser,
-        issue
+        issue,
       },
     }))
   }
@@ -321,7 +329,7 @@ class App extends React.PureComponent {
       panelProps: {
         onSubmit: this.onRequestAssignment,
         githubCurrentUser: this.props.githubCurrentUser,
-        issue
+        issue,
       },
     }))
   }
@@ -366,7 +374,7 @@ class App extends React.PureComponent {
     // TODO: maybe assign this to issueDescriptionIndices, not clear
     let issueDescriptionIndices = []
     issues.forEach((issue, i) => {
-      if (i == 0) {
+      if (i === 0) {
         issueDescriptionIndices.push(issue.title.length)
       } else {
         issueDescriptionIndices.push(issue.title.length)
@@ -376,7 +384,7 @@ class App extends React.PureComponent {
     // TODO: splitting of descriptions needs to be fixed at smart contract level
     const issueDescriptions = issues.map(issue => issue.title).join('')
     /* TODO: The numbers below are supposedly coming from an eventual:
-     issues.map(issue => web3.utils.hextToNum(web3.toHex(issue.repoId))) */
+     issues.map(issue => web3.utils.hexToNum(web3.toHex(issue.repoId))) */
     const issueNumbers = issues.map(issue => issue.number)
     const emptyIntArray = new Array(issues.length).fill(0)
     const emptyAddrArray = [
@@ -429,14 +437,15 @@ class App extends React.PureComponent {
           <ErrorBoundary>
             <AppContent
               app={this.props.app}
-              bountySettings={bountySettings}
               githubCurrentUser={githubCurrentUser}
               projects={this.props.repos !== undefined ? this.props.repos : []}
-              bountyIssues={this.props.issues !== undefined ? this.props.issues : []}
+              bountyIssues={
+                this.props.issues !== undefined ? this.props.issues : []
+              }
               bountySettings={
                 bountySettings !== undefined ? bountySettings : {}
               }
-              tokens={this.props.tokens !== undefined ? this.props.tokens : {} }
+              tokens={this.props.tokens !== undefined ? this.props.tokens : {}}
               onNewProject={this.newProject}
               onRemoveProject={this.removeProject}
               onNewIssue={this.newIssue}
@@ -446,7 +455,6 @@ class App extends React.PureComponent {
               onRequestAssignment={this.requestAssignment}
               activeIndex={activeIndex}
               changeActiveIndex={this.changeActiveIndex}
-
               onReviewApplication={this.reviewApplication}
             />
 

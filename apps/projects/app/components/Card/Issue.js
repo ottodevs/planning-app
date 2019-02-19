@@ -1,12 +1,19 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import { Text, theme, Badge, Button, ContextMenu, ContextMenuItem } from '@aragon/ui'
+import {
+  Text,
+  theme,
+  Badge,
+  // Button,
+  ContextMenu,
+  ContextMenuItem,
+} from '@aragon/ui'
 
 import { CheckButton } from '../Shared'
 
 const StyledIssue = styled.div`
-  //overflow-y: hidden;
+  overflow-y: hidden;
   flex: 1;
   width: 100%;
   background: ${theme.contentBackground};
@@ -32,7 +39,19 @@ const IssueDetails = styled.div`
 `
 
 // TODO: @aragon/ui Table?
-const Issue = ({ title, repo, number, labels, isSelected, onSelect, onSubmitWork, onRequestAssignment, onReviewApplication, balance, symbol }) => (
+const Issue = ({
+  title,
+  repo,
+  number,
+  labels,
+  isSelected,
+  onSelect,
+  onSubmitWork,
+  onRequestAssignment,
+  onReviewApplication,
+  balance,
+  symbol,
+}) => (
   <StyledIssue>
     <CheckButton checked={isSelected} onChange={onSelect} />
     <div
@@ -58,28 +77,31 @@ const Issue = ({ title, repo, number, labels, isSelected, onSelect, onSubmitWork
           {repo} #{number}
         </Text>
         <Text size="small" color={theme.textTertiary}>
-          { labels.totalCount ? (
-            labels.edges.map(label =>
-              <Badge
-                key={label.node.id}
-                style={{ marginLeft: '5px'}}
-                background={'#'+label.node.color}
-                foreground={'#000'}>{label.node.name}
-              </Badge>
-            )) : ''
-          }        
+          {labels.totalCount
+            ? labels.edges.map(label => (
+                <Badge
+                  key={label.node.id}
+                  style={{ marginLeft: '5px' }}
+                  background={'#' + label.node.color}
+                  foreground={'#000'}
+                >
+                  {label.node.name}
+                </Badge>
+              ))
+            : ''}
         </Text>
       </IssueDetails>
     </div>
     <div style={{ marginRight: '20px', display: 'inline-flex' }}>
-      { balance > 0 &&  
+      {balance > 0 && (
         <Badge
-          style={{padding: '10px', marginRight: '20px', textSize: 'large'}}
+          style={{ padding: '10px', marginRight: '20px', textSize: 'large' }}
           background={'#e7f8ec'}
-          foreground={theme.positive}>{balance + ' ' + symbol}
+          foreground={theme.positive}
+        >
+          {balance + ' ' + symbol}
         </Badge>
-        
-      }
+      )}
       <ContextMenu>
         <ContextMenuItem onClick={onSubmitWork}>
           <ActionLabel>Submit Work</ActionLabel>
@@ -106,9 +128,9 @@ Issue.propTypes = {
 const ActionLabel = styled.span`
   margin-left: 15px;
 `
-const MenuContainer = styled.div`
-  align-self: flex-end;
-  align-items: center;
-`
+// const MenuContainer = styled.div`s
+//   align-self: flex-end;
+//   align-items: center;
+// `
 
 export default Issue

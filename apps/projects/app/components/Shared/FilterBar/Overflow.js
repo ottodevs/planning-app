@@ -1,7 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
-
-
 import FilterButton from './FilterButton'
 
 // TODO: document.querySelectorAll(".tab").forEach(e => console.log(e.clientWidth))
@@ -56,14 +53,14 @@ class Overflow extends React.Component {
 
   render() {
     const visibleElements = this.splice(0, this.state.shown)
-    const overflowElements = this.splice(this.state.shown)
+    // const overflowElements = this.splice(this.state.shown)
     return (
       <div
         ref={this.theRef}
         style={{
           width: '40px',
           height: '40px',
-          //overflow: 'hidden',
+          // overflow: 'hidden',
           display: 'flex',
         }}
       >

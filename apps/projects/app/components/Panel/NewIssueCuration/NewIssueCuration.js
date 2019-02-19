@@ -39,20 +39,20 @@ class NewIssueCuration extends React.Component {
   render() {
     return (
       <Form onSubmit={this.submitCuration} submitText="Submit Curation">
-        {false &&
-        <FormField
-          required
-          label="Description"
-          input={
-            <DescriptionInput
-              name="description"
-              onChange={this.changeField}
-              placeholder="Describe your proposal."
-              value={this.state.description}
-            />
-          }
-        />
-        }
+        {false && (
+          <FormField
+            required
+            label="Description"
+            input={
+              <DescriptionInput
+                name="description"
+                onChange={this.changeField}
+                placeholder="Describe your proposal."
+                value={this.state.description}
+              />
+            }
+          />
+        )}
         <FormField
           label="Issues"
           required

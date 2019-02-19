@@ -3,7 +3,7 @@ import React from 'react'
 class ErrorBoundary extends React.Component {
   state = { hasError: false }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(_error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
   }
@@ -26,8 +26,7 @@ class ErrorBoundary extends React.Component {
             border: '1px solid #555',
             borderRadius: '5px',
             width: '80%',
-          }}
-        >
+          }}>
           <h2 style={{ margin: 0 }}>{'Oh-no! Something went wrong'}</h2>
           <p style={{ color: 'red' }}>{error && error.toString()}</p>
           <div>Stacktrace:</div>

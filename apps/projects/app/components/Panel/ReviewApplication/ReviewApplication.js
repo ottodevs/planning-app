@@ -3,17 +3,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { formatDistance } from 'date-fns'
 
-import {
-  Field,
-  Text,
-  TextInput,
-  Button,
-  Info,
-  SafeLink,
-} from '@aragon/ui'
+import { Text, Button, SafeLink } from '@aragon/ui'
 
 import { FormField, FieldTitle, DescriptionInput } from '../../Form'
-import { IconGitHub, CheckButton } from '../../Shared'
+import { IconGitHub } from '../../Shared'
 
 // external data, all of it
 const application = {
@@ -21,24 +14,25 @@ const application = {
     login: 'rkzel',
     name: 'RKZ',
     avatar: 'https://avatars0.githubusercontent.com/u/34452131?v=4',
-    url: 'https://github.com/rkzel'
+    url: 'https://github.com/rkzel',
   },
   workplan: 'I solemnly swear to work on it day and night until it is done.',
   hours: 13,
   eta: '2/13/2019',
-  applicationDate: '2/9/2019'
+  applicationDate: '2/9/2019',
 }
 
 class ReviewApplication extends React.Component {
   static propTypes = {
-    issue: PropTypes.object.isRequired
+    issue: PropTypes.object.isRequired,
   }
 
   state = {
-    feedback: ''
+    feedback: '',
   }
 
-  changeField = ({ target: { name, value } }) => this.setState({ [name]: value })
+  changeField = ({ target: { name, value } }) =>
+    this.setState({ [name]: value })
 
   onReviewApplicationAccept = () => {
     console.log('Accepted', this.state.feedback, application)
@@ -50,37 +44,49 @@ class ReviewApplication extends React.Component {
   render() {
     const { issue } = this.props
     const applicant = application.user
-    const applicationDateDistance = formatDistance(new Date(application.applicationDate), new Date())
+    const applicationDateDistance = formatDistance(
+      new Date(application.applicationDate),
+      new Date()
+    )
 
     return (
       <div>
         <IssueTitle>{issue.title}</IssueTitle>
-        
+
         <SafeLink
           href={issue.url}
           target="_blank"
           style={{ textDecoration: 'none', color: '#21AAE7' }}
         >
           <IssueLinkRow>
-            <IconGitHub color="#21AAE7" width='14px' height='14px' />
-            <Text style={{ marginLeft: '6px'}}>{issue.repo} #{issue.number}</Text>
+            <IconGitHub color="#21AAE7" width="14px" height="14px" />
+            <Text style={{ marginLeft: '6px' }}>
+              {issue.repo} #{issue.number}
+            </Text>
           </IssueLinkRow>
         </SafeLink>
 
         <ApplicationDetails>
           <UserLink>
-            <img src={applicant.avatar} style={{ width: '32px', height: '32px', marginRight: '10px'}} />
+            <img
+              src={applicant.avatar}
+              style={{ width: '32px', height: '32px', marginRight: '10px' }}
+            />
             <SafeLink
               href={applicant.url}
               target="_blank"
-              style={{ textDecoration: 'none', color: '#21AAE7', marginRight: '6px' }}
+              style={{
+                textDecoration: 'none',
+                color: '#21AAE7',
+                marginRight: '6px',
+              }}
             >
               {applicant.name ? applicant.name : applicant.login}
             </SafeLink>
             applied {applicationDateDistance} ago
           </UserLink>
 
-          <Separator/>
+          <Separator />
 
           <FieldTitle>Work Plan</FieldTitle>
           <DetailText>{application.workplan}</DetailText>
@@ -90,14 +96,13 @@ class ReviewApplication extends React.Component {
 
           <FieldTitle>Estimated Completion</FieldTitle>
           <DetailText>{application.eta}</DetailText>
-
         </ApplicationDetails>
 
         <FormField
           label="Feedback"
           input={
             <DescriptionInput
-              name='feedback'
+              name="feedback"
               rows={3}
               onChange={this.changeField}
               placeholder="Do you have any feedback to provide the applicant?"
@@ -106,8 +111,18 @@ class ReviewApplication extends React.Component {
         />
 
         <ReviewRow>
-          <ReviewButton emphasis="negative" onClick={this.onReviewApplicationReject}>Reject</ReviewButton>
-          <ReviewButton emphasis="positive" onClick={this.onReviewApplicationAccept}>Accept</ReviewButton>
+          <ReviewButton
+            emphasis="negative"
+            onClick={this.onReviewApplicationReject}
+          >
+            Reject
+          </ReviewButton>
+          <ReviewButton
+            emphasis="positive"
+            onClick={this.onReviewApplicationAccept}
+          >
+            Accept
+          </ReviewButton>
         </ReviewRow>
       </div>
     )
@@ -125,12 +140,13 @@ const DetailText = styled(Text)`
 const Separator = styled.hr`
   height: 1px;
   width: 100%;
-  color: #D1D1D1;
+  color: #d1d1d1;
   opacity: 0.1;
 `
+// TODO: Colors below and above use aragon theme if possible
 const ApplicationDetails = styled.div`
-  border: 1px solid #DAEAEF;
-  background-color: #F3F9FB;
+  border: 1px solid #daeaef;
+  background-color: #f3f9fb;
   padding: 14px;
   margin-bottom: 14px;
 `

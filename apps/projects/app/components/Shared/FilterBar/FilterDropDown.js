@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import ClickOutHandler from 'react-onclickout'
-import { Button, springs, unselectable, theme } from '@aragon/ui'
+import { springs, theme } from '@aragon/ui'
 import { IconArrowDown } from '../../Shared'
 import FilterButton from './FilterButton'
 
@@ -19,17 +19,17 @@ class FilterDropDown extends React.Component {
     opened: false,
   }
   handleClose = () => {
-    //console.log('handle CLOSE')
+    // console.log('handle CLOSE')
   }
 
   handleClickOut = () => {
     this.setState({ opened: false })
-    //console.log('handle CLOSE handleClickOut')
+    // console.log('handle CLOSE handleClickOut')
   }
 
   handleBaseButtonClick = () => {
     this.setState(({ opened }, { enabled }) => enabled && { opened: !opened })
-    //console.log('handleBaseButtonClick')
+    // console.log('handleBaseButtonClick')
   }
 
   render() {

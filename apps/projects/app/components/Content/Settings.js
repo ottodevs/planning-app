@@ -6,9 +6,12 @@ import NumberFormat from 'react-number-format'
 const bountyDeadlines = ['Weeks', 'Days', 'Hours']
 const bountyDeadlinesMul = [168, 24, 1] // it is one variable in contract, so number * multiplier = hours
 
+// TODO: Don't rely on this use web3-utils betters
+const web3 = global.web3
+
 class Settings extends React.Component {
   state = {
-    bountyCurrencies: this.props.tokens.map (token => token.symbol)
+    bountyCurrencies: this.props.tokens.map(token => token.symbol),
   }
 
   /*
@@ -46,7 +49,7 @@ class Settings extends React.Component {
     // bountyDeadlinesMul = [168, 24, 1]
     // in order to store the deadline as one number instead of two
     for (let i = 0; i < bountyDeadlinesMul.length; i++) {
-      if (s.bountyDeadline % bountyDeadlinesMul[i] == 0) {
+      if (s.bountyDeadline % bountyDeadlinesMul[i] === 0) {
         n.bountyDeadlineD = i
         n.bountyDeadlineT = s.bountyDeadline / bountyDeadlinesMul[i]
         break
@@ -85,7 +88,7 @@ class Settings extends React.Component {
       bountyAllocator,
     })
 
-    //expLevels, baseRate, bountyDeadline, bountyCurrency, bountyAllocator, bountyArbiter
+    // expLevels, baseRate, bountyDeadline, bountyCurrency, bountyAllocator, bountyArbiter
     this.props.app.changeBountySettings(
       expLevelsStr,
       web3.toHex(baseRate),
@@ -123,7 +126,7 @@ class Settings extends React.Component {
 
   generateExpLevelHandler = (index, key) => e => {
     let { expLevels } = this.state
-    if (key == 'M') expLevels[index].mul = e.target.value
+    if (key === 'M') expLevels[index].mul = e.target.value
     else expLevels[index].name = e.target.value
     this.setState({ expLevels })
   }
@@ -263,7 +266,7 @@ const BountyArbiter = ({ bountyArbiter, onChange }) => (
   </div>
 )
 
-const BountyCurrency = ({ bountyCurrency, onChange, bountyCurrencies}) => (
+const BountyCurrency = ({ bountyCurrency, onChange, bountyCurrencies }) => (
   <div>
     <Text.Block size="large" weight="bold">
       Bounty Currency
@@ -340,7 +343,7 @@ const ExperienceLevel = ({
   generateExpLevelHandler,
 }) => {
   let last = expLevels[expLevels.length - 1]
-  let disableAdd = last.mul != '' && last.name != '' ? false : true
+  let disableAdd = !(last.mul !== '' && last.name !== '')
   return (
     <div>
       <Text.Block size="large" weight="bold">
