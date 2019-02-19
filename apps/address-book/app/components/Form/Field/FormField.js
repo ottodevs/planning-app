@@ -44,7 +44,8 @@ const FormField = ({ input, label, hint, required, separator, err }) => {
 }
 
 FormField.propTypes = {
-  children: PropTypes.node,
+  // TODO: enable use or remove
+  // children: PropTypes.node,
   label: PropTypes.string,
   required: PropTypes.bool,
   hint: PropTypes.string,

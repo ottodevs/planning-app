@@ -7,7 +7,7 @@ let appState
 app.events().subscribe(handleEvents)
 
 app.state().subscribe(state => {
-  appState = state ? state : { entries: [] }
+  appState = state || { entries: [] }
 })
 
 /***********************
@@ -19,15 +19,15 @@ app.state().subscribe(state => {
 async function handleEvents({ event, returnValues }) {
   let nextState
   switch (event) {
-  case 'EntryAdded':
-    nextState = await onEntryAdded(appState, returnValues)
-    break
-  case 'EntryRemoved':
-    nextState = await onEntryRemoved(appState, returnValues)
-    break
-  default:
-    nextState = appState
-    console.log('[AddressBook script] unknown event', event, returnValues)
+    case 'EntryAdded':
+      nextState = await onEntryAdded(appState, returnValues)
+      break
+    case 'EntryRemoved':
+      nextState = await onEntryRemoved(appState, returnValues)
+      break
+    default:
+      nextState = appState
+      console.log('[AddressBook script] unknown event', event, returnValues)
   }
   // purify the resulting state to handle duplication edge cases
   const filteredState = { entries: filterEntries(nextState.entries) }

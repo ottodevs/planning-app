@@ -12,8 +12,8 @@ const ASSETS_URL = 'aragon-ui-assets/'
 class App extends React.Component {
   static propTypes = {
     app: PropTypes.object.isRequired,
-    // TODO: Shape this
-    entities: PropTypes.arrayOf(PropTypes.object),
+    // TODO: Shape and use this or remove
+    // entities: PropTypes.arrayOf(PropTypes.object),
   }
 
   state = {
@@ -51,7 +51,7 @@ class App extends React.Component {
         <ScrollWrapper>
           <Content>
             <Entities
-              entities={entries ? entries : []}
+              entities={entries || []}
               onNewEntity={this.newEntity}
               onRemoveEntity={this.removeEntity}
             />

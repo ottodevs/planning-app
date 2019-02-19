@@ -13,7 +13,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { Empty } from '../Card'
-import isAddress from 'web3-utils'
 import icon from '../../assets/copy.svg'
 
 const CopyIcon = () => <img src={icon} alt="Copy address to the clipboard" />
