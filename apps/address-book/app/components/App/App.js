@@ -1,7 +1,6 @@
 import { AragonApp, observe, SidePanel } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { hot } from 'react-hot-loader'
 import styled from 'styled-components'
 import Entities from './Entities'
 import NewEntityButton from './NewEntityButton'
@@ -96,4 +95,4 @@ const Content = styled.div`
 export default observe(
   observable => observable.map(state => ({ ...state })),
   {}
-)(hot(module)(App))
+)(App)

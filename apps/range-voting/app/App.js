@@ -1,5 +1,4 @@
 import React from 'react'
-import { hot } from 'react-hot-loader'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -154,4 +153,4 @@ const CloseIcon = styled(IconAdd)`
 export default observe(
   observable => observable.map(state => ({ ...state })),
   {}
-)(hot(module)(App))
+)(App)

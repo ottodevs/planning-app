@@ -1,7 +1,6 @@
 import { BaseStyles, PublicUrl, observe } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { hot } from 'react-hot-loader'
 import styled from 'styled-components'
 
 import { ApolloProvider } from 'react-apollo'
@@ -476,4 +475,4 @@ const StyledAragonApp = styled(PublicUrl.Provider).attrs({
 export default observe(
   observable => observable.map(state => ({ ...state })),
   {}
-)(hot(module)(App))
+)(App)
