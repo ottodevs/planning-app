@@ -1,4 +1,5 @@
-import { of } from './rxjs'
+import '@babel/polyfill'
+
 import Aragon from '@aragon/client'
 // import AddressBookJSON from '../../address-book/build/contracts/AddressBook.json'
 import addressBookEvents from '../../shared/abi/address-book'

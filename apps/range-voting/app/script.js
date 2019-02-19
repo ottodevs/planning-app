@@ -1,3 +1,5 @@
+import '@babel/polyfill'
+
 import Aragon from '@aragon/client'
 import { combineLatest } from './rxjs'
 import voteSettings, { hasLoadedVoteSettings } from './utils/vote-settings'

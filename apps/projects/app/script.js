@@ -1,7 +1,4 @@
-import Aragon, { providers } from '@aragon/client'
-import { first, of } from 'rxjs' // Make sure observables have .first
-import { combineLatest } from 'rxjs'
-import { empty } from 'rxjs/observable/empty'
+import '@babel/polyfill'
 
 import { GraphQLClient } from 'graphql-request'
 import { STATUS } from './utils/github'
