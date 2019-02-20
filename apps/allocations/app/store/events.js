@@ -3,6 +3,7 @@ import { onFundedAccount, onNewAccount, syncAccounts } from './account'
 import { onEntryAdded, onEntryRemoved } from './entry'
 
 export const handleEvent = async (state, { event, returnValues }) => {
+  if (!state) return
   const { addressBook, entries, accounts } = state
   let nextAccounts, nextEntries
 
