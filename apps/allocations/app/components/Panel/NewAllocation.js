@@ -64,7 +64,7 @@ class NewAllocation extends React.Component {
 
   isAddressError = (entities, addr) => {
     const isAddress = /^(0x)?[0-9a-f]{40}$/i.test(addr) // TODO: replace by: web3.isAddress(addr)
-    console.log('[isAddressError] entities', entities, 'addr', addr)
+    // console.log('[isAddressError] entities', entities, 'addr', addr)
     const isDuplicated =
       entities.length > 1 && entities.map(entity => entity.addr).includes(addr)
     const isEmpty = !addr || addr.length === 0 || addr === 0x0

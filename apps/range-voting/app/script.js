@@ -23,34 +23,31 @@ async function handleEvents(response) {
   }
   switch (response.event) {
     case 'CastVote':
-      console.info('[RangeVoting > script]: received CastVote')
+      // console.info('[RangeVoting > script]: received CastVote')
       nextState = await castVote(nextState, response.returnValues)
       break
     case 'ExecutionScript':
-      console.info('[RangeVoting > script]: received ExecutionScript')
-      console.info(response.returnValues)
+      // console.info('[RangeVoting > script]: received ExecutionScript')
+      // console.info(response.returnValues)
       break
     case 'ExecuteVote':
-      console.info('[RangeVoting > script]: received ExecuteVote')
+      // console.info('[RangeVoting > script]: received ExecuteVote')
 
       nextState = await executeVote(nextState, response.returnValues)
       break
     case 'StartVote':
-      console.info('[RangeVoting > script]: received StartVote')
+      // console.info('[RangeVoting > script]: received StartVote')
       nextState = await startVote(nextState, response.returnValues)
       break
     case 'ExternalContract':
       let funcSig = response.returnValues.funcSig
-      console.info('[RangeVoting > script]: received ExternalContract', funcSig)
+      // console.info('[RangeVoting > script]: received ExternalContract', funcSig)
       // Should actually be a case-switch
       if (funcSig.slice(58) === 'f2122136') {
-        console.log('Loading Projects Data')
+        // console.log('Loading Projects Data')
       } else {
-        console.log('Loading Allocations Contract')
-        allocations = app.external(
-          response.returnValues.addr,
-          AllocationJSON.abi
-        )
+        // console.log('Loading Allocations Contract')
+        allocations = app.external(response.returnValues.addr, allocationsAbi)
       }
       break
     default:
@@ -98,10 +95,10 @@ async function startVote(state, { voteId }) {
 
 async function loadVoteDescription(vote) {
   if (!vote.executionScript || vote.executionScript === EMPTY_CALLSCRIPT) {
-    console.info(
-      '[RangeVoting > script] loadVoteDescription: No description found for:',
-      vote
-    )
+    // console.info(
+    //   '[RangeVoting > script] loadVoteDescription: No description found for:',
+    //   vote
+    // )
     return vote
   }
 
@@ -120,7 +117,7 @@ async function loadVoteDescription(vote) {
 }
 
 async function loadVoteData(voteId) {
-  console.info('[RangeVoting > script]: loadVoteData')
+  // console.info('[RangeVoting > script]: loadVoteData')
   return new Promise((resolve, reject) => {
     app
       .call('getVote', voteId)
@@ -128,10 +125,10 @@ async function loadVoteData(voteId) {
       .subscribe(voteData => {
         let funcSig = voteData.executionScript.slice(58, 66)
         if (funcSig === 'f2122136') {
-          console.log('Loading Projects Data')
+          // console.log('Loading Projects Data')
           resolve(loadVoteDataProjects(voteData, voteId))
         } else {
-          console.log('Loading Allocations Data')
+          // console.log('Loading Allocations Data')
           resolve(loadVoteDataAllocation(voteData, voteId))
         }
       })
@@ -151,7 +148,7 @@ async function loadVoteDataAllocation(vote, voteId) {
           let options = []
           for (let i = 0; i < totalCandidates; i++) {
             let candidateData = await getAllocationCandidate(voteId, i)
-            console.log(candidateData)
+            // console.log(candidateData)
             options.push(candidateData)
           }
           let returnObject = {
@@ -190,16 +187,16 @@ async function loadVoteDataProjects(vote, voteId) {
     )
       .first()
       .subscribe(([metadata, totalCandidates, canExecute]) => {
-        console.log('projects data:', metadata, totalCandidates, canExecute)
+        // console.log('projects data:', metadata, totalCandidates, canExecute)
         loadVoteDescription(vote).then(async vote => {
           let options = []
-          console.log('Vote data:', voteId, vote)
+          // console.log('Vote data:', voteId, vote)
           for (let i = 0; i < totalCandidates; i++) {
             let candidateData = await getProjectCandidate(voteId, i)
-            console.log('candidate data', candidateData)
+            // console.log('candidate data', candidateData)
             options.push(candidateData)
           }
-          console.log(metadata)
+          // console.log(metadata)
           let returnObject = {
             ...marshallVote(vote),
             metadata: 'Range Vote ' + voteId + ' - Issue Curation',
@@ -218,7 +215,7 @@ async function updateVotes(votes, voteId, transform) {
   let nextVotes = Array.from(votes)
   if (voteIndex === -1) {
     // If we can't find it, load its data, perform the transformation, and concat
-    console.log('Vote Not Found')
+    // console.log('Vote Not Found')
     nextVotes = votes.concat(
       await transform({
         voteId,

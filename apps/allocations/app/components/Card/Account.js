@@ -35,7 +35,7 @@ const Account = ({
   // }
 
   const executePayout = () => {
-    console.info('App.js: Executing Payout:')
+    // console.info('App.js: Executing Payout:')
     app.runPayout(id)
   }
   /* Need a better solution that this, should be handled in
@@ -85,8 +85,8 @@ const Account = ({
           <StatsValue>
             {' ' +
               BigNumber(balance)
-              .div(BigNumber(10e17))
-              .dp(3)
+                .div(BigNumber(10e17))
+                .dp(3)
                 .toString()}{' '}
             {translatedToken}
           </StatsValue>
@@ -98,8 +98,8 @@ const Account = ({
           <StatsValue>
             {' ' +
               BigNumber(limit)
-              .div(BigNumber(10e17))
-              .dp(3)
+                .div(BigNumber(10e17))
+                .dp(3)
                 .toString()}{' '}
             {translatedToken}/ Allocation
           </StatsValue>

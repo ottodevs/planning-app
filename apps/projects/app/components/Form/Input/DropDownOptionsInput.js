@@ -26,11 +26,11 @@ class DropDownOptionsInput extends React.Component {
     if (input && !value.includes(input)) {
       this.props.onChange({ target: { name, value: [...value, input] } })
       this.props.onChange({ target: { name: 'optionsInput', value: '' } })
-      console.log('Option Added')
+      // console.log('Option Added')
     } else {
-      console.log(
-        'DropDownOptionsInput: The option is empty or already present'
-      )
+      // console.log(
+      //   'DropDownOptionsInput: The option is empty or already present'
+      // )
     }
   }
 
@@ -42,7 +42,7 @@ class DropDownOptionsInput extends React.Component {
       this.props.onChange({
         target: { name, value },
       })
-    console.log('Option Removed', option, this.props.value)
+    // console.log('Option Removed', option, this.props.value)
   }
 
   onChangeInput = ({ target: { value } }) => {

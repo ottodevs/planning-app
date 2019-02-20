@@ -32,7 +32,7 @@ let ipfs = ipfsClient({ host: 'localhost', port: '5001', protocol: 'http' })
 
 switch (window.location.origin) {
   case 'http://localhost:3333':
-    console.log('Github OAuth: Using local http provider deployment')
+    // console.log('Github OAuth: Using local http provider deployment')
     CLIENT_ID = 'd556542aa7a03e640409'
     REDIRECT_URI = 'http://localhost:3333'
     AUTH_URI = 'https://tps-github-auth.now.sh/authenticate'
@@ -40,7 +40,7 @@ switch (window.location.origin) {
     // AUTH_URI = 'https://dev-tps-github-auth.now.sh/authenticate'
     break
   case 'http://localhost:8080':
-    console.log('Github OAuth: Using local IPFS deployment')
+    // console.log('Github OAuth: Using local IPFS deployment')
     CLIENT_ID = '686f96197cc9bb07a43d'
     REDIRECT_URI = window.location.href
     AUTH_URI = 'https://local-tps-github-auth.now.sh/authenticate'
@@ -99,7 +99,7 @@ const getURLParam = param => {
  * @returns {string} The authentication token obtained from the auth server
  */
 const getToken = async code => {
-  console.log('getToken entered')
+  // console.log('getToken entered')
 
   // TODO: Manage when server does not respond
   try {
@@ -142,15 +142,15 @@ class App extends React.PureComponent {
     if (message.data.from !== 'popup') return
     if (message.data.name === 'code') {
       // TODO: Optimize the listeners lifecycle, ie: remove on unmount
-      console.log('removing messageListener')
+      // console.log('removing messageListener')
       window.removeEventListener('message', this.messageHandler)
 
       const code = message.data.value
-      console.log('AuthCode received from github:', code)
-      console.log('Proceeding to token request...')
+      // console.log('AuthCode received from github:', code)
+      // console.log('Proceeding to token request...')
       // TODO: Check token received correctly
       const token = await getToken(code)
-      console.log('token obtained:', token)
+      // console.log('token obtained:', token)
       this.props.app.cache('github', {
         status: STATUS.AUTHENTICATED,
         token: token,
@@ -169,13 +169,13 @@ class App extends React.PureComponent {
   }
 
   createProject = ({ owner, project }) => {
-    console.info('App.js: createProject', project, owner)
+    // console.info('App.js: createProject', project, owner)
     this.closePanel()
     this.props.app.addRepo(web3.toHex(project), web3.toHex(owner))
   }
 
   removeProject = projectId => {
-    console.log('App.js: removeProject', projectId)
+    // console.log('App.js: removeProject', projectId)
     this.props.app.removeRepo(projectId)
     // TODO: Toast feedback here maybe
   }
@@ -226,8 +226,8 @@ class App extends React.PureComponent {
   }
 
   onSubmitBountyAllocation = async issues => {
-    console.log('repos:', this.props.repos)
-    console.log('bounty allocation submitted', issues)
+    // console.log('repos:', this.props.repos)
+    // console.log('bounty allocation submitted', issues)
     let bountySymbol = this.props.bountySettings.bountyCurrency
     let bountyToken
     this.props.tokens.forEach(token => {
@@ -253,9 +253,9 @@ class App extends React.PureComponent {
     // ]
 
     let content = ipfs.types.Buffer.from(issues.toString())
-    console.log(content)
-    console.log(ipfs)
-    console.log(ipfs.files)
+    // console.log(content)
+    // console.log(ipfs)
+    // console.log(ipfs.files)
     let results = await ipfs.add(content)
     console.log(results)
 
@@ -269,36 +269,36 @@ class App extends React.PureComponent {
         ...issues[key],
       })
     }
-    console.log('bounty allocation submitted', repos)
+    // console.log('bounty allocation submitted', repos)
     for (var repoKey in repos) {
       repo = repos[repoKey]
       let ipfsString = ''
       let content, results
       await repo.forEach(async r => {
-        console.log('String Builder')
-        console.log(r)
+        // console.log('String Builder')
+        // console.log(r)
         content = ipfs.types.Buffer.from(r.toString())
         results = await ipfs.add(content)
-        console.log(results)
+        // console.log(results)
         ipfsString += results[0].hash
-        console.log(ipfsString)
+        // console.log(ipfsString)
       })
 
       repo = repos[key]
-      console.log(repo)
-      console.log(key)
+      // console.log(repo)
+      // console.log(key)
       const tokenArray = new Array(repo.length).fill(bountyToken)
 
-      console.log(
-        'Bounty data',
-        web3.toHex('MDEwOlJlcG9zaXRvcnkxMjY4OTkxNDM='),
-        repo.map(issue => issue.number),
-        repo.map(issue => issue.size),
-        repo.map(issue => issue.deadline),
-        new Array(repo.length).fill(true),
-        tokenArray,
-        ipfsString
-      )
+      // console.log(
+      //   'Bounty data',
+      //   web3.toHex('MDEwOlJlcG9zaXRvcnkxMjY4OTkxNDM='),
+      //   repo.map(issue => issue.number),
+      //   repo.map(issue => issue.size),
+      //   repo.map(issue => issue.deadline),
+      //   new Array(repo.length).fill(true),
+      //   tokenArray,
+      //   ipfsString
+      // )
       this.props.app.addBounties(
         web3.toHex('MDEwOlJlcG9zaXRvcnkxMjY4OTkxNDM='),
         repo.map(issue => issue.number),
@@ -421,7 +421,7 @@ class App extends React.PureComponent {
     // The popup is launched, its ref is checked and saved in the state in one step
     this.setState(({ oldPopup }) => ({ popup: githubPopup(oldPopup) }))
     // Listen for the github redirection with the auth-code encoded as url param
-    console.log('adding messageListener')
+    // console.log('adding messageListener')
     window.addEventListener('message', this.handlePopupMessage)
   }
 

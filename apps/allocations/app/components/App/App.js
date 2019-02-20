@@ -30,8 +30,8 @@ class App extends React.Component {
     account.limit = parseInt(limit) * 10e17
     this.props.app.newPayout(account.description, account.limit, 0x0)
     this.closePanel()
-    console.info('App.js: Account Created:')
-    console.table(account)
+    // console.info('App.js: Account Created:')
+    // console.table(account)
     this.setState({})
   }
 
@@ -50,22 +50,22 @@ class App extends React.Component {
       allocation.period,
       allocation.balance
     )
-    console.info('App.js: Allocation submitted:')
-    console.table(allocation)
+    // console.info('App.js: Allocation submitted:')
+    // console.table(allocation)
     this.closePanel()
   }
 
   onExecutePayout = id => {
-    console.info('App.js: Executing Payout:')
-    console.info(id)
+    // console.info('App.js: Executing Payout:')
+    // console.info(id)
     this.props.app.executePayout(id)
   }
 
   manageParameters = address => {
     // TODO: Implement
-    console.info(
-      `'App.js: Manage Parameters clicked from account with address: ${address}`
-    )
+    // console.info(
+    //   `'App.js: Manage Parameters clicked from account with address: ${address}`
+    // )
   }
 
   newAccount = () => {

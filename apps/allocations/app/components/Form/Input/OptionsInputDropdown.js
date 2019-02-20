@@ -42,7 +42,7 @@ class OptionsInputDropdown extends React.Component {
           },
         },
       })
-      console.log('Option Added')
+      // console.log('Option Added')
     } else {
       this.props.onChange({ target: { name: 'addressError', value: true } })
       console.log(
@@ -59,7 +59,7 @@ class OptionsInputDropdown extends React.Component {
       this.props.onChange({
         target: { name, value },
       })
-    console.log('Option Removed', option, this.props.value)
+    // console.log('Option Removed', option, value)
   }
 
   render() {

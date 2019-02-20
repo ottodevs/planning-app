@@ -34,9 +34,9 @@ class OptionsInput extends React.Component {
         target: { name: 'optionsInputString', value: { addr: '' } },
       })
       // this.props.error = true // TODO: It is not possible to modify props this way
-      console.log('Option Added')
+      // console.log('Option Added')
     } else {
-      console.log('[OptionsInput.js] Option empty or already present')
+      // console.log('[OptionsInput.js] Option empty or already present')
     }
   }
 
@@ -48,7 +48,7 @@ class OptionsInput extends React.Component {
       this.props.onChange({
         target: { name, value },
       })
-    console.log('Option Removed', option, this.props.value)
+    // console.log('Option Removed', option, this.props.value)
   }
 
   onChangeInput = ({ target: { value } }) => {

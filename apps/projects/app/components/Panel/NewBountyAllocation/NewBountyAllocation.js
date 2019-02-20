@@ -71,16 +71,16 @@ class NewBountyAllocation extends React.Component {
       bounties[id][key] = val
     }
     this.setState({ bounties })
-    console.log('configBounty: ', bounties)
+    // console.log('configBounty: ', bounties)
   }
 
   updateSize = id => {
     const { bounties } = this.state
     const rate = this.props.bountySettings.baseRate
-    console.log('Update Size')
-    console.log(rate)
-    console.log(bountyHours[bounties[id]['hours']])
-    console.log(bountyExp[bounties[id]['exp']])
+    // console.log('Update Size')
+    // console.log(rate)
+    // console.log(bountyHours[bounties[id]['hours']])
+    // console.log(bountyExp[bounties[id]['exp']])
     let size =
       bountyHours[bounties[id]['hours']] *
       rate *
@@ -92,28 +92,28 @@ class NewBountyAllocation extends React.Component {
   generateHoursChange = id => index => {
     this.configBounty(id, 'hours', index)
     this.updateSize(id)
-    console.log('generateHoursChange: id: ', id, ', index: ', index)
+    // console.log('generateHoursChange: id: ', id, ', index: ', index)
   }
 
   generateExpChange = id => index => {
     this.configBounty(id, 'exp', index)
     this.updateSize(id)
-    console.log('generateExpChange: id: ', id, ', index: ', index)
+    // console.log('generateExpChange: id: ', id, ', index: ', index)
   }
 
   generateDeadlineChange = id => index => {
     this.configBounty(id, 'deadline', index)
-    console.log('generateExpChange: id: ', id, ', index: ', index)
+    // console.log('generateExpChange: id: ', id, ', index: ', index)
   }
 
   generateAvailChange = id => index => {
     this.configBounty(id, 'avail', index)
-    console.log('generateExpChange: id: ', id, ', index: ', index)
+    // console.log('generateExpChange: id: ', id, ', index: ', index)
   }
 
   generateArrowChange = id => () => {
     this.configBounty(id, 'detailsOpen')
-    console.log('generateArrowChange: id: ', id)
+    // console.log('generateArrowChange: id: ', id)
   }
 
   submitBounties = () => {
@@ -130,7 +130,7 @@ class NewBountyAllocation extends React.Component {
     for (let i = 0; i < a.length; i += 2)
       bountyExp.push({ mul: a[i] / 100, name: a[i + 1] })
 
-    console.log('bounties: ', bounties, ', bountySettings: ', bountySettings)
+    // console.log('bounties: ', bounties, ', bountySettings: ', bountySettings)
     return (
       <Form
         onSubmit={this.submitBounties}

@@ -65,7 +65,7 @@ const getRepoData = repo => {
     let data = client.request(repoData(repo))
     return data
   } catch (err) {
-    console.error('getRepoData failed: ', err)
+    console.error('[Projects script] getRepoData failed: ', err)
   }
 }
 
@@ -80,8 +80,8 @@ const initClient = authToken => {
 // TODO: Handle cases where checking validity of token fails (revoked, etc)
 
 github().subscribe(result => {
-  console.log('github object received from cache:', result)
   if (result) {
+    // console.log('[Projects script] github object received from cache', result)
     result.token && initClient(result.token)
   } else app.cache('github', { status: STATUS.INITIAL })
 })
@@ -89,7 +89,7 @@ github().subscribe(result => {
 app.events().subscribe(handleEvents)
 
 app.state().subscribe(state => {
-  state && console.log('[Projects script] state subscription:\n', state)
+  // state && console.log('[Projects script] state subscription', state)
   appState = state || { repos: [], bountySettings: {}, tokens: [] }
   if (!vault) {
     // this should be refactored to be a "setting"
@@ -110,42 +110,42 @@ async function handleEvents(response) {
   let nextState
   switch (response.event) {
     case 'RepoAdded':
-      console.log('[Projects] event RepoAdded')
+      // console.log('[Projects] RepoAdded')
       nextState = await syncRepos(appState, response.returnValues)
       break
     case 'RepoRemoved':
-      console.log('[Projects] RepoRemoved', response.returnValues)
+      // console.log('[Projects] RepoRemoved', response.returnValues)
       nextState = await syncRepos(appState, response.returnValues)
       break
     case 'RepoUpdated':
-      console.log('[Projects] RepoUpdated', response.returnValues)
+      // console.log('[Projects] RepoUpdated', response.returnValues)
       nextState = await syncRepos(appState, response.returnValues)
       break
     case 'BountyAdded':
-      console.log('[Projects] BountyAdded', response.returnValues)
+      // console.log('[Projects] BountyAdded', response.returnValues)
       nextState = await syncIssues(appState, response.returnValues)
-      console.log('Bounty Added State Change', nextState)
+      // console.log('[Projects] Bounty Added State Change', nextState)
       break
     case 'IssueCurated':
-      console.log('[Projects] IssueCurated', response.returnValues)
+      // console.log('[Projects] IssueCurated', response.returnValues)
       nextState = await syncRepos(appState, response.returnValues)
       break
     case 'BountySettingsChanged':
-      console.log('[Projects] BountySettingsChanged')
+      // console.log('[Projects] BountySettingsChanged')
       nextState = await syncSettings(appState) // No returnValues on this
       break
     case 'VaultDeposit':
-      console.log('[Projects] VaultDeposit')
+      // console.log('[Projects] VaultDeposit')
       nextState = await syncTokens(appState, response.returnValues)
       break
     default:
-      console.log('[Projects] Unknown event caught:', response)
+    // console.log('[Projects] Unknown event caught:', response)
   }
   app.cache('state', nextState)
 }
 
 async function syncRepos(state, { repoId, ...eventArgs }) {
-  console.log('syncRepos: arguments from events:', eventArgs)
+  // console.log('[Projects script] syncRepos: arguments from events:', eventArgs)
 
   const transform = ({ ...repo }) => ({
     ...repo,
@@ -154,12 +154,12 @@ async function syncRepos(state, { repoId, ...eventArgs }) {
     let updatedState = await updateState(state, repoId, transform)
     return updatedState
   } catch (err) {
-    console.error('updateState failed to return:', err)
+    console.error('[Projects script] syncRepos failed', err)
   }
 }
 
 async function syncIssues(state, { repoId, issueNumber, ...eventArgs }) {
-  console.log('syncIssues: arguments from events:', eventArgs)
+  // console.log('syncIssues: arguments from events:', eventArgs)
 
   const transform = ({ ...repo }) => ({
     ...repo,
@@ -273,13 +273,15 @@ function loadSettings() {
 
 async function checkReposLoaded(repos, id, transform) {
   const repoIndex = repos.findIndex(repo => repo.id === id)
-  console.log('this is the repo index:', repoIndex)
-  console.log('checkReposLoaded, repoIndex:', repos, id)
+  // console.log('this is the repo index:', repoIndex)
+  // console.log('checkReposLoaded, repoIndex:', repos, id)
   const { metadata, ...data } = await loadRepoData(id)
 
   if (repoIndex === -1) {
     // If we can't find it, load its data, perform the transformation, and concat
-    console.log('repo not found in the cache: retrieving from chain')
+    // console.log(
+    //   '[Projects script] repo not found in the cache: retrieving from chain'
+    // )
     return repos.concat(
       await transform({
         id,
@@ -288,7 +290,7 @@ async function checkReposLoaded(repos, id, transform) {
       })
     )
   } else {
-    console.log('repo found: ' + repoIndex)
+    // console.log('repo found: ' + repoIndex)
     const nextRepos = Array.from(repos)
     nextRepos[repoIndex] = await transform({
       id,
@@ -303,14 +305,14 @@ async function checkIssuesLoaded(issues, repoId, issueNumber, transform) {
   const issueIndex = issues.findIndex(
     issue => issue.issueNumber === issueNumber
   )
-  console.log('this is the issue index:', issueIndex)
-  console.log('checkIssuesLoaded, issueNumber:', issues, issueNumber)
+  // console.log('this is the issue index:', issueIndex)
+  // console.log('checkIssuesLoaded, issueNumber:', issues, issueNumber)
   const data = await loadIssueData(repoId, issueNumber)
-  console.log('loadIssueData:', data)
+  // console.log('loadIssueData:', data)
 
   if (issueIndex === -1) {
     // If we can't find it, load its data, perform the transformation, and concat
-    console.log('issue not found in the cache: retrieving from chain')
+    // console.log('issue not found in the cache: retrieving from chain')
     return issues.concat(
       await transform({
         issueNumber,
@@ -318,7 +320,7 @@ async function checkIssuesLoaded(issues, repoId, issueNumber, transform) {
       })
     )
   } else {
-    console.log('issue found: ' + issueIndex)
+    // console.log('issue found: ' + issueIndex)
     const nextIssues = Array.from(issues)
     nextIssues[issueIndex] = await transform({
       issueNumber,
@@ -329,7 +331,7 @@ async function checkIssuesLoaded(issues, repoId, issueNumber, transform) {
 }
 
 async function updateState(state, id, transform) {
-  console.log('update state: ' + state + ', id: ' + id)
+  // console.log('update state: ' + state + ', id: ' + id)
   const { repos = [] } = state
   try {
     let newRepos = await checkReposLoaded(repos, id, transform)
@@ -346,7 +348,7 @@ async function updateState(state, id, transform) {
 }
 
 async function updateIssueState(state, repoId, issueNumber, transform) {
-  console.log('update state: ', state, ', id: ', repoId)
+  // console.log('update state: ', state, ', id: ', repoId)
   const { issues = [] } = state
   try {
     let newIssues = await checkIssuesLoaded(

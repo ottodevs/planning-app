@@ -26,7 +26,7 @@ class SubmitWork extends React.Component {
   setAck2 = () => this.setState(prevState => ({ ack2: !prevState.ack2 }))
 
   onSubmitWork = () => {
-    console.log('Submit', this.state)
+    // console.log('Submit', this.state)
   }
 
   canSubmit = () =>

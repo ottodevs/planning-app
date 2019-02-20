@@ -79,14 +79,14 @@ class Settings extends React.Component {
     let expLevelsStr = expLevels
       .map(l => l.mul * 100 + '\t' + l.name)
       .join('\t')
-    console.log('Submitting new Settings: ', {
-      lvl: expLevelsStr,
-      rate: web3.toHex(baseRate),
-      ddl: web3.toHex(bountyDeadline),
-      cur: bountyCurrencies[bountyCurrency],
-      bountyArbiter,
-      bountyAllocator,
-    })
+    // console.log('Submitting new Settings: ', {
+    //   lvl: expLevelsStr,
+    //   rate: web3.toHex(baseRate),
+    //   ddl: web3.toHex(bountyDeadline),
+    //   cur: bountyCurrencies[bountyCurrency],
+    //   bountyArbiter,
+    //   bountyAllocator,
+    // })
 
     // expLevels, baseRate, bountyDeadline, bountyCurrency, bountyAllocator, bountyArbiter
     this.props.app.changeBountySettings(
@@ -143,7 +143,7 @@ class Settings extends React.Component {
       bountyArbiter,
     } = this.state
 
-    console.log('bounteysee', bountyCurrency)
+    // console.log('bounteysee', bountyCurrency)
 
     // TODO: hourglass in case settings are still being loaded
     if (!('baseRate' in this.props.bountySettings))

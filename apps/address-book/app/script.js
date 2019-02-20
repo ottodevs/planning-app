@@ -27,7 +27,7 @@ async function handleEvents({ event, returnValues }) {
       break
     default:
       nextState = appState
-      console.log('[AddressBook script] unknown event', event, returnValues)
+    // console.log('[AddressBook script] unknown event', event, returnValues) // very spammy, TODO:remove?
   }
   // purify the resulting state to handle duplication edge cases
   const filteredState = { entries: filterEntries(nextState.entries) }
@@ -38,13 +38,13 @@ const onEntryAdded = async ({ entries = [] }, { addr }) => {
   // is addr already in the state?
   if (entries.some(entry => entry.addr === addr)) {
     // entry already cached, do nothing
-    console.log('[AddressBook script]', addr, 'already cached')
+    // console.log('[AddressBook script]', addr, 'already cached')
   } else {
     // entry not cached
     const data = await loadEntryData(addr) // async load data from contract
     const entry = { addr, data } // transform for the frontend to understand
     entries.push(entry) // add to the state object received as param
-    console.log('[AddressBook script] caching new contract entry', data.name)
+    // console.log('[AddressBook script] caching new contract entry', data.name)
     // console.log('[AddressBook script] at position', addedIndex) // in case we need the index
   }
   const state = { entries } // return the (un)modified entries array
@@ -55,7 +55,7 @@ const onEntryRemoved = async ({ entries = [] }, { addr }) => {
   const removeIndex = entries.findIndex(entry => entry.addr === addr)
   if (removeIndex > -1) {
     // entry already cached, remove from state
-    console.log('[AddressBook script] removing', addr.name, 'cached copy')
+    // console.log('[AddressBook script] removing', addr.name, 'cached copy')
     entries.splice(removeIndex, 1)
   }
 

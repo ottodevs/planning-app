@@ -27,7 +27,7 @@ class RequestAssignment extends React.Component {
   setAck2 = () => this.setState(prevState => ({ ack2: !prevState.ack2 }))
 
   onRequestAssignment = () => {
-    console.log('RequestAssignment', this.state)
+    // console.log('RequestAssignment', this.state)
   }
 
   canSubmit = () =>

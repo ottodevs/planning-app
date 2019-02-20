@@ -37,7 +37,7 @@ class ReviewWork extends React.Component {
     if (!this.state.rating) this.setState({ ratingAlert: true })
     else {
       this.setState({ ratingAlert: false })
-      console.log(result, this.state.feedback, work)
+      // console.log(result, this.state.feedback, work)
     }
   }
 
@@ -53,7 +53,7 @@ class ReviewWork extends React.Component {
 
   onRatingChange = index => {
     this.setState({ rating: index })
-    console.log('index: ', index)
+    // console.log('index: ', index)
   }
 
   render() {

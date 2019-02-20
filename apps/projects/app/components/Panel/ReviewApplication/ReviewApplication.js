@@ -35,10 +35,10 @@ class ReviewApplication extends React.Component {
     this.setState({ [name]: value })
 
   onReviewApplicationAccept = () => {
-    console.log('Accepted', this.state.feedback, application)
+    // console.log('Accepted', this.state.feedback, application)
   }
   onReviewApplicationReject = () => {
-    console.log('Rejected', this.state.feedback, application)
+    // console.log('Rejected', this.state.feedback, application)
   }
 
   render() {

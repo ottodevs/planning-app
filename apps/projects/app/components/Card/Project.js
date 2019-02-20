@@ -29,7 +29,7 @@ const Project = ({
   changeActiveIndex,
 }) => {
   const removeProject = () => {
-    console.log('removeProject')
+    // console.log('removeProject')
     onRemoveProject(id)
   }
 

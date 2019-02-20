@@ -899,15 +899,15 @@ const savedRepos = {
 }
 
 function projectsMockData() {
-  console.log('getPreprocessedRepos', savedRepos)
+  // console.log('getPreprocessedRepos', savedRepos)
   return processRepos(savedRepos)
 }
 
 function processRepos(data) {
   var reposFromServer = {}
-  console.log('processRepos 1', data)
-  console.log('processRepos 2', data['user'])
-  console.log('processRepos 3', data['user'].repositories)
+  // console.log('processRepos 1', data)
+  // console.log('processRepos 2', data['user'])
+  // console.log('processRepos 3', data['user'].repositories)
   data['user'].repositories.edges.forEach(rNode => {
     var commits = 0
     rNode.node.refs.edges.forEach(refNode => {

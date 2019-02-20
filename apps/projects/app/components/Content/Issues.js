@@ -225,7 +225,7 @@ class Issues extends React.PureComponent {
 
     tokens.forEach(token => {
       tokenObj[token.addr] = token.symbol
-      console.log('tokenObj:', tokenObj)
+      // console.log('tokenObj:', tokenObj)
     })
 
     const { allSelected } = this.state
@@ -238,7 +238,7 @@ class Issues extends React.PureComponent {
       issues.map(({ __typename, repository: { name }, ...fields }) => {
         if (bountyIssueObj[fields.number]) {
           let data = bountyIssueObj[fields.number].data
-          console.log('Bounty Issue Info:', data)
+          // console.log('Bounty Issue Info:', data)
 
           return {
             ...fields,
