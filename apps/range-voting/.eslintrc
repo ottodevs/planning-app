@@ -7,13 +7,15 @@
     "standard",
     "standard-react",
     "plugin:prettier/recommended",
-    "prettier/react"
+    "prettier/react",
+    "prettier/standard"
   ],
   "parser": "babel-eslint",
   "plugins": ["prettier", "react"],
   "rules": {
-    "valid-jsdoc": "error",
+    "linebreak-style": ["error", "unix"],
+    "react/no-did-update-set-state": 0,
     "react/prop-types": 0,
-    "linebreak-style": ["error", "unix"]
+    "valid-jsdoc": "error"
   }
 }
