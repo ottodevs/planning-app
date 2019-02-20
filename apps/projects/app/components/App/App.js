@@ -346,18 +346,6 @@ class App extends React.PureComponent {
     }))
   }
 
-  onReviewApplication = props => console.log('onReviewApplication', props)
-
-  reviewApplication = issue => {
-    this.setState((_prevState, _prevProps) => ({
-      panel: PANELS.ReviewApplication,
-      panelProps: {
-        issue,
-        onSubmit: this.onReviewApplication,
-      },
-    }))
-  }
-
   curateIssues = issues => {
     this.setState((_prevState, _prevProps) => ({
       panel: PANELS.NewIssueCuration,
