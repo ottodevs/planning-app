@@ -4,7 +4,7 @@ import Aragon from '@aragon/client'
 import { combineLatest } from './rxjs'
 import voteSettings, { hasLoadedVoteSettings } from './utils/vote-settings'
 import { EMPTY_CALLSCRIPT } from './utils/vote-utils'
-import AllocationJSON from '../../shared/json-abis/Allocations.json'
+import allocationsAbi from '../../shared/abi/allocations'
 
 const app = new Aragon()
 let allocations

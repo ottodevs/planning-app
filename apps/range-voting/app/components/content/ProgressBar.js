@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+// TODO: migrate to spring
 import { Motion, spring } from 'react-motion'
 import { Text, theme } from '@aragon/ui'
 

@@ -13,16 +13,13 @@ import {
   Text,
   theme,
 } from '@aragon/ui'
-import { combineLatest } from '../../rxjs'
-import provideNetwork from '../../utils/provideNetwork'
-// import { VOTE_NAY, VOTE_YEA } from '../../utils/vote-types'
-import { safeDiv } from '../../utils/math-utils'
-// import VoteSummary from '../VoteSummary'
-import VoteStatus from '../VoteStatus'
-import ProgressBarThick from '../ProgressBarThick'
-import Slider from '../Slider'
 
-class VotePanelContent extends React.Component {
+import { combineLatest } from '../../../rxjs'
+import { provideNetwork, safeDiv } from '../../../../../shared/ui'
+import { ProgressBarThick, Slider } from './'
+import { VoteStatus } from '../'
+
+class Voting extends React.Component {
   static propTypes = {
     app: PropTypes.object, // TODO: isRequired?
   }
@@ -81,6 +78,8 @@ class VotePanelContent extends React.Component {
           const adjustedBalance = Math.floor(
             parseInt(balance, 10) / Math.pow(10, decimals)
           )
+          console.log('the balance:', adjustedBalance)
+
           this.setState({
             userBalance: adjustedBalance,
           })
@@ -128,6 +127,8 @@ class VotePanelContent extends React.Component {
     }
   }
   render() {
+    console.log('panel props and state:', this.props, this.state)
+
     const { vote, minParticipationPct } = this.props
     const { showResults, voteOptions, remaining } = this.state
     if (!vote) {
@@ -439,4 +440,4 @@ const CreatorImg = styled.div`
 //   }
 // `
 
-export default provideNetwork(VotePanelContent)
+export default provideNetwork(Voting)

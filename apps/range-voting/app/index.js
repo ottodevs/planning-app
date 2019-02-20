@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Aragon, { providers } from '@aragon/client'
-import App from './App'
+import { App } from './components'
 
 class ConnectedApp extends React.Component {
   state = {
@@ -17,7 +17,7 @@ class ConnectedApp extends React.Component {
   }
   // handshake between Aragon Core and the iframe,
   // since iframes can lose messages that were sent before they were ready
-  handleWrapperMessage = ({ data }) => {
+  handleWrapperMessage = async ({ data }) => {
     if (data.from !== 'wrapper') {
       return
     }

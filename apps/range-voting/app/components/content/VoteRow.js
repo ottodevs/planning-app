@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Countdown, TableCell, TableRow, Badge, theme } from '@aragon/ui'
+
 import ProgressBar from './ProgressBar'
-import VoteStatus from './VoteStatus'
-import { safeDiv } from '../utils/math-utils'
+import { VoteStatus } from '../'
+import { safeDiv } from '../../../../shared/ui'
 
 const generateBadge = (foreground, background, text) => (
   <Badge foreground={foreground} background={background}>

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { BadgeNumber, colors } from '@aragon/ui'
-import VotesTable from '../components/VotesTable'
+import VotesTable from './VotesTable'
 
 class Votes extends React.Component {
   render() {
