@@ -131,12 +131,14 @@ const CardDescriptionText = styled(Text.Block).attrs({
   size: 'xsmall',
 })`
   display: block;
-  display: -webkit-box;
+  /* TODO: check this: */
+  /* display: -webkit-box; */
   height: 7.1em;
-  margin: 0 auto;
+  /* TODO: Duplicated */
+  /* margin: 0 auto; */
   line-height: 1.5em;
   -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
+  /* -webkit-box-orient: vertical; */
   overflow: hidden;
   text-overflow: ellipsis;
   margin: 8px 0;
