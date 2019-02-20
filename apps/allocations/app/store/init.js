@@ -3,7 +3,6 @@ import { app, handleEvent } from './'
 
 export const initStore = addressBookAddress => {
   const addressBookApp = app.external(addressBookAddress, addressBookAbi)
-  // console.log('addressBook', addressBookApp)
 
   const initialState = {
     accounts: [],
@@ -12,18 +11,20 @@ export const initStore = addressBookAddress => {
   }
 
   return app.store(
-    async (state = initialState, event) => {
+    async (state, event) => {
+      // ensure there are initial placeholder values
+      if (!state) state = initialState
+
       try {
         const next = await handleEvent(state, event)
         const nextState = { ...initialState, ...next }
-        // console.log('[Allocations store]', nextState)
+        // Debug point
+        console.log('[Allocations store]', nextState)
         return nextState
       } catch (err) {
         console.error('[Allocations script] initStore', event, err)
       }
       // always return the state even unmodified
-      console.log('returning state:', state)
-
       return state
     },
     [
