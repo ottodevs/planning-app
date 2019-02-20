@@ -82,13 +82,13 @@ const OptionsInputDropdown = ({
 }
 
 OptionsInputDropdown.propTypes = {
-  input: PropTypes.string.isRequired,
+  input: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   value: PropTypes.array.isRequired,
   activeItem: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
   validator: PropTypes.func.isRequired,
-  entities: PropTypes.object,
+  entities: PropTypes.array,
 }
 
 // const StyledInput = styled(TextInput)`
