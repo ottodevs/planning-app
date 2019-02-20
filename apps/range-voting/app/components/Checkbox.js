@@ -1,16 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 
-
 class CheckboxInput extends React.Component {
-// disabled checkboxes might not need handlers
-//  static propTypes = {
-//    onClick: PropTypes.func.isRequired,
-//  }
+  // disabled checkboxes might not need handlers
+  //  static propTypes = {
+  //    onClick: PropTypes.func.isRequired,
+  //  }
 
   static defaultProps = {
     isDisabled: false,
-    label: ''
+    label: '',
   }
 
   // initial state of checkedness is taken from props, but then it's kept internally
@@ -20,8 +19,8 @@ class CheckboxInput extends React.Component {
   }
 
   onClickInternal = () => {
-    var isChecked = ! this.state.isChecked
-    this.setState({isChecked: isChecked})
+    var isChecked = !this.state.isChecked
+    this.setState({ isChecked: isChecked })
     this.props.onClick(isChecked)
   }
 
@@ -32,21 +31,24 @@ class CheckboxInput extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (! ('isChecked' in props)) return null
+    if (!('isChecked' in props)) return null
     if (props.isChecked === state.isChecked) return null
     return { isChecked: props.isChecked }
   }
 
   render() {
-    const { isChecked } = this.state 
+    const { isChecked } = this.state
 
     return (
       <span onClick={this.props.isDisabled ? null : this.onClickInternal}>
-        <Checkbox checked={isChecked} disabled={this.props.isDisabled} onChange={this.onChange} label={this.props.label} />
-        <span>{
-          isChecked ? '✔' : ''
-        }</span>
-        { this.props.label }
+        <Checkbox
+          checked={isChecked}
+          disabled={this.props.isDisabled}
+          onChange={this.onChange}
+          label={this.props.label}
+        />
+        <span>{isChecked ? '✔' : ''}</span>
+        {this.props.label}
       </span>
     )
   }
@@ -70,15 +72,15 @@ const Checkbox = styled.input.attrs({ type: 'checkbox' })`
     text-align: center;
   }
   :checked + span {
-    background: #F8FCFF -19px top no-repeat;
+    background: #f8fcff -19px top no-repeat;
   }
   :disabled + span {
-    background: #EEE -19px top no-repeat;
-    border: 1px solid #DDD;
+    background: #eee -19px top no-repeat;
+    border: 1px solid #ddd;
     cursor: default;
   }
   + span {
-    margin-right: ${props => props.label ? '14px' : '0px'};
+    margin-right: ${props => (props.label ? '14px' : '0px')};
   }
 `
 export default CheckboxInput

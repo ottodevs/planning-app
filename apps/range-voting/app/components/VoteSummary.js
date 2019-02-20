@@ -17,7 +17,7 @@ const VoteSummary = ({
   quorum,
   quorumProgress,
   support,
-  ready
+  ready,
 }) => {
   var totalVotes = 0
 
@@ -40,7 +40,7 @@ const VoteSummary = ({
       <Votes
         color={theme.accept}
         style={{
-          transform: `scaleX(${votesPct * 10})`
+          transform: `scaleX(${votesPct * 10})`,
         }}
       />
     )
@@ -81,7 +81,7 @@ const VoteSummary = ({
                 transform: `
                 translateX(${PANEL_INNER_WIDTH * quorum * progress}px)
                 scaleY(${quorum ? progress : 0})
-              `
+              `,
               }}
             />
             <Bar>{bars}</Bar>
@@ -104,7 +104,7 @@ const Header = styled.h2`
 
 const Label = styled(Text).attrs({
   smallcaps: true,
-  color: theme.textSecondary
+  color: theme.textSecondary,
 })`
   strong {
     color: ${theme.text};

@@ -18,14 +18,14 @@ class ConfigureVotingName extends React.Component {
     this.handleNameChange = this.createChangeHandler('voteName')
     this.handleDescriptionChange = this.createChangeHandler('voteDescription')
   }
-  UNSAFE_componentWillReceiveProps({ positionProgress }) {
-    if (
-      positionProgress === 0 &&
-      positionProgress !== this.props.positionProgress
-    ) {
-      this.formEl.elements[0].focus()
-    }
-  }
+  // UNSAFE_componentWillReceiveProps({ positionProgress }) {
+  //   if (
+  //     positionProgress === 0 &&
+  //     positionProgress !== this.props.positionProgress
+  //   ) {
+  //     this.formEl.elements[0].focus()
+  //   }
+  // }
   createChangeHandler(name) {
     return event => {
       const { onFieldUpdate } = this.props

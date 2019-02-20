@@ -7,8 +7,8 @@ import Votes from './components/Votes'
 import tokenBalanceOfAbi from './abi/token-balanceof.json'
 import tokenDecimalsAbi from './abi/token-decimals.json'
 import { safeDiv } from './utils/math-utils'
-import { hasLoadedVoteSettings } from './utils/vote-settings'
-import { VOTE_YEA } from './utils/vote-types'
+// import { hasLoadedVoteSettings } from './utils/vote-settings'
+// import { VOTE_YEA } from './utils/vote-types'
 import { isBefore } from 'date-fns'
 import { EmptyStateCard, SidePanel } from '@aragon/ui'
 import { VotePanelContent } from './components/Panels'
@@ -106,20 +106,20 @@ class Decisions extends React.Component {
       voteSidebarOpened: false,
     }
   }
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { settingsLoaded } = this.state
-    // Is this the first time we've loaded the settings?
-    if (!settingsLoaded && hasLoadedVoteSettings(nextProps)) {
-      this.setState({
-        settingsLoaded: true,
-      })
-    }
-    if (nextProps.tokenAddress !== this.props.tokenAddress) {
-      this.setState({
-        tokenContract: this.getTokenContract(nextProps.tokenAddress),
-      })
-    }
-  }
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   const { settingsLoaded } = this.state
+  //   // Is this the first time we've loaded the settings?
+  //   if (!settingsLoaded && hasLoadedVoteSettings(nextProps)) {
+  //     this.setState({
+  //       settingsLoaded: true,
+  //     })
+  //   }
+  //   if (nextProps.tokenAddress !== this.props.tokenAddress) {
+  //     this.setState({
+  //       tokenContract: this.getTokenContract(nextProps.tokenAddress),
+  //     })
+  //   }
+  // }
 
   getTokenContract(tokenAddress) {
     return tokenAddress && this.props.app.external(tokenAddress, tokenAbi)
@@ -161,7 +161,7 @@ class Decisions extends React.Component {
       userAccount,
       votes,
       voteTime,
-      tokenAddress,
+      // tokenAddress,
     } = this.props
     const {
       createVoteVisible,
@@ -177,17 +177,17 @@ class Decisions extends React.Component {
     // Add useful properties to the votes
     const preparedVotes = displayVotes
       ? votes.map(vote => {
-        const endDate = new Date(vote.data.startDate + voteTime)
-        return {
-          ...vote,
-          endDate,
-          // Open if not executed and now is still before end date
-          open: !vote.data.executed && isBefore(new Date(), endDate),
-          quorum: safeDiv(vote.data.minAcceptQuorum, pctBase),
-          quorumProgress: getQuorumProgress(vote.data),
-          description: vote.data.metadata
-        }
-      })
+          const endDate = new Date(vote.data.startDate + voteTime)
+          return {
+            ...vote,
+            endDate,
+            // Open if not executed and now is still before end date
+            open: !vote.data.executed && isBefore(new Date(), endDate),
+            quorum: safeDiv(vote.data.minAcceptQuorum, pctBase),
+            quorumProgress: getQuorumProgress(vote.data),
+            description: vote.data.metadata,
+          }
+        })
       : votes
 
     const currentVote =
@@ -226,8 +226,8 @@ class Decisions extends React.Component {
             title={
               currentVote
                 ? `${currentVote.description} (${
-                  currentVote.open ? 'Open' : 'Closed'
-                })`
+                    currentVote.open ? 'Open' : 'Closed'
+                  })`
                 : 'currentVote'
             }
             opened={Boolean(!createVoteVisible && voteVisible)}

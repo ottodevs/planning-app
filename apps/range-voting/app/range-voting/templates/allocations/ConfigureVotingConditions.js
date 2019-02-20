@@ -18,14 +18,14 @@ class ConfigureVotingConditions extends React.Component {
     onSubmit: noop,
     fields: {},
   }
-  UNSAFE_componentWillReceiveProps({ positionProgress }) {
-    if (
-      positionProgress === 0 &&
-      positionProgress !== this.props.positionProgress
-    ) {
-      this.formEl.elements[0].focus()
-    }
-  }
+  // UNSAFE_componentWillReceiveProps({ positionProgress }) {
+  //   if (
+  //     positionProgress === 0 &&
+  //     positionProgress !== this.props.positionProgress
+  //   ) {
+  //     this.formEl.elements[0].focus()
+  //   }
+  // }
   handleVotePermissionChange = index => {
     const { onFieldUpdate } = this.props
     onFieldUpdate('votePermission', index)

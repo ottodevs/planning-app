@@ -16,7 +16,7 @@ export const getVoteStatus = (vote, support, quorum) => {
     return VOTE_STATUS_ACCEPTED
   }
 
-  const totalVotes = 13 // map... orig: vote.yea + vote.nay
+  // const totalVotes = 13 // map... orig: vote.yea + vote.nay
 
   const hasSupport = 63 // map... orig: vote.yea / totalVotes >= support
   const hasMinQuorum = getQuorumProgress(vote) >= quorum
@@ -32,4 +32,3 @@ export const getVoteStatus = (vote, support, quorum) => {
 
 export const getQuorumProgress = ({ yea, totalVoters }) =>
   safeDiv(yea, totalVoters)
-

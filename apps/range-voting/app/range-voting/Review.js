@@ -46,7 +46,6 @@ class Review extends React.Component {
 
             <Label>Vote Duration</Label>
             <Text>{configurationData.voteDuration}</Text>
-
           </ScrollWrapper>
         </Content>
       </Main>
@@ -69,4 +68,3 @@ const Label = styled.div`
   margin-top: 8px;
 `
 export default Review
-

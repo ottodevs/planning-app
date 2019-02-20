@@ -9,4 +9,3 @@ export const ProgressBarGroups = [
   { group: Review, label: 'Review' },
   { group: Launch, label: 'Launch' },
 ]
-

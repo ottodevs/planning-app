@@ -15,9 +15,9 @@ import {
 } from '@aragon/ui'
 import { combineLatest } from '../../rxjs'
 import provideNetwork from '../../utils/provideNetwork'
-import { VOTE_NAY, VOTE_YEA } from '../../utils/vote-types'
+// import { VOTE_NAY, VOTE_YEA } from '../../utils/vote-types'
 import { safeDiv } from '../../utils/math-utils'
-import VoteSummary from '../VoteSummary'
+// import VoteSummary from '../VoteSummary'
 import VoteStatus from '../VoteStatus'
 import ProgressBarThick from '../ProgressBarThick'
 import Slider from '../Slider'
@@ -51,10 +51,10 @@ class VotePanelContent extends React.Component {
     this.state.voteOptions.forEach(element => {
       let voteWeight = element.sliderValue
         ? Math.round(
-          parseFloat(
-            (element.sliderValue * this.state.userBalance).toFixed(2)
+            parseFloat(
+              (element.sliderValue * this.state.userBalance).toFixed(2)
+            )
           )
-        )
         : 0
       optionsArray.push(voteWeight)
     })
@@ -128,27 +128,18 @@ class VotePanelContent extends React.Component {
     }
   }
   render() {
-    const { etherscanBaseUrl, vote, ready, minParticipationPct } = this.props
-    const {
-      userBalance,
-      userCanVote,
-      showResults,
-      voteOptions,
-      remaining,
-    } = this.state
+    const { vote, minParticipationPct } = this.props
+    const { showResults, voteOptions, remaining } = this.state
     if (!vote) {
       return null
     }
 
-    const { endDate, open, quorum, support } = vote
+    const { endDate, open, support } = vote
     const {
       participationPct,
-      canExecute,
       creator,
-      metadata,
       totalVoters,
       description,
-      candidates,
       options,
       type,
     } = vote.data
@@ -182,7 +173,7 @@ class VotePanelContent extends React.Component {
               </CreatorImg>
               <div>
                 <p>
-                  {/* // TODO: Change to etherscanUrl constant for the selected network*/}
+                  {/* // TODO: Change to etherscanUrl constant for the selected network */}
                   <SafeLink
                     href={`https://rinkeby.etherscan.io/address/${creator}`}
                     target="_blank"
@@ -382,13 +373,13 @@ const SliderAndValueContainer = styled.div`
   align-items: center;
 `
 
-const SliderContainer = styled.div`
-  width: 320px;
-  & > :nth-child(2) {
-    padding: 0;
-    padding-right: 17px;
-  }
-`
+// const SliderContainer = styled.div`
+//   width: 320px;
+//   & > :nth-child(2) {
+//     padding: 0;
+//     padding-right: 17px;
+//   }
+// `
 
 const SubmitButton = styled(Button)`
   margin: 1rem 0;
@@ -412,12 +403,12 @@ const Part = styled.div`
   }
 `
 
-const Question = styled.p`
-  max-width: 100%;
-  overflow: hidden;
-  word-break: break-all;
-  hyphens: auto;
-`
+// const Question = styled.p`
+//   max-width: 100%;
+//   overflow: hidden;
+//   word-break: break-all;
+//   hyphens: auto;
+// `
 
 const Creator = styled.div`
   display: flex;
@@ -437,15 +428,15 @@ const CreatorImg = styled.div`
   }
 `
 
-const VotingButtons = styled.div`
-  display: flex;
-  padding: 30px 0 20px;
-  & > * {
-    width: 50%;
-    &:first-child {
-      margin-right: 10px;
-    }
-  }
-`
+// const VotingButtons = styled.div`
+//   display: flex;
+//   padding: 30px 0 20px;
+//   & > * {
+//     width: 50%;
+//     &:first-child {
+//       margin-right: 10px;
+//     }
+//   }
+// `
 
 export default provideNetwork(VotePanelContent)

@@ -1,17 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-  Button,
-  Countdown,
-  TableCell,
-  TableRow,
-  Badge,
-  theme,
-} from '@aragon/ui'
+import { Countdown, TableCell, TableRow, Badge, theme } from '@aragon/ui'
 import ProgressBar from './ProgressBar'
 import VoteStatus from './VoteStatus'
 import { safeDiv } from '../utils/math-utils'
-import BigNumber from 'bignumber.js'
 
 const generateBadge = (foreground, background, text) => (
   <Badge foreground={foreground} background={background}>
@@ -38,7 +30,7 @@ class VoteRow extends React.Component {
     const {
       metadata: question,
       description,
-      candidates,
+      // candidates,
       options,
       participationPct,
       type,
@@ -137,9 +129,9 @@ const BarsCell = styled(Cell)`
   cursor: auto;
 `
 
-const ActionsCell = styled(Cell)`
-  width: 0;
-`
+// const ActionsCell = styled(Cell)`
+//   width: 0;
+// `
 
 const QuestionWrapper = styled.p`
   margin-right: 20px;

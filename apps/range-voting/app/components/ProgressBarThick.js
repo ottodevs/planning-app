@@ -29,13 +29,13 @@ ProgressBar.defaultProps = {
 
 ProgressBar.propTypes = {
   // type: PropTypes.oneOf(['positive', 'negative']).isRequired,
-  type: PropTypes.oneOf(['positive', 'negative']),
+  // type: PropTypes.oneOf(['positive', 'negative']),
   progress: PropTypes.number,
 }
 
 const Label = styled.p`
   margin-top: 1rem;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 `
 
 const Main = styled.div`

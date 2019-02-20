@@ -22,38 +22,39 @@ async function handleEvents(response) {
     ...(!hasLoadedVoteSettings(appState) ? await loadVoteSettings() : {}),
   }
   switch (response.event) {
-  case 'CastVote':
-    console.info('[RangeVoting > script]: received CastVote')
-    nextState = await castVote(nextState, response.returnValues)
-    break
-  case 'ExecutionScript':
-    console.info('[RangeVoting > script]: received ExecutionScript')
-    console.info(response.returnValues)
-    break
-  case 'ExecuteVote':
-    console.info('[RangeVoting > script]: received ExecuteVote')
+    case 'CastVote':
+      console.info('[RangeVoting > script]: received CastVote')
+      nextState = await castVote(nextState, response.returnValues)
+      break
+    case 'ExecutionScript':
+      console.info('[RangeVoting > script]: received ExecutionScript')
+      console.info(response.returnValues)
+      break
+    case 'ExecuteVote':
+      console.info('[RangeVoting > script]: received ExecuteVote')
 
-    nextState = await executeVote(nextState, response.returnValues)
-    break
-  case 'StartVote':
-    console.info('[RangeVoting > script]: received StartVote')
-    nextState = await startVote(nextState, response.returnValues)
-    break
-  case 'ExternalContract':
-    let funcSig = response.returnValues.funcSig
-    console.info('[RangeVoting > script]: received ExternalContract', funcSig)
-    // Should actually be a case-switch
-    if (funcSig.slice(58) == 'f2122136') {
-      console.log('Loading Projects Data')
-    } else {
-      console.log('Loading Allocations Contract')
-      allocations = app.external(
-        response.returnValues.addr,
-        AllocationJSON.abi
-      )
-    }
-  default:
-    break
+      nextState = await executeVote(nextState, response.returnValues)
+      break
+    case 'StartVote':
+      console.info('[RangeVoting > script]: received StartVote')
+      nextState = await startVote(nextState, response.returnValues)
+      break
+    case 'ExternalContract':
+      let funcSig = response.returnValues.funcSig
+      console.info('[RangeVoting > script]: received ExternalContract', funcSig)
+      // Should actually be a case-switch
+      if (funcSig.slice(58) === 'f2122136') {
+        console.log('Loading Projects Data')
+      } else {
+        console.log('Loading Allocations Contract')
+        allocations = app.external(
+          response.returnValues.addr,
+          AllocationJSON.abi
+        )
+      }
+      break
+    default:
+      break
   }
   console.log('[RangeVoting > script]: end state')
   console.log(nextState)
@@ -120,14 +121,13 @@ async function loadVoteDescription(vote) {
 
 async function loadVoteData(voteId) {
   console.info('[RangeVoting > script]: loadVoteData')
-  let vote
   return new Promise((resolve, reject) => {
     app
       .call('getVote', voteId)
       .first()
       .subscribe(voteData => {
         let funcSig = voteData.executionScript.slice(58, 66)
-        if (funcSig == 'f2122136') {
+        if (funcSig === 'f2122136') {
           console.log('Loading Projects Data')
           resolve(loadVoteDataProjects(voteData, voteId))
         } else {
@@ -260,7 +260,7 @@ async function getProjectCandidate(voteId, candidateIndex) {
 }
 
 async function updateState(state, voteId, transform, candidate = null) {
-  let { votes = [] } = state ? state : []
+  let { votes = [] } = state || []
   votes = await updateVotes(votes, voteId, transform)
   return {
     ...state,
@@ -316,7 +316,6 @@ function marshallVote({
   executionScript,
   executed,
 }) {
-  let voteData = {}
   totalVoters = parseInt(totalVoters, 10)
   totalParticipation = parseInt(totalParticipation, 10)
   return {

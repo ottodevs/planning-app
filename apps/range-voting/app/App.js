@@ -1,16 +1,6 @@
-import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-
-import {
-  AragonApp,
-  AppBar,
-  Button,
-  SidePanel,
-  IconAdd,
-  observe,
-  theme,
-} from '@aragon/ui'
+import React from 'react'
+import { AragonApp, AppBar, SidePanel, observe } from '@aragon/ui'
 import AppLayout from './components/AppLayout'
 import Decisions from './Decisions'
 import { hasLoadedVoteSettings } from './utils/vote-settings'
@@ -55,27 +45,27 @@ class App extends React.Component {
   }
 
   render() {
-    const barButton = (
-      <DropDownButton>
-        <Button Button mode="strong">
-          Actions
-        </Button>
-        <DropDownContent>
-          <DropDownItem>
-            <CloseIcon />
-            New Payout Engine
-          </DropDownItem>
-          <DropDownItem>
-            <CloseIcon />
-            New Issue Curation
-          </DropDownItem>
-          <DropDownItem>
-            <CloseIcon />
-            New Budget Engine
-          </DropDownItem>
-        </DropDownContent>
-      </DropDownButton>
-    )
+    // const barButton = (
+    //   <DropDownButton>
+    //     <Button Button mode="strong">
+    //       Actions
+    //     </Button>
+    //     <DropDownContent>
+    //       <DropDownItem>
+    //         <CloseIcon />
+    //         New Payout Engine
+    //       </DropDownItem>
+    //       <DropDownItem>
+    //         <CloseIcon />
+    //         New Issue Curation
+    //       </DropDownItem>
+    //       <DropDownItem>
+    //         <CloseIcon />
+    //         New Budget Engine
+    //       </DropDownItem>
+    //     </DropDownContent>
+    //   </DropDownButton>
+    // )
 
     return (
       <AragonApp publicUrl="aragon-ui-assets/">
@@ -116,39 +106,39 @@ class App extends React.Component {
   }
 }
 
-const DropDownContent = styled.div`
-  display: none;
-  position: absolute;
-  background-color: ${theme.contentBackground};
-  border: 1px solid · ${theme.contentBorder};
-  box-shadow: 0 4px 4px 0 ${theme.shadow};
-  border-radius: 3px;
-  padding: 0.5rem 0;
-  z-index: 1;
-  margin-left: -8rem;
-  white-space: nowrap;
-`
-const DropDownItem = styled.div`
-  padding: 0.5rem 1rem;
-  display: flex;
-  &:hover {
-    color: ${theme.mainBgGradientStart};
-    cursor: pointer;
-  }
-`
+// const DropDownContent = styled.div`
+//   display: none;
+//   position: absolute;
+//   background-color: ${theme.contentBackground};
+//   border: 1px solid · ${theme.contentBorder};
+//   box-shadow: 0 4px 4px 0 ${theme.shadow};
+//   border-radius: 3px;
+//   padding: 0.5rem 0;
+//   z-index: 1;
+//   margin-left: -8rem;
+//   white-space: nowrap;
+// `
+// const DropDownItem = styled.div`
+//   padding: 0.5rem 1rem;
+//   display: flex;
+//   &:hover {
+//     color: ${theme.mainBgGradientStart};
+//     cursor: pointer;
+//   }
+// `
 
-const DropDownButton = styled.div`
-  position: relative;
-  display: inline-block;
-  &:hover ${DropDownContent} {
-    display: block;
-  }
-`
+// const DropDownButton = styled.div`
+//   position: relative;
+//   display: inline-block;
+//   &:hover ${DropDownContent} {
+//     display: block;
+//   }
+// `
 
-const CloseIcon = styled(IconAdd)`
-  color: ${theme.textSecondary};
-  margin-right: 0.5rem;
-`
+// const CloseIcon = styled(IconAdd)`
+//   color: ${theme.textSecondary};
+//   margin-right: 0.5rem;
+// `
 
 export default observe(
   observable => observable.map(state => ({ ...state })),

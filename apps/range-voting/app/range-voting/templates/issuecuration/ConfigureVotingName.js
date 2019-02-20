@@ -18,14 +18,14 @@ class ConfigureVotingName extends React.Component {
     this.handleMinQuorumChange = this.createChangeHandler('minQuorum')
     this.handleVoteDurationChange = this.createChangeHandler('voteDuration')
   }
-  UNSAFE_componentWillReceiveProps({ positionProgress }) {
-    if (
-      positionProgress === 0 &&
-      positionProgress !== this.props.positionProgress
-    ) {
-      this.formEl.elements[0].focus()
-    }
-  }
+  // UNSAFE_componentWillReceiveProps({ positionProgress }) {
+  //   if (
+  //     positionProgress === 0 &&
+  //     positionProgress !== this.props.positionProgress
+  //   ) {
+  //     this.formEl.elements[0].focus()
+  //   }
+  // }
   createChangeHandler(name) {
     return event => {
       const { onFieldUpdate } = this.props

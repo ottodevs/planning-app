@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
-import { spring as springConf } from '@aragon/ui'
+import { spring as springConf, theme } from '@aragon/ui'
 
 import close from '../assets/close.svg'
 
@@ -21,26 +21,26 @@ import { noop } from '../utils/utils'
 import tokenBalanceOfAbi from './abi/token-balanceof.json'
 import tokenDecimalsAbi from './abi/token-decimals.json'
 
-import { hasLoadedVoteSettings } from './vote-settings'
+// import { hasLoadedVoteSettings } from './vote-settings'
 
 const tokenAbi = [].concat(tokenBalanceOfAbi, tokenDecimalsAbi)
 
 const SPRING_SHOW = {
   stiffness: 120,
   damping: 17,
-  precision: 0.001
+  precision: 0.001,
 }
 const SPRING_HIDE = {
   stiffness: 70,
   damping: 15,
-  precision: 0.001
+  precision: 0.001,
 }
 const SPRING_SCREEN = springConf('slow')
 
 class RangeVoting extends React.Component {
   static propTypes = {
     app: PropTypes.object.isRequired,
-    handleClose: PropTypes.func.isRequired
+    handleClose: PropTypes.func.isRequired,
   }
   static defaultProps = {
     account: '',
@@ -52,7 +52,7 @@ class RangeVoting extends React.Component {
     connected: false,
     contractCreationStatus: 'none',
     onComplete: noop,
-    onCreateContract: noop
+    onCreateContract: noop,
   }
   constructor(props) {
     super(props)
@@ -66,49 +66,49 @@ class RangeVoting extends React.Component {
       settingsLoaded: false,
       tokenContract: this.getTokenContract(props.tokenAddress),
       voteVisible: false,
-      voteSidebarOpened: false
+      voteSidebarOpened: false,
     }
   }
   getTokenContract(tokenAddress) {
     return tokenAddress && this.props.app.external(tokenAddress, tokenAbi)
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { settingsLoaded } = this.state
-    const { props } = this
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   const { settingsLoaded } = this.state
+  //   const { props } = this
 
-    // Is this the first time we've loaded the settings?
-    if (!settingsLoaded && hasLoadedVoteSettings(nextProps)) {
-      this.setState({
-        settingsLoaded: true
-      })
-    }
-    if (nextProps.tokenAddress !== this.props.tokenAddress) {
-      this.setState({
-        tokenContract: this.getTokenContract(nextProps.tokenAddress)
-      })
-    }
+  //   // Is this the first time we've loaded the settings?
+  //   if (!settingsLoaded && hasLoadedVoteSettings(nextProps)) {
+  //     this.setState({
+  //       settingsLoaded: true,
+  //     })
+  //   }
+  //   if (nextProps.tokenAddress !== this.props.tokenAddress) {
+  //     this.setState({
+  //       tokenContract: this.getTokenContract(nextProps.tokenAddress),
+  //     })
+  //   }
 
-    if (nextProps.visible && !props.visible) {
-      this.setState({ stepIndex: 0 })
-    }
-  }
+  //   if (nextProps.visible && !props.visible) {
+  //     this.setState({ stepIndex: 0 })
+  //   }
+  // }
 
   getSteps() {
     const { template } = this.state
 
     const configureSteps = Templates.has(template)
       ? Templates.get(template).screens.map(step => ({
-        ...step,
-        group: Steps.Configure
-      }))
+          ...step,
+          group: Steps.Configure,
+        }))
       : []
 
     return [
       { screen: 'template', group: Steps.Template },
       ...configureSteps,
       { screen: 'review', group: Steps.Review },
-      { screen: 'launch', group: Steps.Launch }
+      { screen: 'launch', group: Steps.Launch },
     ]
   }
 
@@ -126,7 +126,7 @@ class RangeVoting extends React.Component {
     return Object.entries(fields).reduce(
       (fields, [name, { defaultValue }]) => ({
         ...fields,
-        [name]: defaultValue()
+        [name]: defaultValue(),
       }),
       {}
     )
@@ -169,8 +169,8 @@ class RangeVoting extends React.Component {
       return {
         templateData: {
           ...templateData,
-          ...updatedFields
-        }
+          ...updatedFields,
+        },
       }
     })
   }
@@ -178,7 +178,7 @@ class RangeVoting extends React.Component {
   handleTemplateSelect = (template = null) => {
     this.setState({
       template,
-      templateData: this.getInitialDataFromTemplate(template)
+      templateData: this.getInitialDataFromTemplate(template),
     })
   }
 
@@ -268,7 +268,7 @@ class RangeVoting extends React.Component {
           showProgress: spring(
             Number(visible),
             visible ? SPRING_SHOW : SPRING_HIDE
-          )
+          ),
         }}
       >
         {({ showProgress }) => (
@@ -277,7 +277,7 @@ class RangeVoting extends React.Component {
               transform: visible
                 ? 'none'
                 : `translateY(${100 * (1 - showProgress)}%)`,
-              opacity: visible ? showProgress : 1
+              opacity: visible ? showProgress : 1,
             }}
           >
             <View>
@@ -331,10 +331,10 @@ class RangeVoting extends React.Component {
     const { template } = this.state
 
     const {
-      //account,
-      //network,
-      //balance,
-      onComplete
+      // account,
+      // network,
+      // balance,
+      onComplete,
     } = this.props
 
     positionProgress = Math.min(1, Math.max(-1, positionProgress))

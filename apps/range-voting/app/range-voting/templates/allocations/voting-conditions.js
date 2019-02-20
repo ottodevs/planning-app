@@ -1,15 +1,11 @@
-const votePermissionItems=[
-  'Project Owners',
-  'Every DAO token holder',
-]
-const voteWeightItems=[
+const votePermissionItems = ['Project Owners', 'Every DAO token holder']
+const voteWeightItems = [
   'Each voter has equal weight',
-  'Voting power is weighted based on token balance'
+  'Voting power is weighted based on token balance',
 ]
-const voteOutcomeItems=[
+const voteOutcomeItems = [
   'Transfer tokens upon execution',
-  'Informational vote'
+  'Informational vote',
 ]
 
 export { votePermissionItems, voteWeightItems, voteOutcomeItems }
-
