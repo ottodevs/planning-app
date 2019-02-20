@@ -26,7 +26,8 @@ class ErrorBoundary extends React.Component {
             border: '1px solid #555',
             borderRadius: '5px',
             width: '80%',
-          }}>
+          }}
+        >
           <h2 style={{ margin: 0 }}>{'Oh-no! Something went wrong'}</h2>
           <p style={{ color: 'red' }}>{error && error.toString()}</p>
           <div>Stacktrace:</div>

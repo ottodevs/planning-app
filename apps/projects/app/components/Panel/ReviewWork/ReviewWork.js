@@ -79,7 +79,8 @@ class ReviewWork extends React.Component {
         <SafeLink
           href={issue.url}
           target="_blank"
-          style={{ textDecoration: 'none', color: '#21AAE7' }}>
+          style={{ textDecoration: 'none', color: '#21AAE7' }}
+        >
           <IssueLinkRow>
             <IconGitHub color="#21AAE7" width="14px" height="14px" />
             <Text style={{ marginLeft: '6px' }}>
@@ -101,7 +102,8 @@ class ReviewWork extends React.Component {
                 textDecoration: 'none',
                 color: '#21AAE7',
                 marginRight: '6px',
-              }}>
+              }}
+            >
               {submitter.name ? submitter.name : submitter.login}
             </SafeLink>
             applied {submissionDateDistance} ago
@@ -113,7 +115,8 @@ class ReviewWork extends React.Component {
           <SafeLink
             href={work.proof}
             target="_blank"
-            style={{ textDecoration: 'none', color: '#21AAE7' }}>
+            style={{ textDecoration: 'none', color: '#21AAE7' }}
+          >
             <DetailText>{work.proof}</DetailText>
           </SafeLink>
 
@@ -153,12 +156,14 @@ class ReviewWork extends React.Component {
         <ReviewRow>
           <ReviewButton
             emphasis="negative"
-            onClick={this.onReviewApplicationReject}>
+            onClick={this.onReviewApplicationReject}
+          >
             Reject
           </ReviewButton>
           <ReviewButton
             emphasis="positive"
-            onClick={this.onReviewApplicationAccept}>
+            onClick={this.onReviewApplicationAccept}
+          >
             Accept
           </ReviewButton>
         </ReviewRow>

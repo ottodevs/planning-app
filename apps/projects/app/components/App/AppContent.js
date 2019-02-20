@@ -62,7 +62,8 @@ const AppContent = props => {
 
       <TabbedView
         activeIndex={props.activeIndex}
-        changeActiveIndex={props.changeActiveIndex}>
+        changeActiveIndex={props.changeActiveIndex}
+      >
         <TabBar>
           {contentData.map(({ tabName }) => (
             <Tab key={tabName}>{tabName}</Tab>

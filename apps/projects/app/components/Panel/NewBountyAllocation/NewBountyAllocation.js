@@ -135,7 +135,8 @@ class NewBountyAllocation extends React.Component {
       <Form
         onSubmit={this.submitBounties}
         description={this.props.description}
-        submitText="Submit Bounty Allocation">
+        submitText="Submit Bounty Allocation"
+      >
         {/* Not currently implemented:
         <FormField
           label="Description"
