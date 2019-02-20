@@ -6,7 +6,7 @@ class MultiDropdown extends React.Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    entities: PropTypes.object,
+    entities: PropTypes.array,
     value: PropTypes.array.isRequired,
     index: PropTypes.number.isRequired,
     activeItem: PropTypes.number.isRequired,

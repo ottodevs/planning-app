@@ -27,14 +27,14 @@ const INITIAL_STATE = {
   payoutTypeIndex: 0,
   payoutToken: '',
   payoutTokenIndex: 0,
-  amount: null,
+  amount: '',
   allocationError: false,
   balanceSetting: false,
   addressSetting: false,
   options: [],
   optionsInput: { addr: 0, index: 0 },
   optionsString: [],
-  optionsInputString: { addr: '' },
+  optionsInputString: '',
 }
 
 class NewAllocation extends React.Component {

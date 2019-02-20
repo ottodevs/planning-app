@@ -5,35 +5,20 @@ import { IconAdd, theme } from '@aragon/ui'
 import MultiDropDown from './MultiDropdown'
 import IconRemove from '../../../assets/components/IconRemove'
 
-const {
-  disabled,
-  contentBackgroundActive,
-  contentBorderActive,
-  // contentBorder,
-  textSecondary,
-} = theme
-
-class OptionsInputDropdown extends React.Component {
-  static propTypes = {
-    input: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    value: PropTypes.array.isRequired,
-    activeItem: PropTypes.number.isRequired,
-    onChange: PropTypes.func.isRequired,
-    validator: PropTypes.func.isRequired,
-    entities: PropTypes.object,
-  }
-
-  state = {
-    entities: this.props.entities,
-  }
-
-  addOption = () => {
+const OptionsInputDropdown = ({
+  activeItem,
+  entities,
+  input,
+  name,
+  onChange,
+  validator,
+  value,
+}) => {
+  const addOption = () => {
     // TODO: Implement some rules about what an 'Option can be' duplicates, etc
-    const { input, name, value } = this.props
-    if (input && !this.props.validator(value, input.addr)) {
-      this.props.onChange({ target: { name, value: [...value, input] } })
-      this.props.onChange({
+    if (input && !validator(value, input.addr)) {
+      onChange({ target: { name, value: [...value, input] } })
+      onChange({
         target: {
           name: 'optionsInput',
           value: {
@@ -44,59 +29,66 @@ class OptionsInputDropdown extends React.Component {
       })
       // console.log('Option Added')
     } else {
-      this.props.onChange({ target: { name: 'addressError', value: true } })
-      console.log(
-        'OptionsInputDropdown: The option is empty or already present'
-      )
+      onChange({ target: { name: 'addressError', value: true } })
+      // console.log(
+      //   'OptionsInputDropdown: The option is empty or already present'
+      // )
     }
   }
 
-  removeOption = option => {
-    const { name, value } = this.props
+  const removeOption = option => {
     let index = value.indexOf(option)
-    // Double exclamation to make sure is removed
-    !!value.splice(index, 1) &&
-      this.props.onChange({
+    !value.splice(index, 1) &&
+      onChange({
         target: { name, value },
       })
     // console.log('Option Removed', option, value)
   }
 
-  render() {
-    const loadOptions = this.props.value.map((option, index) => (
-      <div className="option" key={option.addr}>
+  const loadOptions = value.map((option, index) => (
+    <div className="option" key={option.addr}>
+      <MultiDropDown
+        name={name}
+        index={index}
+        // placeholder={placeholder}
+        onChange={onChange}
+        value={value}
+        entities={entities}
+        activeItem={value[index].index}
+        validator={validator}
+      />
+      <IconRemove onClick={() => removeOption(option)} />
+    </div>
+  ))
+
+  return (
+    <StyledOptionsInput empty={!input.length}>
+      {loadOptions}
+      <div className="option">
         <MultiDropDown
-          name={this.props.name}
-          index={index}
-          placeholder={this.props.placeholder}
-          onChange={this.props.onChange}
-          value={this.props.value}
-          entities={this.state.entities}
-          activeItem={this.props.value[index].index}
-          validator={this.props.validator}
+          name={'optionsInput'}
+          index={-1}
+          // placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          entities={entities}
+          activeItem={activeItem}
+          validator={validator}
         />
-        <IconRemove onClick={() => this.removeOption(option)} />
+        <IconAdd onClick={addOption} />
       </div>
-    ))
-    return (
-      <StyledOptionsInput empty={!this.props.input.length}>
-        {loadOptions}
-        <div className="option">
-          <MultiDropDown
-            name={'optionsInput'}
-            index={-1}
-            placeholder={this.props.placeholder}
-            value={this.props.value}
-            onChange={this.props.onChange}
-            entities={this.state.entities}
-            activeItem={this.props.activeItem}
-            validator={this.props.validator}
-          />
-          <IconAdd onClick={this.addOption} />
-        </div>
-      </StyledOptionsInput>
-    )
-  }
+    </StyledOptionsInput>
+  )
+}
+
+OptionsInputDropdown.propTypes = {
+  input: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  value: PropTypes.array.isRequired,
+  activeItem: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+  validator: PropTypes.func.isRequired,
+  entities: PropTypes.object,
 }
 
 // const StyledInput = styled(TextInput)`
@@ -132,14 +124,16 @@ const StyledOptionsInput = styled.div`
       margin-top: -3px;
       height: auto;
       width: 1.8rem;
-      color: ${textSecondary};
+      color: ${theme.textSecondary};
       vertical-align: middle;
       transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
       :hover {
-        color: ${({ empty }) => (empty ? disabled : contentBorderActive)};
+        color: ${({ empty }) =>
+          empty ? theme.disabled : theme.contentBorderActive};
       }
       :active {
-        color: ${({ empty }) => (empty ? disabled : contentBackgroundActive)};
+        color: ${({ empty }) =>
+          empty ? theme.disabled : theme.contentBackgroundActive};
       }
     }
   }

@@ -149,11 +149,11 @@ const CardTitle = styled(Text.Block).attrs({
   font-weight: bold;
   color: ${theme.textPrimary};
   display: block;
-  display: -webkit-box;
-  max-height: 3.0em;
+  /* display: -webkit-box; */
+  max-height: 3em;
   line-height: 1.5em;
   -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  /* -webkit-box-orient: vertical; */
   overflow: hidden;
   text-overflow: ellipsis;
 `

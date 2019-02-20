@@ -18,7 +18,6 @@ class App extends React.Component {
   }
 
   state = {
-    accounts: [],
     panel: {
       visible: false,
     },
@@ -79,7 +78,7 @@ class App extends React.Component {
   }
 
   newAllocation = (address, description, id, limit) => {
-    // The whole entries vs entities thing needs to be fixed; these are too close
+    // TODO: The whole entries vs entities thing needs to be fixed; these are too close
     // const userEntity = {addr: '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', data: {entryAddress: '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', name: 'Bob', entryType: 'user'}}
     const promptEntity = {
       addr: 0x0,
@@ -109,23 +108,22 @@ class App extends React.Component {
   }
 
   render() {
+    const { accounts, app } = this.props
     const { panel } = this.state
     const PanelContent = panel.content
+
     return (
       // TODO: Profile App with React.StrictMode, perf and why-did-you-update, apply memoization
       <StyledAragonApp>
         <Title text="Allocations" />
         <NewAccountButton onClick={this.newAccount} />
         <Accounts
-          accounts={
-            // TODO: Change back to this.props.accounts when done
-            this.props.accounts !== undefined ? this.props.accounts : []
-          }
+          accounts={accounts || []}
           onNewAccount={this.newAccount}
           onNewAllocation={this.newAllocation}
           onManageParameters={this.manageParameters}
           onExecutePayout={this.onExecutePayout}
-          app={this.props.app}
+          app={app}
         />
         <SidePanel
           title={(panel.data && panel.data.heading) || ''}
