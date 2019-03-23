@@ -48,7 +48,7 @@ const providerForNetwork = network => () => {
   return new HDWalletProviderPrivkey(keys, rpc)
 }
 
-module.exports = {
+module.exports = projectRoot = {
   // contracts_build_directory: path.join(__dirname, './build/contracts/'),
   networks: {
     rpc: {
@@ -82,4 +82,13 @@ module.exports = {
   },
   build: {},
   mocha,
+  // env: {
+  //   mocha: true,
+  // },
+  // globals: {
+  //   artifacts: false,
+  //   contract: false,
+  //   assert: false,
+  //   web3: false,
+  // },
 }
