@@ -26,6 +26,7 @@
   "dependencies": {
     "@aragon/client": "1.1.0",
     "@aragon/ui": "0.32.0",
+    "@babel/polyfill": "^7.4.0",
     "@tps/ui": "^0.0.1",
     "bignumber.js": "^7.2.1",
     "polyfill": "0.1.0",
