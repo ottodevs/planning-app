@@ -167,7 +167,7 @@ contract Allocations is AragonApp, Fundable {
 
     function fund(uint256 id) external payable {
         Payout storage payout = payouts[id];
-        require(!payout.informational);
+        require(!payout.informational, "Informational cannot be funded");
         payout.balance = payout.balance.add(msg.value);
         emit FundAccount(id);
     }

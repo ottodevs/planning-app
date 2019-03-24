@@ -696,7 +696,7 @@ contract Projects is IsContract, AragonApp {
         uint256 length = endIndex - startIndex;
         uint256 dest;
         uint256 src;
-        assembly {
+        assembly { // solium-disable-line security/no-inline-assembly
           dest := add(result,0x20)
           src := add(strBytes,add(0x20,startIndex))
           mstore(dest, mload(src))
@@ -705,7 +705,7 @@ contract Projects is IsContract, AragonApp {
         dest += 32;
         length -= 32;
         uint mask = 256 ** (32 - length) - 1;
-        assembly {
+        assembly { // solium-disable-line security/no-inline-assembly
             let srcpart := and(mload(src), not(mask))
             let destpart := and(mload(dest), mask)
             mstore(dest, or(destpart, srcpart))

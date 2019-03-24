@@ -293,7 +293,7 @@ contract RewardToken is Controlled {
         // initialize pendingReward against against the next pending reward
         PendingReward storage pendingReward = pendingRewards[idx];
         // only execute the folowing rewards if they are due
-        while (pendingReward.rewardTime < block.timestamp) {
+        while (pendingReward.rewardTime < block.timestamp) { // solium-disable-line security/no-block-members
             executeFutureReward(pendingReward.rewardValue);
             pendingReward.executed = true;
             idx += 1;
@@ -314,7 +314,7 @@ contract RewardToken is Controlled {
         if (_addr == 0) {
             return false;
         }
-        assembly {
+        assembly { // solium-disable-line security/no-inline-assembly
             size := extcodesize(_addr)
         }
         return size > 0;

@@ -629,7 +629,7 @@ contract RangeVoting is IForwarder, AragonApp {
         uint256 fifthDynamicElementLocation = fourthDynamicElementLocation + strLength / 32 * 32 + (strLength % 32 == 0 ? 32 : 64);
         uint256 sixthDynamicElementLocation = fifthDynamicElementLocation + 32 + (numberOfCandidates * 32);
 
-        assembly {
+        assembly { // solium-disable-line security/no-inline-assembly
             mstore(add(script, 96), secondDynamicElementLocation)
             mstore(add(script, 128), thirdDynamicElementLocation)
             mstore(add(script, 160), fourthDynamicElementLocation)
@@ -660,7 +660,7 @@ contract RangeVoting is IForwarder, AragonApp {
         for (uint256 i = 0; i < numberOfCandidates; i++) {
             bytes32 canKey = votes[_voteId].candidateKeys[i];
             uint256 candidateData = uint256(candidateAddresses[canKey]);
-            assembly {
+            assembly { // solium-disable-line security/no-inline-assembly
                 mstore(add(script, offset), candidateData)
             }
             offset += 32; 
@@ -808,7 +808,7 @@ contract RangeVoting is IForwarder, AragonApp {
         for (uint256 i = 0; i < numberOfCandidates; i++) {
             //bytes32 canKey = votes[_voteId].candidateKeys[i];
             bytes32 externalId1 = votes[_voteId].candidates[votes[_voteId].candidateKeys[i]].externalId1;
-            assembly {
+            assembly { // solium-disable-line security/no-inline-assembly
                 mstore(add(script, offset), externalId1)
             }
             offset += 32; 
