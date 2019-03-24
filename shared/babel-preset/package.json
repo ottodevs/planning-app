@@ -1,0 +1,52 @@
+{
+  "name": "@tps/babel-preset",
+  "version": "0.0.1",
+  "description": "Babel config for That Planning Suite apps",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AutarkLabs/planning-suite.git",
+    "directory": "shared/babel-preset"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "prettier": "prettier \"**/*.{js,json,css,md}\" --write",
+    "test": "yarn lint"
+  },
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "@babel/preset-react": "^7.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@tps/eslint-config": "^0.0.1",
+    "eslint": "^5.15.3",
+    "prettier": "^1.16.4"
+  },
+  "peerDependencies": {
+    "@babel/core": ">=7.0.0",
+    "babel-plugin-styled-components": ">=1.10.0"
+  },
+  "author": "Autark <autark.xyz>",
+  "bugs": {
+    "url": "https://github.com/AutarkLabs/planning-suite/issues"
+  },
+  "homepage": "https://github.com/AutarkLabs/planning-suite#readme",
+  "eslintConfig": {
+    "extends": "@tps"
+  },
+  "keywords": [
+    "babel",
+    "babel-preset"
+  ],
+  "license": "GPL-3.0",
+  "prettier": {
+    "trailingComma": "es5",
+    "semi": false,
+    "singleQuote": true
+  }
+}
