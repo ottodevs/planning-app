@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@tps/test-helpers",
   "version": "0.0.1",
   "description": "Helper scripts for Planning Suite",
@@ -19,6 +18,13 @@
     "truffle-hdwallet-provider": "1.0.5",
     "truffle-hdwallet-provider-privkey": "0.3.0"
   },
+  "author": "Autark LLC <autark.xyz>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AutarkLabs/planning-suite"
+  },
+  "keywords": [],
+  "license": "GPL-3.0",
   "eslintConfig": {
     "extends": "@tps"
   },

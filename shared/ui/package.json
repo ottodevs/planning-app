@@ -1,10 +1,9 @@
 {
   "name": "@tps/ui",
   "version": "0.0.1",
-  "description": "Shared UI components and utils from Planning Suite",
-  "private": true,
+  "description": "Shared UI components and utils for That Planning Suite apps",
   "scripts": {
-    "test": "echo nope"
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "dependencies": {
     "@aragon/ui": "0.32.0",
@@ -26,7 +25,7 @@
     "react-hot-loader": "^4.8.0",
     "stylelint": "^9.10.1"
   },
-  "author": "",
+  "author": "Autark LLC <autark.xyz>",
   "repository": {
     "type": "git",
     "url": "https://github.com/AutarkLabs/planning-suite"

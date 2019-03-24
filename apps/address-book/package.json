@@ -45,7 +45,7 @@
     "react-hot-loader": "^4.8.0",
     "stylelint": "^9.10.1"
   },
-  "author": "",
+  "author": "Autark LLC <autark.xyz>",
   "repository": {
     "type": "git",
     "url": "https://github.com/AutarkLabs/planning-suite"
