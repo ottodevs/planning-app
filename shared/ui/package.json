@@ -18,7 +18,6 @@
     "@babel/core": "^7.4.0",
     "@tps/test-helpers": "^0.0.1",
     "@tps/eslint-config": "^0.0.1",
-    "@tps/solium-config": "^0.0.1",
     "@tps/babel-preset": "^0.0.1",
     "ethlint": "^1.2.3",
     "eslint": "^5.15.3",
