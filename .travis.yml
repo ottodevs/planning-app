@@ -13,53 +13,52 @@ language: node_js
 node_js: 'node' # equivalent to stable, node 11
 
 cache:
+  yarn: true
   directories:
+    - .npm
     - $HOME/.npm
     - node_modules
 
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s
+  - export PATH="$HOME/.yarn/bin:$PATH"
+
 jobs:
   include:
-  
     - stage: precache
       script: true
-      install:
-        - npm i
 
     - stage: lint
       name: Lint contracts and frontend apps
-      install: pwd # override to avoid npm i again
-      script: npm run lint
+      install: pwd # override to avoid installing modules again
+      script: yarn lint
 
     - stage: test
-      script: travis_wait 60 npm run coverage -- --scope=@tps/apps-address-book
+      script: travis_wait 60 yarn coverage -- --scope=@tps/apps-address-book
       name: Address Book app tests and coverage report
-      install: npm run bootstrap
-      after_success: npm run coveralls
+      after_success: yarn coveralls
       env: 'COVERAGE=true'
 
     - stage: test
-      script: travis_wait 60 npm run coverage -- --scope=@tps/apps-allocations
+      script: travis_wait 60 yarn coverage -- --scope=@tps/apps-allocations
       name: Allocations app tests and coverage report
-      install: npm run bootstrap
-      after_success: npm run coveralls
+      after_success: yarn coveralls
       env: 'COVERAGE=true'
 
     - stage: test
-      script: travis_wait 60 npm run coverage -- --scope=@tps/apps-projects
+      script: travis_wait 60 yarn coverage -- --scope=@tps/apps-projects
       name: Projects app tests and coverage report
-      install: npm run bootstrap
-      after_success: npm run coveralls
+      after_success: yarn coveralls
       env: 'COVERAGE=true'
 
     - stage: test
-      script: travis_wait 60 npm run coverage -- --scope=@tps/apps-range-voting
+      script: travis_wait 60 yarn coverage -- --scope=@tps/apps-range-voting
       name: Range Voting app tests and coverage report
-      install: npm run bootstrap
-      after_success: npm run coveralls
+      after_success: yarn coveralls
       env: 'COVERAGE=true'
 
     # - &node
-    #   script: npm run test
+    #   script: yarn test
     #   node_js: 'lts/*'
 
 notifications:
