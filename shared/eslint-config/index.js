@@ -40,8 +40,10 @@ module.exports = {
         requireReturn: false,
       },
     ],
-    // disable conflicts with prettier/prettier
+    // conflicts with prettier/prettier
     'unicorn/number-literal-case': 'off',
+    // clashes with Component naming conventions
+    'unicorn/filename-case': 'off',
 
     // TODO: Old TPS rules:
     // "indent": ["error", 2],
@@ -62,5 +64,10 @@ module.exports = {
     // 'object-curly-spacing': [ 'error', 'always' ],
     // 'comma-dangle': [ 2, 'always-multiline' ],
     // 'prettier/prettier': ['error', { bracketSpacing: true }],
+  },
+  settings: {
+    react: {
+      version: 'detect', // React version. "detect" automatically picks the version you have installed.
+    },
   },
 }
