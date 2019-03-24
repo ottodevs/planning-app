@@ -1,4 +1,8 @@
-module.exports = {
+/*global module*/
+
+// const isDevelopment = process.env.NODE_ENV !== 'production'
+
+module.exports = () => ({
   // TODO: add "browser" param
   presets: [
     '@babel/preset-react',
@@ -25,4 +29,4 @@ module.exports = {
     ['styled-components', { displayName: true, fileName: false, pure: true }],
     '@babel/plugin-proposal-class-properties',
   ],
-}
+})
