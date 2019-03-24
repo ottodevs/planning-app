@@ -1,10 +1,4 @@
 {
-  "command": {
-    "run": {
-      "concurrency": 1,
-      "scope": "@tps/apps-*"
-    }
-  },
   "npmClient": "yarn",
   "useWorkspaces": true,
   "packages": ["apps/*", "kits/*", "shared/*"],
