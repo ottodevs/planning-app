@@ -10,8 +10,8 @@ retryEvery(async retry => {
     .first()
     .toPromise()
 
-  initStore(addressBookAddress).catch(err => {
-    console.error('[Allocations] worker failed', err)
+  initStore(addressBookAddress).catch((/*error*/) => {
+    // console.error('[Allocations] worker failed', error)
     retry()
   })
 })

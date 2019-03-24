@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Aragon, { providers } from '@aragon/client'
+import Aragon, { providers } from '@aragon/api'
 import App from './components/App/App'
 
 //import { allocationsMockData } from './utils/mockData'
@@ -52,4 +52,4 @@ class ConnectedApp extends React.Component {
     return <App {...this.state} />
   }
 }
-ReactDOM.render(<ConnectedApp />, document.getElementById('allocations'))
+ReactDOM.render(<ConnectedApp />, document.querySelector('#allocations'))

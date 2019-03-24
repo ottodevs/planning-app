@@ -7,23 +7,23 @@ export const handleEvent = async (state, { event, returnValues }) => {
   let nextAccounts, nextEntries
 
   switch (event) {
-  case 'FundAccount':
-    nextAccounts = await onFundedAccount(accounts, returnValues)
-    break
-  case 'NewAccount':
-    nextAccounts = await onNewAccount(accounts, returnValues)
-    break
-  case 'PayoutExecuted':
-    nextAccounts = await onPayoutExecuted(accounts, returnValues)
-    break
-  case 'EntryAdded':
-    nextEntries = await onEntryAdded({ entries, addressBook }, returnValues)
-    break
-  case 'EntryRemoved':
-    nextEntries = await onEntryRemoved({ entries, addressBook }, returnValues)
-    break
-  default:
-    break
+    case 'FundAccount':
+      nextAccounts = await onFundedAccount(accounts, returnValues)
+      break
+    case 'NewAccount':
+      nextAccounts = await onNewAccount(accounts, returnValues)
+      break
+    case 'PayoutExecuted':
+      nextAccounts = await onPayoutExecuted(accounts, returnValues)
+      break
+    case 'EntryAdded':
+      nextEntries = await onEntryAdded({ entries, addressBook }, returnValues)
+      break
+    case 'EntryRemoved':
+      nextEntries = await onEntryRemoved({ entries, addressBook }, returnValues)
+      break
+    default:
+      break
   }
   // If nextAccounts or nextEntries were not generated
   // then return each original array

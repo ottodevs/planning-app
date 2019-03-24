@@ -1,5 +1,6 @@
-var Allocations = artifacts.require('./Allocations.sol')
+/*global artifacts*/
+const Allocations = artifacts.require('./Allocations.sol')
 
-module.exports = function(deployer) {
+export default function(deployer) {
   deployer.deploy(Allocations)
 }

@@ -8,7 +8,6 @@ import AddressDropDown from './AddressDropDown'
 const AddressDropDownOptions = ({
   activeItem,
   entities,
-  input,
   name,
   onChange,
   validator,
@@ -17,7 +16,7 @@ const AddressDropDownOptions = ({
   const addOption = ({ target: { value } }) => {
     onChange({
       target: validator(values, value.addr)
-        ? { name, value: [ ...values, value ] }
+        ? { name, value: [...values, value] }
         : { name: 'addressError', value: true }, // enable error msg if needed
     })
   }
@@ -28,13 +27,14 @@ const AddressDropDownOptions = ({
 
   const loadOptions = values.map((v, i) => (
     <StyledOption key={i}>
-      <StyledLockedInput children={entities[v.index].data.name} />
+      <StyledLockedInput>{entities[v.index].data.name}</StyledLockedInput>
       <IconContainer
         style={{ transform: 'scale(.8)' }}
         onClick={() => removeOption(v)}
         title="Click to remove"
-        children={<IconRemove />}
-      />
+      >
+        <IconRemove />
+      </IconContainer>
     </StyledOption>
   ))
 
@@ -95,7 +95,7 @@ const IconContainer = styled.button`
   justify-content: center;
   :hover {
     color: ${({ disabled }) =>
-    disabled ? theme.disabled : theme.contentBorderActive};
+      disabled ? theme.disabled : theme.contentBorderActive};
   }
   :active {
     color: ${({ disabled }) => (disabled ? theme.disabled : theme.accent)};

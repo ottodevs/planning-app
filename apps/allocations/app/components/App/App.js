@@ -15,7 +15,11 @@ const ASSETS_URL = 'aragon-ui-assets/'
 class App extends React.Component {
   static propTypes = {
     app: PropTypes.object.isRequired,
+    // TODO: Shape this
     accounts: PropTypes.arrayOf(PropTypes.object),
+    // TODO: Shape this
+    entries: PropTypes.arrayOf(PropTypes.object),
+    network: PropTypes.object,
   }
 
   static defaultProps = {
@@ -49,8 +53,8 @@ class App extends React.Component {
     account.limit = ETH_DECIMALS.times(limit).toString()
     this.props.app.newPayout(account.description, account.limit, 0x0)
     this.closePanel()
-    console.info('App.js: Account Created:')
-    console.table(account)
+    // console.info('App.js: Account Created:')
+    // console.table(account)
     this.setState({})
   }
 
@@ -69,22 +73,22 @@ class App extends React.Component {
       allocation.period,
       allocation.balance
     )
-    console.info('App.js: Allocation submitted:')
-    console.table(allocation)
+    // console.info('App.js: Allocation submitted:')
+    // console.table(allocation)
     this.closePanel()
   }
 
   onExecutePayout = id => {
-    console.info('App.js: Executing Payout:')
-    console.info(id)
+    // console.info('App.js: Executing Payout:')
+    // console.info(id)
     this.props.app.executePayout(id)
   }
 
-  manageParameters = address => {
+  manageParameters = (/*address*/) => {
     // TODO: Implement
-    console.info(
-      `'App.js: Manage Parameters clicked from account with address: ${address}`
-    )
+    // console.info(
+    //   `'App.js: Manage Parameters clicked from account with address: ${address}`
+    // )
   }
 
   newAccount = () => {
@@ -105,7 +109,7 @@ class App extends React.Component {
       data: { entryAddress: 0x0, name: 'Select an entry', entryType: 'prompt' },
     }
     const entriesList = [promptEntity].concat(this.props.entries)
-    let entities = this.props.entries !== undefined ? entriesList : []
+    const entities = this.props.entries !== undefined ? entriesList : []
     this.setState({
       panel: {
         visible: true,

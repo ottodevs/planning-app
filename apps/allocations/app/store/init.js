@@ -1,5 +1,5 @@
 import addressBookAbi from '../../../shared/json-abis/address-book'
-import { app, handleEvent } from './'
+import { app, handleEvent } from '.'
 
 export const initStore = addressBookAddress => {
   const addressBookApp = app.external(addressBookAddress, addressBookAbi)
@@ -19,10 +19,10 @@ export const initStore = addressBookAddress => {
         const next = await handleEvent(state, event)
         const nextState = { ...initialState, ...next }
         // Debug point
-        console.log('[Allocations store]', nextState)
+        // console.log('[Allocations store]', nextState)
         return nextState
-      } catch (err) {
-        console.error('[Allocations script] initStore', event, err)
+      } catch (error) {
+        // console.error('[Allocations script] initStore', event, error)
       }
       // always return the state even unmodified
       return state

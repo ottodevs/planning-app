@@ -13,8 +13,8 @@ import {
 } from '../Form'
 
 // TODO: Extract to shared
-const AVAILABLE_TOKENS = [ 'ETH', 'ANT', 'GIV', 'FTL', '🦄' ]
-const ALLOCATION_TYPES = [ 'Informational', 'Token Transfer' ]
+const AVAILABLE_TOKENS = ['ETH', 'ANT', 'GIV', 'FTL', '🦄']
+const ALLOCATION_TYPES = ['Informational', 'Token Transfer']
 // const PAYOUT_TYPES = ['One-Time', 'Monthly']
 const INITIAL_STATE = {
   activePayoutOption: 0,
@@ -57,9 +57,10 @@ const uniqueAddressValidation = (entries, addr) => {
 
 class NewAllocation extends React.Component {
   static propTypes = {
-    onSubmitAllocation: PropTypes.func.isRequired,
     description: PropTypes.string,
     entities: PropTypes.array, // TODO: Better shape the array
+    id: PropTypes.string,
+    onSubmitAllocation: PropTypes.func.isRequired,
   }
 
   state = INITIAL_STATE
@@ -81,7 +82,7 @@ class NewAllocation extends React.Component {
     resetAllocationsError && this.setState({ allocationError: false })
 
     this.setState({ [name]: value })
-    console.log('changeField', name, 'to', value)
+    // console.log('changeField', name, 'to', value)
   }
 
   // TODO: Manage dropdown to return a name and value as the rest of inputs
@@ -129,7 +130,7 @@ class NewAllocation extends React.Component {
       this.setState({ allocationError: true })
       return
     }
-    if (!candidates.length) {
+    if (candidates.length === 0) {
       this.setState({ addressError: true })
       return
     }
@@ -164,7 +165,7 @@ class NewAllocation extends React.Component {
       <WarningMessage hasWarning={transferEnabled} type={'transferWarning'} />
     )
 
-    const errorMessages = [ 'allocationError', 'addressError' ].map((e, i) => (
+    const errorMessages = ['allocationError', 'addressError'].map((e, i) => (
       <ErrorMessage key={i} hasError={state[e]} type={e} />
     ))
 
@@ -216,7 +217,7 @@ class NewAllocation extends React.Component {
     const settingsField = (
       <FormField
         label="Settings"
-        input={<React.Fragment children={settingsInputs} />}
+        input={<React.Fragment>{settingsInputs}</React.Fragment>}
       />
     )
 
@@ -315,9 +316,10 @@ const ErrorMessage = ({ hasError, type }) =>
     <Info.Action
       background="#fb79790f"
       title="Error"
-      children={message[type]}
       style={{ margin: '20px 0' }}
-    />
+    >
+      {message[type]}
+    </Info.Action>
   ) : null
 
 ErrorMessage.propTypes = {
@@ -326,7 +328,12 @@ ErrorMessage.propTypes = {
 }
 
 const WarningMessage = ({ hasWarning, type }) =>
-  hasWarning ? <Info.Action title="Warning" children={message[type]} /> : null
+  hasWarning ? <Info.Action title="Warning">{message[type]}</Info.Action> : null
+
+WarningMessage.propTypes = {
+  hasWarning: PropTypes.bool,
+  type: PropTypes.string.isRequired,
+}
 
 // TODO: unused
 // const RecurringDropDown = ({ dropDown }) => {

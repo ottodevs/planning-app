@@ -11,7 +11,6 @@ import {
   IconAdd,
   IconFundraising,
   IdentityBadge,
-  SafeLink,
   theme,
 } from '@aragon/ui'
 import { ETH_DECIMALS } from '../../utils/constants'
@@ -25,8 +24,7 @@ const Account = ({
   limit,
   network,
   onNewAllocation,
-  onManageParameters,
-  onExecutePayout,
+  // onManageParameters,
   token,
   app,
 }) => {
@@ -34,12 +32,12 @@ const Account = ({
     onNewAllocation(proxy, description, id, limit)
   }
 
-  const manageParameters = () => {
-    onManageParameters(proxy)
-  }
+  // const manageParameters = () => {
+  //   onManageParameters(proxy)
+  // }
 
   const executePayout = () => {
-    console.info('App.js: Executing Payout:')
+    // console.info('App.js: Executing Payout:')
     app.runPayout(id)
   }
   /*Need a better solution that this, should be handled in
@@ -83,10 +81,11 @@ const Account = ({
             Balance
           </Text>
           <StatsValue>
-            {' ' + BigNumber(balance)
-              .div(ETH_DECIMALS)
-              .dp(3)
-              .toString()}{' '}
+            {' ' +
+              BigNumber(balance)
+                .div(ETH_DECIMALS)
+                .dp(3)
+                .toString()}{' '}
             {translatedToken}
           </StatsValue>
         </StyledStats>
@@ -95,10 +94,11 @@ const Account = ({
             Limit
           </Text>
           <StatsValue>
-            {' ' + BigNumber(limit)
-              .div(ETH_DECIMALS)
-              .dp(3)
-              .toString()}{' '}
+            {' ' +
+              BigNumber(limit)
+                .div(ETH_DECIMALS)
+                .dp(3)
+                .toString()}{' '}
             {translatedToken} / Allocation
           </StatsValue>
         </StyledStats>
@@ -108,6 +108,7 @@ const Account = ({
 }
 
 Account.propTypes = {
+  id: PropTypes.string.isRequired,
   proxy: PropTypes.string.isRequired,
   app: PropTypes.object.isRequired,
   limit: PropTypes.string.isRequired, // We are receiving this as string, parseInt if needed
@@ -115,7 +116,7 @@ Account.propTypes = {
   balance: PropTypes.string.isRequired, // We are receiving this as string, parseInt if needed
   description: PropTypes.string.isRequired,
   onNewAllocation: PropTypes.func.isRequired,
-  onManageParameters: PropTypes.func.isRequired,
+  // onManageParameters: PropTypes.func.isRequired,
   network: PropTypes.object,
 }
 
