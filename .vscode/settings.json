@@ -1,46 +1,67 @@
 {
+  // Eslint
   "eslint.autoFixOnSave": true,
   "eslint.enable": true,
   "eslint.run": "onType",
+
+  // Prettier integrations
+  "prettier.eslintIntegration": true,
+  "prettier.stylelintIntegration": true,
+
+  // Custom associations
   "files.associations": {
     ".stylelintrc": "json"
   },
-  "prettier.eslintIntegration": true,
-  "prettier.stylelintIntegration": true,
-  "solidity.packageDefaultDependenciesContractsDirectory": "",
-  "solidity.packageDefaultDependenciesDirectory": "",
+
+  // Solidity plugin config
+  "solidity.linter": "solium",
+  "solidity.compileUsingRemoteVersion": "v0.4.24+commit.e67f0147",
+  "solidity.enabledAsYouTypeCompilationErrorCheck": true,
+  "solidity.validationDelay": 500,
+  // "solidity.packageDefaultDependenciesContractsDirectory": "",
+  // "solidity.packageDefaultDependenciesDirectory": "",
+
+  // Solium rules
   "solidity.soliumRules": {
-    "security/no-low-level-calls": "off",
-    "security/no-inline-assembly": "off",
-    "emit": "off",
-    "error-reason": "off",
-    "imports-on-top": "error",
-    "variable-declarations": "error",
-    "array-declarations": "error",
-    "operator-whitespace": "error",
-    "conditionals-whitespace": "error",
-    "comma-whitespace": "error",
-    "semicolon-whitespace": "error",
-    "function-whitespace": "error",
-    "lbrace": "error",
-    "mixedcase": "error",
-    "camelcase": "error",
-    "uppercase": "error",
-    "no-empty-blocks": "error",
-    "no-unused-vars": "error",
-    "quotes": "error",
-    "blank-lines": "error",
-    "indentation": "error",
     "arg-overflow": ["error", 8],
-    "whitespace": "error",
+    "array-declarations": "error",
+    "blank-lines": "error",
+    "camelcase": "error",
+    "comma-whitespace": "error",
+    "conditionals-whitespace": "error",
+    "constructor": "error",
     "deprecated-suicide": "error",
-    "pragma-on-top": "error",
+    "emit": "error",
+    "error-reason": "error",
     "function-order": "error",
-    "no-constant": "error",
-    "value-in-payable": "error",
+    "function-whitespace": "error",
+    "imports-on-top": "error",
+    "indentation": "error",
+    "lbrace": "error",
+    "linebreak-style": "error",
     "max-len": "error",
+    "mixedcase": "error",
+    "no-constant": "error",
+    "no-empty-blocks": "error",
+    "no-experimental": "error",
+    "no-unused-vars": "error",
+    "operator-whitespace": "error",
+    "pragma-on-top": "error",
+    "quotes": "error",
+    "semicolon-whitespace": "error",
+    "uppercase": "error",
+    "value-in-payable": "error",
+    "variable-declarations": "error",
     "visibility-first": "error",
-    "linebreak-style": "error"
-  },
-  "solidity.validationDelay": 0
+    "whitespace": "error",
+
+    // Security rules
+    "security/enforce-explicit-visibility": ["error"],
+    "security/no-inline-assembly": "error",
+    "security/no-low-level-calls": "error",
+
+    // Disable deprecated rules
+    "double-quotes": "off",
+    "no-with": "off"
+  }
 }
