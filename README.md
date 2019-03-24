@@ -20,17 +20,17 @@ Node.js LTS or greater required.
 
 ```bash
 # Bootstrap project dependencies:
-$ npm i
+$ yarn
 
 # Start a local blockchain and deploy
 # aragon dao kit with all apps:
-$ npm start
+$ yarn start
 
 # Develop single app react frontend:
-$ npm run dev:projects
+$ yarn dev:projects
 
 # Develop single app with backend and aragon wrapper:
-$ npm run start:range
+$ yarn start:range
 
 # current app name aliases: {address, projects, payout, range}
 ```

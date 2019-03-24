@@ -3,12 +3,10 @@
     "run": {
       "concurrency": 1,
       "scope": "@tps/apps-*"
-    },
-    "bootstrap": {
-      "progress": true
     }
   },
-  "hoist": true,
-  "packages": ["apps/*", "apps/shared/*", "kits/*", "shared/*"],
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "packages": ["apps/*", "kits/*", "shared/*"],
   "version": "independent"
 }
