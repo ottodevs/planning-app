@@ -34,8 +34,12 @@
   "keywords": [],
   "license": "GPL-3.0",
   "babel": {
-    "presets": "@tps",
-    "plugins": "react-hot-loader/babel"
+    "presets": [
+      "@tps"
+    ],
+    "plugins": [
+      "react-hot-loader/babel"
+    ]
   },
   "eslintConfig": {
     "extends": "@tps"
