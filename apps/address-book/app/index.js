@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Aragon, { providers } from '@aragon/client'
+import Aragon, { providers } from '@aragon/api'
 import App from './components/App/App'
 
 class ConnectedApp extends React.Component {
@@ -31,9 +31,9 @@ class ConnectedApp extends React.Component {
       app.accounts().subscribe(accounts => {
         this.setState({ userAccount: accounts[0] })
       }),
-      app.network().subscribe(network => {
-        this.setState({ network })
-      })
+        app.network().subscribe(network => {
+          this.setState({ network })
+        })
     }
   }
   sendMessageToWrapper = (name, value) => {
@@ -43,4 +43,4 @@ class ConnectedApp extends React.Component {
     return <App {...this.state} />
   }
 }
-ReactDOM.render(<ConnectedApp />, document.getElementById('root'))
+ReactDOM.render(<ConnectedApp />, document.querySelector('#root'))

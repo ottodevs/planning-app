@@ -15,7 +15,8 @@ class App extends React.Component {
   static propTypes = {
     app: PropTypes.object.isRequired,
     // TODO: Shape this
-    entities: PropTypes.arrayOf(PropTypes.object),
+    entries: PropTypes.arrayOf(PropTypes.object),
+    network: PropTypes.object,
   }
 
   static defaultProps = {

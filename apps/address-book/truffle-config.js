@@ -1,1 +1,1 @@
-module.exports = require('@tps/test-helpers/truffle-config')
+export { default } from '@tps/test-helpers/truffle-config'

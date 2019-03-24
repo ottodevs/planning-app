@@ -1,5 +1,7 @@
-var AddressBook = artifacts.require('./AddressBook.sol')
+/*global artifacts*/
 
-module.exports = function (deployer) {
+const AddressBook = artifacts.require('./AddressBook.sol')
+
+export default function(deployer) {
   deployer.deploy(AddressBook)
 }

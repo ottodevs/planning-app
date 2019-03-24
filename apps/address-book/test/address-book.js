@@ -1,14 +1,14 @@
-const {
+/*global artifacts, assert, before, context, contract, it*/
+
+import {
   ACL,
   DAOFactory,
   EVMScriptRegistryFactory,
   Kernel,
-} = require('@tps/test-helpers/artifacts')
+} from '@tps/test-helpers/artifacts'
+import { assertRevert } from '@tps/test-helpers/assertThrow'
 
 const AddressBook = artifacts.require('AddressBook')
-
-const { assertRevert } = require('@tps/test-helpers/assertThrow')
-
 const ANY_ADDR = ' 0xffffffffffffffffffffffffffffffffffffffff'
 
 contract('AddressBook App', accounts => {
@@ -70,7 +70,7 @@ contract('AddressBook App', accounts => {
   })
 
   context('main context', () => {
-    let starfleet = accounts[0]
+    const starfleet = accounts[0]
 
     it('should add a new entry', async () => {
       const receipt = await app.addEntry(starfleet, 'Starfleet', 'Group')
@@ -79,7 +79,7 @@ contract('AddressBook App', accounts => {
       assert.equal(addedAddress, starfleet)
     })
     it('should get the previously added entry', async () => {
-      entry1 = await app.getEntry(starfleet)
+      const entry1 = await app.getEntry(starfleet)
       assert.equal(entry1[0], starfleet)
       assert.equal(entry1[1], 'Starfleet')
       assert.equal(entry1[2], 'Group')
@@ -95,7 +95,7 @@ contract('AddressBook App', accounts => {
     })
   })
   context('invalid operations', () => {
-    let [ borg, jeanluc ] = accounts.splice(1, 2)
+    const [borg, jeanluc] = accounts.splice(1, 2)
     before(async () => {
       app.addEntry(borg, 'Borg', 'Individual')
     })
@@ -110,12 +110,12 @@ contract('AddressBook App', accounts => {
         await app.addEntry(jeanluc, 'Borg', 'Captain')
       })
     })
-    it('should revert when removing not existant entry', async () => {
+    it('should revert when removing not existent entry', async () => {
       assertRevert(async () => {
         await app.removeEntry(jeanluc)
       })
     })
-    it('should revert when getting non-existant entry', async () => {
+    it('should revert when getting non-existent entry', async () => {
       assertRevert(async () => {
         await app.getEntry(jeanluc)
       })

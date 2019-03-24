@@ -6,7 +6,7 @@ import web3Utils from 'web3-utils'
 
 // TODO: fields validation and error handling need improvement!
 
-const ENTITY_TYPES = [ 'Individual', 'Organization', 'Project' ]
+const ENTITY_TYPES = ['Individual', 'Organization', 'Project']
 const INITIAL_STATE = {
   name: '',
   address: '',
@@ -41,11 +41,11 @@ class NewEntity extends React.Component {
     if (!web3Utils.isAddress(address)) {
       error.address = 'Please provide a valid ethereum address'
     }
-    console.log('current error', error)
-    console.log('error.keys', Object.keys(error).length)
-    console.log('current state:', this.state)
+    // console.log('current error', error)
+    // console.log('error.keys', Object.keys(error).length)
+    // console.log('current state:', this.state)
 
-    if (Object.keys(error).length) {
+    if (Object.keys(error).length > 0) {
       this.setState({ error: error })
     } else {
       this.setState(INITIAL_STATE)

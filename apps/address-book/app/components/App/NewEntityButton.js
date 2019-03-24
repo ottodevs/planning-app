@@ -10,7 +10,7 @@ const NewEntityButton = ({ onClick }) => (
 )
 
 NewEntityButton.propTypes = {
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 }
 
 const StyledButton = styled(Button)`

@@ -32,4 +32,3 @@ const EmptyWrapper = styled.div`
 `
 
 export default Empty
-

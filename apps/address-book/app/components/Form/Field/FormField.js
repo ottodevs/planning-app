@@ -50,6 +50,7 @@ FormField.propTypes = {
   hint: PropTypes.string,
   separator: PropTypes.bool,
   err: PropTypes.string,
+  input: PropTypes.string,
 }
 
 export default FormField
