@@ -30,7 +30,9 @@ const AddressDropDown = ({
   }
 
   const items = entities.map(e => (
-    <span style={{ whiteSpace: 'normal' }}>{e.data.name}</span>
+    <span key={e.data.name} style={{ whiteSpace: 'normal' }}>
+      {e.data.name}
+    </span>
   ))
 
   return (

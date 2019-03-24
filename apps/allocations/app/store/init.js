@@ -1,4 +1,4 @@
-import addressBookAbi from '../../../shared/json-abis/address-book'
+import addressBookAbi from '@tps/apps-address-book/build/contracts/AddressBook.json'
 import { app, handleEvent } from '.'
 
 export const initStore = addressBookAddress => {

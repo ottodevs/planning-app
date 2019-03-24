@@ -40,6 +40,8 @@ const Accounts = ({
 Accounts.propTypes = {
   // TODO: Create account shape
   accounts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  app: PropTypes.object.isRequired,
+  onExecutePayout: PropTypes.func.isRequired,
   onNewAccount: PropTypes.func.isRequired,
   onNewAllocation: PropTypes.func.isRequired,
   onManageParameters: PropTypes.func.isRequired,

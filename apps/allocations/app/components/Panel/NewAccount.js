@@ -31,14 +31,16 @@ class NewAccount extends React.Component {
   createAccount = () => {
     const { address, description, token: tokenIndex, limit } = this.state
     if (isStringEmpty(description)) {
-      return console.info(
-        'The Account was not added: Description is not valid or empty, review the inputs'
-      )
+      return
+      // return console.info(
+      //   'The Account was not added: Description is not valid or empty, review the inputs'
+      // )
     }
     if (!isNumberString(limit) || isStringEmpty(limit)) {
-      return console.info(
-        'The account was not added: Limit is not valid or empty, review the inputs'
-      )
+      return
+      // return console.info(
+      //   'The account was not added: Limit is not valid or empty, review the inputs'
+      // )
     }
 
     const token = AVAILABLE_TOKENS[tokenIndex]
