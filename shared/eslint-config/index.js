@@ -27,26 +27,28 @@ module.exports = {
   },
   plugins: ['jsdoc', 'prettier', 'promise', 'react', 'react-hooks'],
   rules: {
-    // Old TPS rules:
-    // "indent": ["error", 2],
-    // "linebreak-style": ["error", "unix"],
-    // "quotes": ["error", "single"],
-    // "react/no-typos": 1,
-    // "semi": ["error", "never"],
     'no-var': 'error',
     'prefer-const': 'error',
     'react/prop-types': 'error',
     'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
     'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
 
-    // conflicts with prettier/prettier
-    'unicorn/number-literal-case': 'off',
     'valid-jsdoc': [
       'error',
       {
         requireReturn: false,
       },
     ],
+    // disable conflicts with prettier/prettier
+    'unicorn/number-literal-case': 'off',
+
+    // TODO: Old TPS rules:
+    // "indent": ["error", 2],
+    // "linebreak-style": ["error", "unix"],
+    // "quotes": ["error", "single"],
+    // "react/no-typos": 1,
+    // "semi": ["error", "never"],
+
     // 'array-bracket-spacing': [
     //   'error',
     //   'always',
