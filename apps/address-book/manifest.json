@@ -1,6 +1,11 @@
 {
   "name": "Address Book",
-  "description": "Manage contacts",
+  "description": "Manage contacts.",
+  "icons": [
+    { "src": "/meta/icon-80.svg", "sizes": "80x80" },
+    { "src": "/meta/icon-22.svg", "sizes": "22x22" }
+  ],
+  "screenshots": [{ "src": "/meta/screenshot-1.png" }],
   "start_url": "dist/index.html",
   "script": "dist/script.js"
 }
