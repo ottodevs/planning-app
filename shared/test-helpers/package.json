@@ -4,15 +4,19 @@
   "version": "0.0.1",
   "description": "Helper scripts for Planning Suite",
   "devDependencies": {
-    "@aragon/cli": "5.4.0",
-    "eth-gas-reporter": "0.1.12",
-    "ethereumjs-abi": "0.6.5",
-    "ganache-cli": "6.1.8",
+    "@aragon/cli": "5.5.0",
+    "@tps/eslint-config": "^0.0.1",
+    "@tps/solium-config": "^0.0.1",
+    "eth-gas-reporter": "^0.1.12",
+    "ethereumjs-abi": "^0.6.7",
+    "ethlint": "^1.2.3",
+    "eslint": "^5.15.3",
+    "ganache-cli": "^6.4.1",
     "homedir": "^0.6.0",
-    "solidity-coverage": "0.5.11",
-    "solium": "1.1.8",
+    "solidity-coverage": "^0.5.11",
+    "prettier": "^1.16.4",
     "truffle": "4.1.14",
-    "truffle-hdwallet-provider": "0.0.3",
+    "truffle-hdwallet-provider": "1.0.5",
     "truffle-hdwallet-provider-privkey": "0.3.0"
   }
 }

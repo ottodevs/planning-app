@@ -1,14 +1,6 @@
 {
   "private": true,
   "name": "planning-suite-monorepo",
-  "devDependencies": {
-    "@aragon/cli": "5.4.0",
-    "coveralls": "3.0.2",
-    "cypress": "^3.1.5",
-    "lerna": "^3.10.8",
-    "truffle-privatekey-provider": "^1.1.0",
-    "wait-on": "^3.2.0"
-  },
   "scripts": {
     "bootstrap": "npx lerna bootstrap --hoist",
     "postinstall": "npm run bootstrap",
@@ -52,5 +44,12 @@
     "lint:allocations": "cd apps/allocations && npm run lint",
     "lint:projects": "cd apps/projects && npm run lint",
     "lint:range": "cd apps/range-voting && npm run lint"
+  "devDependencies": {
+    "@aragon/cli": "5.5.0",
+    "coveralls": "3.0.3",
+    "cypress": "^3.2.0",
+    "lerna": "^3.13.1",
+    "truffle-privatekey-provider": "^1.1.0",
+    "wait-on": "^3.2.0"
   }
 }
