@@ -1,6 +1,11 @@
+/*global module*/
+
+/**
+ * @fileoverview Entry Point of That Planning Suite Ethlint Config
+ * @author Autark LLC <autark.xyz>
+ */
+
 module.exports = {
-  extends: 'solium:all',
-  plugins: ['security'],
   rules: {
     'arg-overflow': ['error', 8],
     'array-declarations': 'error',
@@ -27,15 +32,17 @@ module.exports = {
     'operator-whitespace': 'error',
     'pragma-on-top': 'error',
     quotes: 'error',
-    'security/enforce-explicit-visibility': ['error'],
-    'security/no-inline-assembly': 'error',
-    'security/no-low-level-calls': 'error',
     'semicolon-whitespace': 'error',
     uppercase: 'error',
     'value-in-payable': 'error',
     'variable-declarations': 'error',
     'visibility-first': 'error',
     whitespace: 'error',
+
+    // Security rules
+    'security/enforce-explicit-visibility': ['error'],
+    'security/no-inline-assembly': 'error',
+    'security/no-low-level-calls': 'error',
 
     // Disable deprecated rules
     'double-quotes': 'off',

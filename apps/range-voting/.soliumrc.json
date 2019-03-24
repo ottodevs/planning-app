@@ -1,3 +1,4 @@
 {
-  "extends": ["tps"]
+  "extends": "tps",
+  "plugins": ["security"]
 }
