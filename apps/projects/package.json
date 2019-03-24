@@ -59,5 +59,20 @@
     "url": "https://github.com/AutarkLabs/planning-suite"
   },
   "keywords": [],
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "babel": {
+    "presets": "@tps",
+    "plugins": "react-hot-loader/babel"
+  },
+  "eslintConfig": {
+    "extends": "@tps"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "semi": false,
+    "singleQuote": true
+  },
+  "stylelint": {
+    "extends": "@tps/eslint-config/stylelint"
+  }
 }
