@@ -12,7 +12,7 @@
     "index.js"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "lint:js": "eslint --ignore-path .gitignore ./"
   },
   "devDependencies": {
     "eslint": "^5.15.3",

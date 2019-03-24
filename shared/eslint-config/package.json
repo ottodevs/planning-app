@@ -10,9 +10,8 @@
   },
   "scripts": {
     "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
-    "lint": "eslint .",
-    "prettier": "prettier \"**/*.{js,json,css,md}\" --write",
-    "test": "yarn lint"
+    "lint:js": "eslint --ignore-path .gitignore ./",
+    "prettier": "prettier \"**/*.{js,json,css,md}\" --write"
   },
   "files": [
     "index.js",

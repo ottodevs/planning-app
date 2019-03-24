@@ -6,6 +6,7 @@
     "coverage": "SOLIDITY_COVERAGE=true yarn ganache-cli:test",
     "ganache-cli:test": "../shared/test-helpers/ganache-cli.sh",
     "lint:sol": "solium --dir ./contracts",
+    "lint:js": "eslint --ignore-path .gitignore ./",
     "start:kit": "aragon run --kit PlanningKit --kit-init @ARAGON_ENS",
     "test:gas": "GAS_REPORTER=true npm test",
     "test": "TRUFFLE_TEST=true yarn ganache-cli:test"

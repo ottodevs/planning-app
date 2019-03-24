@@ -12,6 +12,7 @@
     "dev": "yarn sync-assets && parcel app/index.html --port 3333",
     "ganache-cli:test": "../shared/test-helpers/ganache-cli.sh",
     "lint:sol": "solium --dir ./contracts",
+    "lint:js": "eslint --ignore-path .gitignore ./",
     "prepublishOnly": "truffle compile --all",
     "publish:http": "yarn publish:http-copy-files && aragon apm publish patch --http localhost:3333 --http-served-from ./dist",
     "publish:http-copy-files": "yarn build:script && mkdir -p dist/images && cp images/icon.svg dist/images/",

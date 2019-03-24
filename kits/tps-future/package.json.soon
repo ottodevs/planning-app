@@ -4,7 +4,7 @@
   "description": "Future Kit for deploying That Planning Suite",
   "scripts": {
     "lint:sol": "solium --dir ./contracts",
-    "lint:js": "eslint .",
+    "lint:js": "eslint --ignore-path .gitignore ./",
     "test": "truffle compile && yarn docker:run && yarn docker:wait-gas && yarn test:devnet && yarn docker:stop",
     "deploy:deps:devnet": "truffle exec --network devnet scripts/deploy_deps.js",
     "test:devnet": "ENS=$(yarn deploy:deps:devnet | tail -1) truffle test --network devnet test/agp1_devnet.js",

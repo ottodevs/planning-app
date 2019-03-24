@@ -2,6 +2,9 @@
   "name": "@tps/test-helpers",
   "version": "0.0.1",
   "description": "Helper scripts for Planning Suite",
+  "scripts": {
+    "lint:js": "eslint --ignore-path .gitignore ./"
+  },
   "devDependencies": {
     "@aragon/cli": "5.5.0",
     "@tps/eslint-config": "^0.0.1",
