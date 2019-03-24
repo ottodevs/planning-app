@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import ClickOutHandler from 'react-onclickout'
-import { Button, springs, unselectable, theme } from '@aragon/ui'
+import { springs, theme } from '@aragon/ui'
 import { IconArrowDown } from '../../Shared'
 import FilterButton from './FilterButton'
 
@@ -12,7 +12,8 @@ const BASE_HEIGHT = 40
 
 class FilterDropDown extends React.Component {
   static propTypes = {
-    children: PropTypes.node,
+    caption: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired,
     enabled: PropTypes.bool,
     overflow: PropTypes.bool,
   }
@@ -133,7 +134,6 @@ const PopupOverflow = styled(animated.div)`
   right: 0;
   padding: 0;
   background: ${theme.contentBackground};
-  border: 0px solid ${theme.contentBorder};
   > :not(:first-child) {
     margin-top: -1px;
   }

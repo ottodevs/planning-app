@@ -1,5 +1,5 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import styled from 'styled-components'
 import {
   Badge,
@@ -46,6 +46,13 @@ const ActionLabel = styled.span`
 `
 
 class FilterBar extends React.Component {
+  static propTypes = {
+    activeIndex: PropTypes.shape({ tabData: PropTypes.object.isRequired })
+      .isRequired,
+    allSelected: PropTypes.bool.isRequired,
+    bountyIssues: PropTypes.array.isRequired,
+  }
+
   state = {
     filters: {
       projects: {},
@@ -67,7 +74,7 @@ class FilterBar extends React.Component {
 
   componentWillMount() {
     if ('filterIssuesByRepoId' in this.props.activeIndex.tabData) {
-      let { filters } = this.state
+      const { filters } = this.state
       filters.projects[
         this.props.activeIndex.tabData.filterIssuesByRepoId
       ] = true
@@ -90,11 +97,11 @@ class FilterBar extends React.Component {
   }
 
   /*
-    prepareFilters builds data structure for displaying filterbar dropdowns
+    prepareFilters builds data structure for displaying filter bar dropDowns
     data comes from complete issues array, issuesFiltered is used for counters
   */
   prepareFilters = (issues, bountyIssues) => {
-    let filters = {
+    const filters = {
       projects: {},
       labels: {},
       milestones: {},
@@ -159,7 +166,7 @@ class FilterBar extends React.Component {
           }
         }
       }
-      // TODO: shouldn't it be reporitory.id?
+      // TODO: shouldn't it be repository.id?
       if (issue.repository.id in filters.projects) {
         filters.projects[issue.repository.id].count++
       } else {
@@ -201,11 +208,10 @@ class FilterBar extends React.Component {
             enabled={Object.keys(filtersData.projects).length > 0}
           >
             {Object.keys(filtersData.projects)
-              .sort(
-                (p1, p2) =>
-                  filtersData.projects[p1].name < filtersData.projects[p2].name
-                    ? -1
-                    : 1
+              .sort((p1, p2) =>
+                filtersData.projects[p1].name < filtersData.projects[p2].name
+                  ? -1
+                  : 1
               )
               .map(id => (
                 <FilterMenuItem
@@ -297,10 +303,7 @@ class FilterBar extends React.Component {
               ))}
           </FilterDropDown>
 
-          <FilterDropDown
-            caption="Status"
-            enabled={true}
-          >
+          <FilterDropDown caption="Status" enabled={true}>
             {Object.keys(filtersData.statuses).map(status => (
               <FilterMenuItem
                 key={status}

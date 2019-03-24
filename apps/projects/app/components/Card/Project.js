@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { IconHistory, IconContributors } from '../Shared'
@@ -12,13 +13,13 @@ import {
   theme,
 } from '@aragon/ui'
 
-const colors = {
-  iconColor: theme.textTertiary,
-  labelColor: theme.textPrimary,
-}
+// const colors = {
+//   iconColor: theme.textTertiary,
+//   labelColor: theme.textPrimary,
+// }
 
 const Project = ({
-  id,
+  // id,
   repoId,
   label,
   description,
@@ -26,11 +27,10 @@ const Project = ({
   url,
   contributors,
   onRemoveProject,
-  changeActiveIndex
+  changeActiveIndex,
 }) => {
-
   const removeProject = () => {
-    console.log('removeProject', repoId)
+    // console.log('removeProject', repoId)
     onRemoveProject(repoId)
   }
 
@@ -38,7 +38,10 @@ const Project = ({
 
   const clickContext = e => {
     e.stopPropagation()
-    changeActiveIndex({ tabIndex: 1, tabData: { filterIssuesByRepoId: repoId } })
+    changeActiveIndex({
+      tabIndex: 1,
+      tabData: { filterIssuesByRepoId: repoId },
+    })
   }
 
   return (
@@ -67,9 +70,7 @@ const Project = ({
       </MenuContainer>
       <CardTitle>{label}</CardTitle>
       <CardDescription>
-        <CardDescriptionText>
-          {description}
-        </CardDescriptionText>
+        <CardDescriptionText>{description}</CardDescriptionText>
       </CardDescription>
       <StyledStats>
         <StatsContainer>
@@ -93,6 +94,17 @@ const Project = ({
       </StyledStats>
     </StyledCard>
   )
+}
+
+Project.propTypes = {
+  repoId: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  commits: PropTypes.number.isRequired,
+  contributors: PropTypes.number.isRequired,
+  changeActiveIndex: PropTypes.func.isRequired,
+  url: PropTypes.string.isRequired,
+  onRemoveProject: PropTypes.func.isRequired,
 }
 
 const StyledCard = styled(Card)`

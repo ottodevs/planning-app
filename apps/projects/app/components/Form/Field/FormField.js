@@ -38,9 +38,10 @@ const FormField = ({ input, label, hint, required, separator }) => {
 
 FormField.propTypes = {
   children: PropTypes.node,
+  input: PropTypes.string,
+  hint: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
-  hint: PropTypes.string,
   separator: PropTypes.bool,
 }
 

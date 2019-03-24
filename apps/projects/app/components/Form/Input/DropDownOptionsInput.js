@@ -1,7 +1,12 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import { IconAdd, IconRemove, TextInput, theme, unselectable } from '@aragon/ui'
+import {
+  /*IconAdd,*/ IconRemove,
+  TextInput,
+  theme,
+  unselectable,
+} from '@aragon/ui'
 
 class DropDownOptionsInput extends React.Component {
   static propTypes = {
@@ -15,19 +20,19 @@ class DropDownOptionsInput extends React.Component {
     // TODO: Implement some rules about what an 'Option can be' duplicates, etc
     const { input, name, values } = this.props
     if (input && !values.includes(input)) {
-      this.props.onChange({ target: { name, value: [ ...values, input ] } })
+      this.props.onChange({ target: { name, value: [...values, input] } })
       this.props.onChange({ target: { name: 'optionsInput', value: '' } })
-      console.log('Option Added')
+      // console.log('Option Added')
     } else {
-      console.log(
-        'DropDownOptionsInput: The option is empty or already present'
-      )
+      // console.log(
+      //   'DropDownOptionsInput: The option is empty or already present'
+      // )
     }
   }
 
   removeOption = option => {
     this.props.onChange({
-      target: { name, value: values.filter(v => v !== option) },
+      target: { name, value: this.props.values.filter(v => v !== option) },
     })
   }
 
@@ -44,10 +49,11 @@ class DropDownOptionsInput extends React.Component {
           <StyledInput readOnly wide value={issueString} />
           <IconContainer
             style={{ transform: 'scale(.8)' }}
-            onClick={() => removeOption(issue)}
+            onClick={() => this.removeOption(issue)}
             title="Click to remove the issue"
-            children={<IconRemove />}
-          />
+          >
+            <IconRemove />
+          </IconContainer>
         </StyledOption>
       )
     })
@@ -95,9 +101,11 @@ const IconContainer = styled.span`
     height: auto;
     width: 40px;
     transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    /* stylelint-disable-next-line no-descending-specificity */
     :active {
       color: ${theme.accent};
     }
+    /* stylelint-disable-next-line no-descending-specificity */
     :hover {
       color: ${theme.contentBorderActive};
     }

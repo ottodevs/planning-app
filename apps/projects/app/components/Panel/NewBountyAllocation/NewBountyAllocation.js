@@ -4,14 +4,12 @@ import styled from 'styled-components'
 import { addHours } from 'date-fns'
 
 import {
-  Field,
   Text,
   TextInput,
   DropDown,
   theme,
   Badge,
   Table,
-  TableHeader,
   TableRow,
   TableCell,
 } from '@aragon/ui'
@@ -19,10 +17,41 @@ import {
 import { Form, FormField, FieldTitle, DateInput } from '../../Form'
 import { IconBigArrowDown, IconBigArrowUp } from '../../Shared'
 
-const bountySlots = [ '1', '2', '3' ]
+const bountySlots = ['1', '2', '3']
+
+// static propTypes = {
+//   activeIndex: PropTypes.shape({
+//     tabData: PropTypes.shape({
+//       filterIssuesByRepoId: PropTypes.string.isRequired,
+//     }),
+//   }),
+//   bountyIssues: PropTypes.array.isRequired,
+
+//   onAllocateBounties: PropTypes.func.isRequired,
+//   onCurateIssues: PropTypes.func.isRequired,
+//   onLogin: PropTypes.func.isRequired,
+//   onNewProject: PropTypes.func.isRequired,
+//   onRequestAssignment: PropTypes.func.isRequired,
+//   onReviewApplication: PropTypes.func.isRequired,
+//   onReviewWork: PropTypes.func.isRequired,
+//   onSubmitWork: PropTypes.func.isRequired,
+//   projects: PropTypes.array.isRequired,
+//   status: PropTypes.string.isRequired,
+//   tokens: PropTypes.array.isRequired,
+// }
 
 class NewBountyAllocation extends React.Component {
   static propTypes = {
+    /** base rate in pennies */
+    baseRate: PropTypes.number,
+    bountySettings: PropTypes.shape({
+      bountyDeadline: PropTypes.object.isRequired,
+      baseRate: PropTypes.number.isRequired,
+      expLevels: PropTypes.shape({
+        split: PropTypes.arrayOf(PropTypes.string).isRequired,
+      }),
+    }),
+    description: PropTypes.string.isRequired,
     /** array of issues to allocate bounties on */
     issues: PropTypes.arrayOf(
       PropTypes.shape({
@@ -31,11 +60,9 @@ class NewBountyAllocation extends React.Component {
         title: PropTypes.string,
         number: PropTypes.number,
         repo: PropTypes.string,
-        repoId: PropTypes.string       
+        repoId: PropTypes.string,
       })
     ),
-    /** base rate in pennies */
-    baseRate: PropTypes.number,
     onSubmit: PropTypes.func.isRequired,
   }
 
@@ -45,7 +72,7 @@ class NewBountyAllocation extends React.Component {
 
   constructor(props) {
     super(props)
-    let bounties = {}
+    const bounties = {}
     this.props.issues.map(issue => {
       bounties[issue.id] = {
         repo: issue.repo,
@@ -53,11 +80,14 @@ class NewBountyAllocation extends React.Component {
         repoId: issue.repoId,
         hours: 0,
         exp: 0,
-        deadline: addHours(new Date(), this.props.bountySettings.bountyDeadline),
+        deadline: addHours(
+          new Date(),
+          this.props.bountySettings.bountyDeadline
+        ),
         slots: 1,
         slotsIndex: 0,
         detailsOpen: 0,
-        size: 0
+        size: 0,
       }
     })
     this.state = {
@@ -65,7 +95,7 @@ class NewBountyAllocation extends React.Component {
       bounties,
     }
   }
-  
+
   configBounty = (id, key, val) => {
     const { bounties } = this.state
     // arrow clicked - it's simple value reversal case, 1 indicates details are open, 0 - closed
@@ -80,18 +110,22 @@ class NewBountyAllocation extends React.Component {
     }
     // just do it, recalculate size
     const expLevels = this.getExpLevels()
-    let size = bounties[id]['hours'] * this.props.bountySettings.baseRate * expLevels[bounties[id]['exp']].mul
+    const size =
+      bounties[id]['hours'] *
+      this.props.bountySettings.baseRate *
+      expLevels[bounties[id]['exp']].mul
     bounties[id]['size'] = size
 
     this.setState({ bounties })
     //console.log('configBounty: ', bounties)
   }
 
-  generateHoursChange = id => ({ target: { value } }) => this.configBounty(id, 'hours', parseInt(value))
+  generateHoursChange = id => ({ target: { value } }) =>
+    this.configBounty(id, 'hours', parseInt(value))
 
   generateExpChange = id => index => {
     this.configBounty(id, 'exp', index)
-    console.log('generateExpChange: id: ', id, ', index: ', index)
+    // console.log('generateExpChange: id:', id, ', index:', index)
   }
 
   generateDeadlineChange = id => deadline => {
@@ -100,24 +134,24 @@ class NewBountyAllocation extends React.Component {
 
   generateSlotsChange = id => index => {
     this.configBounty(id, 'slotsIndex', index)
-    console.log('generateExpChange: id: ', id, ', index: ', index)
+    // console.log('generateExpChange: id:', id, ', index:', index)
   }
 
   generateArrowChange = id => () => {
     this.configBounty(id, 'detailsOpen')
-    console.log('generateArrowChange: id: ', id)
+    // console.log('generateArrowChange: id:', id)
   }
 
   submitBounties = () => {
-    console.info('Submitting new Bounties', this.state.bounties)
+    // console.info('Submitting new Bounties', this.state.bounties)
     this.props.onSubmit(this.state.bounties)
   }
 
   // TODO: make it smarter. exp levels are quite constant, but they might not
   // be immediately available
   getExpLevels = () => {
-    let expLevels = []
-    let a = this.props.bountySettings.expLevels.split('\t')
+    const expLevels = []
+    const a = this.props.bountySettings.expLevels.split('\t')
     for (let i = 0; i < a.length; i += 2)
       expLevels.push({ mul: a[i] / 100, name: a[i + 1] })
     return expLevels
@@ -181,14 +215,14 @@ class NewBountyAllocation extends React.Component {
                         <IBValue>
                           {issue.id in bounties &&
                             bounties[issue.id]['hours'] > 0 && (
-                            <IBValueShow>
-                              <FieldTitle>Value</FieldTitle>
-                              <Badge style={{ marginLeft: '5px' }}>
-                                {bounties[issue.id]['size'].toFixed(2)}{' '}
-                                {bountySettings.bountyCurrency}
-                              </Badge>
-                            </IBValueShow>
-                          )}
+                              <IBValueShow>
+                                <FieldTitle>Value</FieldTitle>
+                                <Badge style={{ marginLeft: '5px' }}>
+                                  {bounties[issue.id]['size'].toFixed(2)}{' '}
+                                  {bountySettings.bountyCurrency}
+                                </Badge>
+                              </IBValueShow>
+                            )}
                         </IBValue>
                       </IssueBounty>
                       <IBDetails open={bounties[issue.id]['detailsOpen']}>
@@ -209,7 +243,7 @@ class NewBountyAllocation extends React.Component {
                             label="Deadline"
                             input={
                               <DateInput
-                                name='deadline'
+                                name="deadline"
                                 value={bounties[issue.id]['deadline']}
                                 onChange={this.generateDeadlineChange(issue.id)}
                               />
@@ -313,7 +347,7 @@ const IBValueShow = styled.div`
 `
 const IBArrow = styled.div`
   grid-area: arrow;
-  place-self: center; // TODO: Check browser support for this
+  /* place-self: center; // TODO: Check browser support for this */
 `
 const IBHoursInput = styled.div`
   display: inline-flex;

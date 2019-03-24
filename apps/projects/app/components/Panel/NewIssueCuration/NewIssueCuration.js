@@ -19,6 +19,7 @@ class NewIssueCuration extends React.Component {
         repo: PropTypes.string,
       })
     ),
+    onSubmit: PropTypes.func.isRequired,
     /** base rate in pennies */
     // rate: PropTypes.number,
     // onSubmit: PropTypes.func,

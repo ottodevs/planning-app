@@ -9,7 +9,9 @@ import { IconGitHub } from '../../Shared'
 
 class RequestAssignment extends React.Component {
   static propTypes = {
+    githubCurrentUser: PropTypes.object.isRequired,
     issue: PropTypes.object.isRequired,
+    onRequestAssignment: PropTypes.func.isRequired,
   }
 
   state = {
@@ -27,7 +29,7 @@ class RequestAssignment extends React.Component {
   setAck2 = () => this.setState(prevState => ({ ack2: !prevState.ack2 }))
 
   onRequestAssignment = () => {
-    let today = new Date()
+    const today = new Date()
     this.props.onRequestAssignment(
       {
         ...this.state,
@@ -48,7 +50,6 @@ class RequestAssignment extends React.Component {
     )
 
   render() {
-    const { login } = this.props.githubCurrentUser
     const { title, repo, number, url } = this.props.issue
 
     return (

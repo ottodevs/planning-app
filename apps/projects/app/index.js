@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Aragon, { providers } from '@aragon/client'
+import Aragon, { providers } from '@aragon/api'
 import ApolloClient from 'apollo-boost'
 
 import App from './components/App/App'
@@ -63,10 +63,10 @@ class ConnectedApp extends React.Component {
         this.setState({ network })
       })
       app.rpc
-        .sendAndObserveResponses('cache', [ 'get', 'github' ])
+        .sendAndObserveResponses('cache', ['get', 'github'])
         .pluck('result')
         .subscribe(github => {
-          console.log('github object received from backend cache:', github)
+          // console.log('github object received from backend cache:', github)
 
           this.setState({
             github: github,
@@ -77,11 +77,19 @@ class ConnectedApp extends React.Component {
               .query({
                 query: CURRENT_USER,
               })
-              .then(({ data }) => {
-                this.setState({
-                  githubCurrentUser: data.viewer,
-                })
-                console.log('viewer: ', data)
+              .then(
+                ({ data }) =>
+                  void this.setState({
+                    githubCurrentUser: data.viewer,
+                  })
+                // console.log('viewer:', data)
+              )
+              .catch(error => {
+                /* TODO: handle error here */
+                throw new Error(
+                  '[projects] error receiving githubCurrentUser',
+                  error
+                )
               })
           }
         })
@@ -95,5 +103,5 @@ class ConnectedApp extends React.Component {
   }
 }
 // module.hot.accept(
-ReactDOM.render(<ConnectedApp />, document.getElementById('projects'))
+ReactDOM.render(<ConnectedApp />, document.querySelector('#projects'))
 // )

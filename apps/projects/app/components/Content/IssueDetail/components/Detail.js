@@ -1,12 +1,11 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import PropTypes from 'prop-types'
 
 import { Badge, Text, theme, ContextMenu, ContextMenuItem } from '@aragon/ui'
 import { format, formatDistance } from 'date-fns'
 
-import { DropDownButton } from '../../../Shared'
-import { IconGitHub, BountyContextMenu } from '../../../Shared'
+import { DropDownButton, IconGitHub, BountyContextMenu } from '../../../Shared'
 
 const StyledTable = styled.div`
   margin-bottom: 20px;
@@ -33,9 +32,7 @@ const FieldTitle = styled(Text.Block)`
   font-weight: bold;
   margin-bottom: 6px;
 `
-const ActionLabel = styled.span`
-  margin-left: 15px;
-`
+
 const SummaryTable = ({ expLevel, deadline, slots, workStatus }) => {
   const FIELD_TITLES = [
     'Experience Level',
@@ -43,7 +40,7 @@ const SummaryTable = ({ expLevel, deadline, slots, workStatus }) => {
     'Slots Available',
     'Status',
   ]
-  const mappedTableFields = [ expLevel, deadline, slots, workStatus ].map(
+  const mappedTableFields = [expLevel, deadline, slots, workStatus].map(
     (field, i) => (
       <StyledCell key={i}>
         <FieldTitle>{FIELD_TITLES[i]}</FieldTitle>
@@ -52,6 +49,20 @@ const SummaryTable = ({ expLevel, deadline, slots, workStatus }) => {
     )
   )
   return <StyledTable>{mappedTableFields}</StyledTable>
+}
+
+SummaryTable.propTypes = {
+  expLevel: PropTypes.number.isRequired,
+  deadline: PropTypes.object.isRequired,
+  slots: PropTypes.number.isRequired,
+  workStatus: PropTypes.oneOf([
+    undefined,
+    'funded',
+    'review-applicants',
+    'in-progress',
+    'review-work',
+    'fulfilled',
+  ]),
 }
 
 // this 10px padding and...
@@ -84,10 +95,10 @@ const Avatar = ({ size, img }) => {
   // do something with the size...
   const avatarStyle = () => {
     switch (size) {
-    case 'small':
-      return { transform: 'scale(.6)' }
-    default:
-      return { transform: 'scale(.8)' }
+      case 'small':
+        return { transform: 'scale(.6)' }
+      default:
+        return { transform: 'scale(.8)' }
     }
   }
 
@@ -96,6 +107,11 @@ const Avatar = ({ size, img }) => {
       <img src={img} alt="user avatar" style={avatarStyle()} />
     </div>
   )
+}
+
+Avatar.propTypes = {
+  img: PropTypes.object.isRequired,
+  size: PropTypes.object.isRequired,
 }
 
 const MemberRow = ({ name, role, status, avatar }) => (
@@ -113,6 +129,14 @@ const MemberRow = ({ name, role, status, avatar }) => (
     </ContextMenu>
   </Wrapper>
 )
+
+MemberRow.propTypes = {
+  avatar: PropTypes.object.isRequired,
+  name: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+}
+
 const ActivityRow = ({ name, log, date, avatar }) => (
   <Wrapper style={{ padding: '0' }}>
     <Avatar size="small" style={column}>
@@ -127,47 +151,54 @@ const ActivityRow = ({ name, log, date, avatar }) => (
   </Wrapper>
 )
 
-const fakeActivities = [
-  {
-    name: 'Worf',
-    log: 'began the task',
-    date: '2 days ago',
-    avatar: null,
-  },
-  {
-    name: 'Tasha Yar',
-    log: 'assigned Worf',
-    date: '3 days ago',
-    avatar: null,
-  },
-  {
-    name: 'Data',
-    log: 'rejected Jean-Luc\'s work',
-    date: 'Last seen 4 hours ago',
-    avatar: null,
-  },
-]
+ActivityRow.propTypes = {
+  avatar: PropTypes.object.isRequired,
+  date: PropTypes.object.isRequired,
+  log: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+}
 
-const fakeMembers = [
-  {
-    name: 'Worf',
-    role: 'Contributor',
-    status: 'Pending assignment',
-    avatar: null,
-  },
-  {
-    name: 'Tasha Yar',
-    role: 'Contributor',
-    status: 'Assignment approved',
-    avatar: null,
-  },
-  {
-    name: 'Data',
-    role: 'Task Manager',
-    status: 'Last seen 4 hours ago',
-    avatar: null,
-  },
-]
+// const fakeActivities = [
+//   {
+//     name: 'Worf',
+//     log: 'began the task',
+//     date: '2 days ago',
+//     avatar: null,
+//   },
+//   {
+//     name: 'Tasha Yar',
+//     log: 'assigned Worf',
+//     date: '3 days ago',
+//     avatar: null,
+//   },
+//   {
+//     name: 'Data',
+//     log: "rejected Jean-Luc's work",
+//     date: 'Last seen 4 hours ago',
+//     avatar: null,
+//   },
+// ]
+
+// const fakeMembers = [
+//   {
+//     name: 'Worf',
+//     role: 'Contributor',
+//     status: 'Pending assignment',
+//     avatar: null,
+//   },
+//   {
+//     name: 'Tasha Yar',
+//     role: 'Contributor',
+//     status: 'Assignment approved',
+//     avatar: null,
+//   },
+//   {
+//     name: 'Data',
+//     role: 'Task Manager',
+//     status: 'Last seen 4 hours ago',
+//     avatar: null,
+//   },
+// ]
 
 const Detail = ({
   requestsData,
@@ -179,8 +210,8 @@ const Detail = ({
   repo,
   body,
   createdAt,
-  activities = fakeActivities, // TODO: Remove default fake value when data arrives from backend
-  team = fakeMembers, // TODO: Also this
+  // activities = fakeActivities, // TODO: Remove default fake value when data arrives from backend
+  // team = fakeMembers, // TODO: Also this
   expLevel,
   deadline,
   slots,
@@ -190,27 +221,31 @@ const Detail = ({
   onReviewWork,
   onRequestAssignment,
   onSubmitWork,
-  onAllocateSingleBounty
+  onAllocateSingleBounty,
 }) => {
-
   const summaryData = {
-    expLevel: (expLevel === undefined) ? '-' : expLevel,
-    deadline: (deadline === undefined) ? '-' : format(deadline, 'yyyy-MM-dd HH:mm:ss'),
-    slots: (slots === undefined) ? '-' :
-      (requestsData === undefined) ? 'Unallocated (' + slots + ')' :
-        (requestsData.length < slots) ? 'Slots available: ' + (slots - requestsData.length) + '/' + slots:
-          'Allocated',
-    workStatus: (workStatus === undefined) ? 'No bounty yet' : workStatus
+    expLevel: expLevel === undefined ? '-' : expLevel,
+    deadline:
+      deadline === undefined ? '-' : format(deadline, 'yyyy-MM-dd HH:mm:ss'),
+    slots:
+      slots === undefined
+        ? '-'
+        : requestsData === undefined
+        ? 'Unallocated (' + slots + ')'
+        : requestsData.length < slots
+        ? 'Slots available: ' + (slots - requestsData.length) + '/' + slots
+        : 'Allocated',
+    workStatus: workStatus === undefined ? 'No bounty yet' : workStatus,
   }
   const calculatedDate = () => {
     const date = Date.now()
     return formatDistance(createdAt, date, { addSuffix: true })
   }
   // Some dynamically generated components
-  const teamRows = team.map((member, i) => <MemberRow key={i} {...member} />)
-  const activityRows = activities.map((data, i) => (
-    <ActivityRow key={i} {...data} />
-  ))
+  // const teamRows = team.map((member, i) => <MemberRow key={i} {...member} />)
+  // const activityRows = activities.map((data, i) => (
+  //   <ActivityRow key={i} {...data} />
+  // ))
   return (
     <Wrapper>
       <div style={{ flex: 3, maxWidth: '705px' }}>
@@ -247,15 +282,20 @@ const Detail = ({
                   onReviewWork={onReviewWork}
                 />
               </DropDownButton>
-              { balance > 0 &&
+              {balance > 0 && (
                 <Badge
-                  style={{ padding: '10px', marginRight: '20px', textSize: 'large', marginTop: '15px' }}
+                  style={{
+                    padding: '10px',
+                    marginRight: '20px',
+                    textSize: 'large',
+                    marginTop: '15px',
+                  }}
                   background={'#e7f8ec'}
                   foreground={theme.positive}
                 >
                   {balance + ' ' + symbol}
                 </Badge>
-              }
+              )}
             </div>
           </Wrapper>
           <SummaryTable {...summaryData} />
@@ -266,15 +306,15 @@ const Detail = ({
           <Text size="small" color={theme.textTertiary}>
             {labels.totalCount
               ? labels.edges.map(label => (
-                <Badge
-                  key={label.node.id}
-                  style={{ marginRight: '5px' }}
-                  background={'#' + label.node.color}
-                  foreground={'#000'}
-                >
-                  {label.node.name}
-                </Badge>
-              ))
+                  <Badge
+                    key={label.node.id}
+                    style={{ marginRight: '5px' }}
+                    background={'#' + label.node.color}
+                    foreground={'#000'}
+                  >
+                    {label.node.name}
+                  </Badge>
+                ))
               : ''}
           </Text>
         </div>
@@ -296,15 +336,47 @@ const Detail = ({
 }
 
 Detail.propTypes = {
+  balance: PropTypes.number.isRequired,
+  // activities: PropTypes.arrayOf(
+  //   PropTypes.shape({
+  //     name: PropTypes.string.isRequired,
+  //     log: PropTypes.string.isRequired,
+  //     date: PropTypes.string.isRequired,
+  //     avatar: PropTypes.object.isRequired,
+  //   })
+  // ).isRequired,
+  body: PropTypes.string.isRequired,
+  createdAt: PropTypes.object.isRequired,
+  deadline: PropTypes.object.isRequired,
+  expLevel: PropTypes.number.isRequired,
+  labels: PropTypes.arrayOf(PropTypes.string).isRequired,
+  number: PropTypes.number.isRequired,
   onAllocateSingleBounty: PropTypes.func.isRequired,
-  onSubmitWork: PropTypes.func.isRequired,
   onRequestAssignment: PropTypes.func.isRequired,
   onReviewApplication: PropTypes.func.isRequired,
   onReviewWork: PropTypes.func.isRequired,
-  workStatus: PropTypes.oneOf([ undefined, 'funded', 'review-applicants', 'in-progress', 'review-work', 'fulfilled' ]),
-  work: PropTypes.oneOf([
+  onSubmitWork: PropTypes.func.isRequired,
+  repo: PropTypes.string.isRequired,
+  requestsData: PropTypes.object.isRequired,
+  slots: PropTypes.number.isRequired,
+  symbol: PropTypes.string.isRequired,
+  // team: PropTypes.arrayOf(
+  //   PropTypes.shape({
+  //     name: PropTypes.string.isRequired,
+  //     role: PropTypes.string.isRequired,
+  //     status: PropTypes.string.isRequired,
+  //     avatar: PropTypes.object.isRequired,
+  //   })
+  // ).isRequired,
+  title: PropTypes.string.isRequired,
+  work: PropTypes.oneOf([undefined, PropTypes.object]),
+  workStatus: PropTypes.oneOf([
     undefined,
-    PropTypes.object,
+    'funded',
+    'review-applicants',
+    'in-progress',
+    'review-work',
+    'fulfilled',
   ]),
 }
 

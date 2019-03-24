@@ -1,3 +1,4 @@
+/* global module, web3 */
 import { BaseStyles, PublicUrl, observe, Root, ToastHub } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -18,7 +19,7 @@ const ASSETS_URL = './aragon-ui-assets/'
 
 const GITHUB_URI = 'https://github.com/login/oauth/authorize'
 
-let ipfsClient = require('ipfs-http-client')
+import ipfsClient from 'ipfs-http-client'
 
 // TODO: let the user customize the github app on settings screen?
 // TODO: Extract to an external js utility to keep this file clean
@@ -28,28 +29,28 @@ let CLIENT_ID = ''
 let REDIRECT_URI = ''
 let AUTH_URI = ''
 
-let ipfs = ipfsClient({ host: 'localhost', port: '5001', protocol: 'http' })
+const ipfs = ipfsClient({ host: 'localhost', port: '5001', protocol: 'http' })
 
 switch (window.location.origin) {
-case 'http://localhost:3333':
-  console.log('GitHub OAuth: Using local http provider deployment')
-  CLIENT_ID = 'd556542aa7a03e640409'
-  REDIRECT_URI = 'http://localhost:3333'
-  AUTH_URI = 'https://tps-github-auth.now.sh/authenticate'
-  // TODO: change auth service to be more explicit to:
-  // AUTH_URI = 'https://dev-tps-github-auth.now.sh/authenticate'
-  break
-case 'http://localhost:8080':
-  console.log('GitHub OAuth: Using local IPFS deployment')
-  CLIENT_ID = '686f96197cc9bb07a43d'
-  REDIRECT_URI = window.location.href
-  AUTH_URI = 'https://local-tps-github-auth.now.sh/authenticate'
-  break
-default:
-  console.log(
-    'GitHub OAuth: Scenario not implemented yet, GitHub API disabled for the current Projects App deployment'
-  )
-  break
+  case 'http://localhost:3333':
+    // console.log('GitHub OAuth: Using local http provider deployment')
+    CLIENT_ID = 'd556542aa7a03e640409'
+    REDIRECT_URI = 'http://localhost:3333'
+    AUTH_URI = 'https://tps-github-auth.now.sh/authenticate'
+    // TODO: change auth service to be more explicit to:
+    // AUTH_URI = 'https://dev-tps-github-auth.now.sh/authenticate'
+    break
+  case 'http://localhost:8080':
+    // console.log('GitHub OAuth: Using local IPFS deployment')
+    CLIENT_ID = '686f96197cc9bb07a43d'
+    REDIRECT_URI = window.location.href
+    AUTH_URI = 'https://local-tps-github-auth.now.sh/authenticate'
+    break
+  default:
+    // console.log(
+    //   'GitHub OAuth: Scenario not implemented yet, GitHub API disabled for the current Projects App deployment'
+    // )
+    break
 }
 
 export const githubPopup = (popup = null) => {
@@ -57,7 +58,7 @@ export const githubPopup = (popup = null) => {
   if (popup === null || popup.closed) {
     popup = window.open(
       // TODO: Improve readability here: encode = (params: Object) => (JSON.stringify(params).replace(':', '=').trim())
-      // encode uurl params
+      // encode url params
       `${GITHUB_URI}?client_id=${CLIENT_ID}&scope=public_repo&redirect_uri=${REDIRECT_URI}`,
       // `${REDIRECT_URI}/?code=232r3423`, // <= use this to avoid spamming github for testing purposes
       'githubAuth',
@@ -95,27 +96,34 @@ const getURLParam = param => {
 
 /**
  * Sends an http request to the AUTH_URI with the auth code obtained from the oauth flow
- * @param {string} code
- * @returns {string} The authentation token obtained from the auth server
+ * @param {string} code the intermediate auth code that user receives after accepting consent screen
+ * @returns {string} The authentication token obtained from the auth server
  */
 const getToken = async code => {
-  console.log('getToken entered')
+  // console.log('getToken entered')
 
   // TODO: Manage when server does not respond
   try {
-    let response = await fetch(`${AUTH_URI}/${code}`)
-    let json = await response.json()
+    const response = await fetch(`${AUTH_URI}/${code}`)
+    const json = await response.json()
     if (json.token) return json.token
-    else throw Error(`${json.error}`)
-  } catch (e) {
-    console.error('Error from Authentication server:', e)
+    else throw new Error(`${json.error}`)
+  } catch (error) {
+    // console.error('Error from Authentication server:', error)
   }
 }
 
 class App extends React.PureComponent {
   static propTypes = {
     app: PropTypes.object.isRequired,
+    bountySettings: PropTypes.object.isRequired,
+    client: PropTypes.object.isRequired,
+    github: PropTypes.object.isRequired,
+    githubCurrentUser: PropTypes.object,
+    issues: PropTypes.arrayOf(PropTypes.object),
+    network: PropTypes.object.isRequired,
     repos: PropTypes.arrayOf(PropTypes.object),
+    tokens: PropTypes.array.isRequired,
   }
 
   static defaultProps = {
@@ -159,15 +167,15 @@ class App extends React.PureComponent {
     if (message.data.from !== 'popup') return
     if (message.data.name === 'code') {
       // TODO: Optimize the listeners lifecycle, ie: remove on unmount
-      console.log('removing messageListener')
+      // console.log('removing messageListener')
       window.removeEventListener('message', this.messageHandler)
 
       const code = message.data.value
-      console.log('AuthCode received from github:', code)
-      console.log('Proceeding to token request...')
+      // console.log('AuthCode received from github:', code)
+      // console.log('Proceeding to token request...')
       // TODO: Check token received correctly
       const token = await getToken(code)
-      console.log('token obtained:', token)
+      // console.log('token obtained:', token)
       this.props.app.cache('github', {
         status: STATUS.AUTHENTICATED,
         token: token,
@@ -186,13 +194,13 @@ class App extends React.PureComponent {
   }
 
   createProject = ({ owner, project }) => {
-    console.info('App.js: createProject', project, owner)
+    // console.info('App.js: createProject', project, owner)
     this.closePanel()
     this.props.app.addRepo(web3.toHex(project), web3.toHex(owner))
   }
 
   removeProject = project => {
-    console.log('App.js: removeProject', project)
+    // console.log('App.js: removeProject', project)
     this.props.app.removeRepo(web3.toHex(project))
     // TODO: Toast feedback here maybe
   }
@@ -221,10 +229,9 @@ class App extends React.PureComponent {
   // TODO: Review
   // This is breaking RepoList loading sometimes preventing show repos after login
   newProject = () => {
-    const reposAlreadyAdded = this.props.repos ?
-      this.props.repos.map(repo => repo.data._repo)
-      :
-      []
+    const reposAlreadyAdded = this.props.repos
+      ? this.props.repos.map(repo => repo.data._repo)
+      : []
 
     this.setState((_prevState, { github: { status } }) => ({
       panel: PANELS.NewProject,
@@ -238,7 +245,7 @@ class App extends React.PureComponent {
   }
 
   newBountyAllocation = issues => {
-    this.setState((_prevState, _prevProps) => ({
+    this.setState((/*_prevState, _prevProps*/) => ({
       panel: PANELS.NewBountyAllocation,
       panelProps: {
         issues: issues,
@@ -250,44 +257,50 @@ class App extends React.PureComponent {
 
   onSubmitBountyAllocation = async issues => {
     this.closePanel()
-    let bountySymbol = this.props.bountySettings.bountyCurrency
+    const bountySymbol = this.props.bountySettings.bountyCurrency
     let bountyToken, bountyDecimals
-    this.props.tokens.forEach(
-      token => {
-        if(token.symbol === bountySymbol) {
-          bountyToken = token.addr
-          bountyDecimals = token.decimals
-        }
+    this.props.tokens.forEach(token => {
+      if (token.symbol === bountySymbol) {
+        bountyToken = token.addr
+        bountyDecimals = token.decimals
       }
-    )
+    })
 
-    let issuesArray = []
+    const issuesArray = []
 
-    for (var key in issues) {
+    for (const key in issues) {
       issuesArray.push({ key: key, ...issues[key] })
     }
 
-    console.log('Submit issues:', issuesArray)
+    // console.log('Submit issues:', issuesArray)
 
-    let ipfsString
-    ipfsString = await this.getIpfsString(issuesArray)
+    const ipfsString = await this.getIpfsString(issuesArray)
 
     const tokenArray = new Array(issuesArray.length).fill(bountyToken)
 
-    console.log('Bounty data for app.addBounties',
-      issuesArray.map( (issue) => issue.repoId),
-      issuesArray.map( (issue) => issue.number),
-      issuesArray.map( (issue) => BigNumber(issue.size).times(10 ** bountyDecimals).toString()),
-      issuesArray.map( (issue) => issue.deadline),
-      new Array(issuesArray.length).fill(true),
-      tokenArray,
-      ipfsString
-    )
+    // console.log(
+    //   'Bounty data for app.addBounties',
+    //   issuesArray.map(issue => issue.repoId),
+    //   issuesArray.map(issue => issue.number),
+    //   issuesArray.map(issue =>
+    //     BigNumber(issue.size)
+    //       .times(10 ** bountyDecimals)
+    //       .toString()
+    //   ),
+    //   issuesArray.map(issue => issue.deadline),
+    //   new Array(issuesArray.length).fill(true),
+    //   tokenArray,
+    //   ipfsString
+    // )
     this.props.app.addBounties(
-      issuesArray.map( (issue) => web3.toHex(issue.repoId)),
-      issuesArray.map( (issue) => issue.number),
-      issuesArray.map( (issue) => BigNumber(issue.size).times(10 ** bountyDecimals).toString()),
-      issuesArray.map(issue => {
+      issuesArray.map(issue => web3.toHex(issue.repoId)),
+      issuesArray.map(issue => issue.number),
+      issuesArray.map(issue =>
+        BigNumber(issue.size)
+          .times(10 ** bountyDecimals)
+          .toString()
+      ),
+      issuesArray.map((/*issue*/) => {
         return Date.now() + 8600
       }),
       new Array(issuesArray.length).fill(true),
@@ -308,7 +321,7 @@ class App extends React.PureComponent {
   }
 
   submitWork = issue => {
-    this.setState((_prevState, _prevProps) => ({
+    this.setState((/*_prevState, _prevProps*/) => ({
       panel: PANELS.SubmitWork,
       panelProps: {
         onSubmitWork: this.onSubmitWork,
@@ -320,9 +333,9 @@ class App extends React.PureComponent {
 
   onSubmitWork = async (state, issue) => {
     this.closePanel()
-    let content = ipfs.types.Buffer.from(JSON.stringify(state))
-    let results = await ipfs.add(content)
-    let submissionString = results[0].hash
+    const content = ipfs.types.Buffer.from(JSON.stringify(state))
+    const results = await ipfs.add(content)
+    const submissionString = results[0].hash
     this.props.app.submitWork(
       web3.toHex(issue.repoId),
       issue.number,
@@ -331,7 +344,7 @@ class App extends React.PureComponent {
   }
 
   requestAssignment = issue => {
-    this.setState((_prevState, _prevProps) => ({
+    this.setState((/*_prevState, _prevProps*/) => ({
       panel: PANELS.RequestAssignment,
       panelProps: {
         onRequestAssignment: this.onRequestAssignment,
@@ -343,9 +356,9 @@ class App extends React.PureComponent {
 
   onRequestAssignment = async (state, issue) => {
     this.closePanel()
-    let content = ipfs.types.Buffer.from(JSON.stringify(state))
-    let results = await ipfs.add(content)
-    let requestString = results[0].hash
+    const content = ipfs.types.Buffer.from(JSON.stringify(state))
+    const results = await ipfs.add(content)
+    const requestString = results[0].hash
     this.props.app.requestAssignment(
       web3.toHex(issue.repoId),
       issue.number,
@@ -354,7 +367,7 @@ class App extends React.PureComponent {
   }
 
   reviewApplication = issue => {
-    this.setState((_prevState, _prevProps) => ({
+    this.setState((/*_prevState, _prevProps*/) => ({
       panel: PANELS.ReviewApplication,
       panelProps: {
         issue,
@@ -365,27 +378,27 @@ class App extends React.PureComponent {
 
   onReviewApplication = (issue, requestIndex, approved) => {
     this.closePanel()
-    console.log('onReviewApplication Issue:', issue)
-    console.log(
-      'onReviewApplication submission:',
-      web3.toHex(issue.repoId),
-      issue.number,
-      issue.requestsData[requestIndex].contributorAddr,
-      approved,
-      issue
-    )
+    // console.log('onReviewApplication Issue:', issue)
+    // console.log(
+    //   'onReviewApplication submission:',
+    //   web3.toHex(issue.repoId),
+    //   issue.number,
+    //   issue.requestsData[requestIndex].contributorAddr,
+    //   approved,
+    //   issue
+    // )
 
     this.props.app.approveAssignment(
       web3.toHex(issue.repoId),
       issue.number,
       issue.requestsData[requestIndex].contributorAddr,
       issue.requestsData[requestIndex].requestIPFSHash,
-      approved,
+      approved
     )
   }
 
   reviewWork = issue => {
-    this.setState((_prevState, _prevProps) => ({
+    this.setState((/*_prevState, _prevProps*/) => ({
       panel: PANELS.ReviewWork,
       panelProps: {
         issue,
@@ -395,15 +408,15 @@ class App extends React.PureComponent {
   }
 
   onReviewWork = (state, issue) => {
-    console.log('onReviewWork', issue)
-    console.log(
-      'onReviewWork',
-      web3.toHex(issue.repoId),
-      issue.number,
-      issue.workSubmissions[issue.workSubmissions.length - 1],
-      state.accepted,
-      issue.workSubmissions[issue.workSubmissions.length - 1].submissionIPFSHash
-    )
+    // console.log('onReviewWork', issue)
+    // console.log(
+    //   'onReviewWork',
+    //   web3.toHex(issue.repoId),
+    //   issue.number,
+    //   issue.workSubmissions[issue.workSubmissions.length - 1],
+    //   state.accepted,
+    //   issue.workSubmissions[issue.workSubmissions.length - 1].submissionIPFSHash
+    // )
     this.closePanel()
     this.props.app.reviewSubmission(
       web3.toHex(issue.repoId),
@@ -415,7 +428,7 @@ class App extends React.PureComponent {
   }
 
   curateIssues = issues => {
-    this.setState((_prevState, _prevProps) => ({
+    this.setState((/*_prevState, _prevProps*/) => ({
       panel: PANELS.NewIssueCuration,
       panelProps: {
         issues: issues,
@@ -428,7 +441,7 @@ class App extends React.PureComponent {
   onSubmitCuration = issues => {
     this.closePanel()
     // TODO: maybe assign this to issueDescriptionIndices, not clear
-    let issueDescriptionIndices = []
+    const issueDescriptionIndices = []
     issues.forEach((issue, i) => {
       if (i == 0) {
         issueDescriptionIndices.push(issue.title.length)
@@ -440,7 +453,7 @@ class App extends React.PureComponent {
     // TODO: splitting of descriptions needs to be fixed at smart contract level
     const issueDescriptions = issues.map(issue => issue.title).join('')
     /* TODO: The numbers below are supposedly coming from an eventual:
-     issues.map(issue => web3.utils.hextToNum(web3.toHex(issue.repoId))) */
+     issues.map(issue => web3.utils.hexToNum(web3.toHex(issue.repoId))) */
     const issueNumbers = issues.map(issue => issue.number)
     const emptyIntArray = new Array(issues.length).fill(0)
     const emptyAddrArray = [
@@ -477,7 +490,7 @@ class App extends React.PureComponent {
     // The popup is launched, its ref is checked and saved in the state in one step
     this.setState(({ oldPopup }) => ({ popup: githubPopup(oldPopup) }))
     // Listen for the github redirection with the auth-code encoded as url param
-    console.log('adding messageListener')
+    // console.log('adding messageListener')
     window.addEventListener('message', this.handlePopupMessage)
   }
 
@@ -496,16 +509,17 @@ class App extends React.PureComponent {
                   onLogin={this.handleGithubSignIn}
                   status={this.props.github.status || STATUS.INITIAL}
                   app={this.props.app}
-                  bountySettings={bountySettings}
+                  bountySettings={bountySettings || {}}
                   githubCurrentUser={githubCurrentUser || {}}
-                  projects={this.props.repos !== undefined ? this.props.repos : []}
+                  projects={
+                    this.props.repos !== undefined ? this.props.repos : []
+                  }
                   bountyIssues={
                     this.props.issues !== undefined ? this.props.issues : []
                   }
-                  bountySettings={
-                    bountySettings !== undefined ? bountySettings : {}
+                  tokens={
+                    this.props.tokens !== undefined ? this.props.tokens : []
                   }
-                  tokens={this.props.tokens !== undefined ? this.props.tokens : []}
                   onNewProject={this.newProject}
                   onRemoveProject={this.removeProject}
                   onNewIssue={this.newIssue}

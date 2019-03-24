@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 import React from 'react'
 import styled from 'styled-components'
 import { theme } from '@aragon/ui'
@@ -18,6 +20,12 @@ const TabBar = props => {
     })
   )
   return <StyledTabBar>{tabs}</StyledTabBar>
+}
+
+TabBar.propTypes = {
+  activeIndex: PropTypes.number.isRequired,
+  changeActiveIndex: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 }
 
 export default TabBar

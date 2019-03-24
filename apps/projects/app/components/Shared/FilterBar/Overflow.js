@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -7,6 +8,10 @@ import FilterDropDown from './FilterDropDown'
 // TODO: document.querySelectorAll(".tab").forEach(e => console.log(e.clientWidth))
 
 class Overflow extends React.Component {
+  static propTypes = {
+    children: PropTypes.element.isRequired,
+  }
+
   state = {
     shown: Infinity,
   }
@@ -41,12 +46,12 @@ class Overflow extends React.Component {
 
   calculateItems = () => {
     const containerWidth = this.theRef.current
-      ? this.theRef.current.clientWidth -150
+      ? this.theRef.current.clientWidth - 150
       : 0
     // console.log('calculateItems, containerWidth:', containerWidth)
 
     const itemWidth = 150
-    const shown = Math.floor((containerWidth) / itemWidth)
+    const shown = Math.floor(containerWidth / itemWidth)
     this.setState({ shown })
   }
 
@@ -73,18 +78,13 @@ class Overflow extends React.Component {
           <OverflowPlaceholder />
         ) : (
           <OverflowVertical>
-            <FilterDropDown
-              caption="…"
-              enabled={true}
-              overflow={true}
-            >
+            <FilterDropDown caption="…" enabled={true} overflow={true}>
               {overflowElements}
             </FilterDropDown>
           </OverflowVertical>
         )}
-        
-        {overflowElements.length > 0 && <OverflowPlaceholder />}
 
+        {overflowElements.length > 0 && <OverflowPlaceholder />}
       </div>
     )
   }
@@ -107,4 +107,3 @@ const OverflowPlaceholder = styled(FilterButton)`
 `
 
 export default Overflow
-

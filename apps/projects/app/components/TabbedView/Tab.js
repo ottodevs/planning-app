@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { Text, theme, unselectable } from '@aragon/ui'
@@ -28,6 +29,12 @@ const Tab = props => {
       <Text>{children}</Text>
     </StyledTab>
   )
+}
+
+Tab.propTypes = {
+  isActive: PropTypes.bool.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 }
 
 export default Tab

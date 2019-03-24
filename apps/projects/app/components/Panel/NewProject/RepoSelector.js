@@ -1,6 +1,5 @@
+import PropTypes from 'prop-types'
 import React from 'react'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
 import styled from 'styled-components'
 import { Button, RadioList, Text, TextInput, theme } from '@aragon/ui'
 import { GET_REPOSITORIES } from '../../../utils/gql-queries.js'
@@ -13,6 +12,11 @@ const UNSELECT = {
   owner: '',
 }
 class Repo extends React.Component {
+  static propTypes = {
+    onCreateProject: PropTypes.func.isRequired,
+    reposAlreadyAdded: PropTypes.array.isRequired,
+  }
+
   state = {
     repos: [],
     filteredRepos: [],
@@ -23,11 +27,13 @@ class Repo extends React.Component {
   }
 
   filterAlreadyAdded = repos => {
-    return repos.filter(repo => !this.props.reposAlreadyAdded.includes(repo.node.id))
+    return repos.filter(
+      repo => !this.props.reposAlreadyAdded.includes(repo.node.id)
+    )
   }
 
   // TODO: use observables
-  searchRepos = (queryRepos) => e => {
+  searchRepos = queryRepos => e => {
     const repos = queryRepos.filter(repo => {
       if (repo.node.nameWithOwner.indexOf(e.target.value) > -1) {
         return repo
@@ -69,34 +75,33 @@ class Repo extends React.Component {
 
   unselect = () => this.setState({})
 
-  // if there are visible (with or tiwhout filtration) repos, show them
+  // if there are visible (with or without filtration) repos, show them
   // else if there are no repos to show but filtering is active - show "no match"
   // else there are no repos to add (possibly all that could have been added
   // already are
-  repoList = (visibleRepos, repoArray) => visibleRepos.length > 0 ? (
-    <RadioList
-      items={repoArray}
-      selected={this.state.repoSelected}
-      onChange={this.onRepoSelected(repoArray)}
-    />
-  ) : this.state.filter ? (
-    <RepoInfo>
-      <Text.Block>
-        There are no repositories matching{' '}
-        <Text weight="bold">{this.state.filter}</Text>
-      </Text.Block>
-      <ClearSearch onClick={this.handleClearSearch}>
-        Clear Search
-      </ClearSearch>
-    </RepoInfo>
-  ) : (
-    <RepoInfo>
-      <Text>No more repositories to add...</Text>
-    </RepoInfo>
-  )
+  repoList = (visibleRepos, repoArray) =>
+    visibleRepos.length > 0 ? (
+      <RadioList
+        items={repoArray}
+        selected={this.state.repoSelected}
+        onChange={this.onRepoSelected(repoArray)}
+      />
+    ) : this.state.filter ? (
+      <RepoInfo>
+        <Text.Block>
+          There are no repositories matching{' '}
+          <Text weight="bold">{this.state.filter}</Text>
+        </Text.Block>
+        <ClearSearch onClick={this.handleClearSearch}>Clear Search</ClearSearch>
+      </RepoInfo>
+    ) : (
+      <RepoInfo>
+        <Text>No more repositories to add...</Text>
+      </RepoInfo>
+    )
 
   render() {
-    const { filteredRepos, filtered, filter, reposAlreadyAdded } = this.state
+    const { filteredRepos, filtered, filter } = this.state
 
     return (
       <React.Fragment>
@@ -108,11 +113,13 @@ class Repo extends React.Component {
             <Query
               fetchPolicy="cache-first"
               query={GET_REPOSITORIES}
-              onError={console.error}
+              // onError={console.error}
             >
               {({ data, loading, error, refetch }) => {
                 if (data && data.viewer) {
-                  const repos = this.filterAlreadyAdded(data.viewer.repositories.edges)
+                  const repos = this.filterAlreadyAdded(
+                    data.viewer.repositories.edges
+                  )
                   const visibleRepos = filtered ? filteredRepos : repos
                   const repoArray = visibleRepos.map(repo => ({
                     title: repo.node.nameWithOwner,
@@ -131,7 +138,7 @@ class Repo extends React.Component {
                         onChange={this.searchRepos(repos)}
                       />
                       <ScrollableList>
-                        { this.repoList(visibleRepos, repoArray) }
+                        {this.repoList(visibleRepos, repoArray)}
                       </ScrollableList>
                       <Button
                         mode="strong"
@@ -146,23 +153,25 @@ class Repo extends React.Component {
                   )
                 }
 
-                if (loading) return (
-                  <RepoInfo>
-                    <LoadingAnimation />
-                    <div>Loading repositories...</div>
-                  </RepoInfo>
-                )
+                if (loading)
+                  return (
+                    <RepoInfo>
+                      <LoadingAnimation />
+                      <div>Loading repositories...</div>
+                    </RepoInfo>
+                  )
 
-                if (error) return (
-                  <RepoInfo>
-                    <Text size="xsmall" style={{ margin: '20px 0' }}>
-                      Error {JSON.stringify(error)}
-                    </Text>
-                    <Button wide mode="strong" onClick={() => refetch()}>
-                      Try refetching?
-                    </Button>
-                  </RepoInfo>
-                )
+                if (error)
+                  return (
+                    <RepoInfo>
+                      <Text size="xsmall" style={{ margin: '20px 0' }}>
+                        Error {JSON.stringify(error)}
+                      </Text>
+                      <Button wide mode="strong" onClick={() => refetch()}>
+                        Try refetching?
+                      </Button>
+                    </RepoInfo>
+                  )
               }}
             </Query>
           </div>
@@ -177,74 +186,10 @@ const ScrollableList = styled.div`
   overflow-y: auto;
   padding-right: 10px;
   margin: 16px 0;
-  // Hack needed to make the scrollable list, since the whole SidePanel is a scrollable container
+  /* Hack needed to make the scrollable list, since the whole SidePanel is a scrollable container */
   height: calc(100vh - 260px);
 `
-const RepoCard = styled.div`
-  border-bottom: 1px #d1d5da solid;
-  padding: 16px;
-  margin-bottom: 16px;
-`
-const SearchContainer = styled.div`
-  border-bottom: 1px solid #d1d5da;
-  padding: 16px 0 16px 0;
-`
-const SearchBox = styled.input`
-  min-height: 34px;
-  width: 300px;
-  font-size: 14px;
-  padding: 6px 8px;
-  background-color: #fff;
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  border: 1px solid #d1d5da;
-  border-radius: 3px;
-  outline: none;
-  box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075);
-`
-const Date = styled.p`
-  font-size: 12px;
-  color: #586069;
-  margin-left: 10px;
-  margin-bottom: 0;
-`
-const InfoContainer = styled.div`
-  display: flex;
-`
-const Circle = styled.div`
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  background: #f1e05a;
-  margin-right: 5px;
-  top: 2px;
-  position: relative;
-`
-const RepoDescription = styled.p`
-  font-size: 14px;
-  color: #586069;
-  margin: 4px 0 10px 0;
-`
-const RepoLink = styled.a`
-  font-weight: 600;
-  color: #0366d6;
-  cursor: pointer;
-  font-size: 20px;
-`
-const RepoDetails = styled.span`
-  color: #586069;
-  font-size: 12px;
-  margin-bottom: 0;
-`
-const Icon = styled.i`
-  margin-left: 16px;
-`
-const ScrollWrapper = styled.div`
-  /* position: relative; */
-  /* z-index: 1; */
-  /* max-height: 40%; */
-  overflow: auto;
-`
+
 const RepoInfo = styled.div`
   margin: 20px 0;
   text-align: center;

@@ -1,3 +1,4 @@
+/* global web3 */
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
@@ -15,16 +16,22 @@ import NumberFormat from 'react-number-format'
 import { STATUS } from '../../utils/github'
 import { provideNetwork } from '../../../../../shared/ui'
 
-const bountyDeadlines = [ 'Weeks', 'Days', 'Hours' ]
-const bountyDeadlinesMul = [ 168, 24, 1 ] // it is one variable in contract, so number * multiplier = hours
+const bountyDeadlines = ['Weeks', 'Days', 'Hours']
+const bountyDeadlinesMul = [168, 24, 1] // it is one variable in contract, so number * multiplier = hours
 
 class Settings extends React.Component {
   static propTypes = {
     app: PropTypes.object.isRequired,
+    bountySettings: PropTypes.shape({
+      expLevels: PropTypes.shape({
+        split: PropTypes.arrayOf(PropTypes.string).isRequired,
+      }),
+    }),
     githubCurrentUser: PropTypes.object, // TODO: is this required?
     network: PropTypes.object,
     onLogin: PropTypes.func.isRequired,
     status: PropTypes.string.isRequired,
+    tokens: PropTypes.array.isRequired,
   }
   state = {
     bountyCurrencies: this.props.tokens.map(token => token.symbol),
@@ -36,7 +43,7 @@ class Settings extends React.Component {
     back to contract.
   */
   static getDerivedStateFromProps(props, state) {
-    let bountyCurrencies = state.bountyCurrencies
+    const bountyCurrencies = state.bountyCurrencies
     // is all configured already? TODO: it might be useful to check
     // if there was no update to settings (on chain) in the meantime,
     // and what to do in that case. as of now: changes are ignored.
@@ -47,15 +54,15 @@ class Settings extends React.Component {
       return null
 
     // data has just became available
-    let s = props.bountySettings
-    let n = {
+    const s = props.bountySettings
+    const n = {
       baseRate: s.baseRate,
       bountyAllocator: s.bountyAllocator,
       bountyArbiter: s.bountyArbiter,
       expLevels: [],
     }
 
-    let found = bountyCurrencies.findIndex(el => el === s.bountyCurrency)
+    const found = bountyCurrencies.findIndex(el => el === s.bountyCurrency)
 
     if (found === -1) {
       bountyCurrencies.push(s.bountyCurrency)
@@ -71,7 +78,7 @@ class Settings extends React.Component {
         break
       }
     }
-    let a = s.expLevels.split('\t')
+    const a = s.expLevels.split('\t')
     for (let i = 0; i < a.length; i += 2)
       n.expLevels.push({ mul: a[i] / 100, name: a[i + 1] })
 
@@ -90,19 +97,19 @@ class Settings extends React.Component {
       bountyArbiter,
     } = this.state
     // flatten deadline
-    let bountyDeadline = bountyDeadlinesMul[bountyDeadlineD] * bountyDeadlineT
+    const bountyDeadline = bountyDeadlinesMul[bountyDeadlineD] * bountyDeadlineT
     // flatten expLevels
-    let expLevelsStr = expLevels
+    const expLevelsStr = expLevels
       .map(l => l.mul * 100 + '\t' + l.name)
       .join('\t')
-    console.log('Submitting new Settings: ', {
-      lvl: expLevelsStr,
-      rate: web3.toHex(baseRate),
-      ddl: web3.toHex(bountyDeadline),
-      cur: bountyCurrencies[bountyCurrency],
-      bountyArbiter,
-      bountyAllocator,
-    })
+    // console.log('Submitting new Settings:', {
+    //   lvl: expLevelsStr,
+    //   rate: web3.toHex(baseRate),
+    //   ddl: web3.toHex(bountyDeadline),
+    //   cur: bountyCurrencies[bountyCurrency],
+    //   bountyArbiter,
+    //   bountyAllocator,
+    // })
 
     //expLevels, baseRate, bountyDeadline, bountyCurrency, bountyAllocator, bountyArbiter
     this.props.app.changeBountySettings(
@@ -135,13 +142,13 @@ class Settings extends React.Component {
   }
 
   addExpLevel = () => {
-    let { expLevels } = this.state
+    const { expLevels } = this.state
     expLevels.push({ name: '', mul: 1 })
     this.setState({ expLevels })
   }
 
   generateExpLevelHandler = (index, key) => e => {
-    let { expLevels } = this.state
+    const { expLevels } = this.state
     if (key == 'M') expLevels[index].mul = e.target.value
     else expLevels[index].name = e.target.value
     this.setState({ expLevels })
@@ -247,6 +254,13 @@ const BountyDeadline = ({
   </div>
 )
 
+BountyDeadline.propTypes = {
+  bountyDeadlineT: PropTypes.string.isRequired,
+  onChangeT: PropTypes.func.isRequired,
+  bountyDeadlineD: PropTypes.number.isRequired,
+  onChangeD: PropTypes.func.isRequired,
+}
+
 const BountyArbiter = ({ bountyArbiter, networkType }) => (
   <div>
     <Text.Block size="large" weight="bold">
@@ -262,6 +276,11 @@ const BountyArbiter = ({ bountyArbiter, networkType }) => (
     </div>
   </div>
 )
+
+BountyArbiter.propTypes = {
+  bountyArbiter: PropTypes.string.isRequired,
+  networkType: PropTypes.object.isRequired,
+}
 
 const BountyContractAddress = ({ bountyAllocator, networkType }) => (
   <div>
@@ -280,6 +299,11 @@ const BountyContractAddress = ({ bountyAllocator, networkType }) => (
     </div>
   </div>
 )
+
+BountyContractAddress.propTypes = {
+  bountyAllocator: PropTypes.string.isRequired,
+  networkType: PropTypes.object.isRequired,
+}
 
 const StyledInputDropDown = styled.div`
   display: flex;
@@ -301,7 +325,13 @@ const StyledInputDropDown = styled.div`
     margin-left: -1px;
   }
 `
-const BaseRate = ({ baseRate, onChangeRate, bountyCurrency, onChangeCurrency, bountyCurrencies }) => (
+const BaseRate = ({
+  baseRate,
+  onChangeRate,
+  bountyCurrency,
+  onChangeCurrency,
+  bountyCurrencies,
+}) => (
   <div>
     <Text.Block size="large" weight="bold">
       Base Rate
@@ -330,6 +360,14 @@ const BaseRate = ({ baseRate, onChangeRate, bountyCurrency, onChangeCurrency, bo
   </div>
 )
 
+BaseRate.propTypes = {
+  baseRate: PropTypes.number.isRequired,
+  onChangeRate: PropTypes.func.isRequired,
+  bountyCurrency: PropTypes.number.isRequired,
+  onChangeCurrency: PropTypes.func.isRequired,
+  bountyCurrencies: PropTypes.arrayOf(PropTypes.object).isRequired,
+}
+
 const GitHubConnect = ({ onLogin, onLogout, status, user }) => {
   const auth = status === STATUS.AUTHENTICATED
   const bodyText = auth ? (
@@ -344,18 +382,13 @@ const GitHubConnect = ({ onLogin, onLogout, status, user }) => {
   const buttonAction = auth ? onLogout : onLogin
   return (
     <div>
-      <Text.Block
-        size="large"
-        weight="bold"
-        children={'GitHub authorization'}
-      />
-      <Text.Block children={bodyText} />
-      <StyledButton
-        compact
-        mode="secondary"
-        onClick={buttonAction}
-        children={buttonText}
-      />
+      <Text.Block size="large" weight="bold">
+        {'GitHub authorization'}
+      </Text.Block>
+      <Text.Block>{bodyText} </Text.Block>
+      <StyledButton compact mode="secondary" onClick={buttonAction}>
+        {buttonText}
+      </StyledButton>
     </div>
   )
 }
@@ -372,8 +405,8 @@ const ExperienceLevel = ({
   onAddExpLevel,
   generateExpLevelHandler,
 }) => {
-  let last = expLevels[expLevels.length - 1]
-  let disableAdd = last.mul != '' && last.name != '' ? false : true
+  const last = expLevels[expLevels.length - 1]
+  const disableAdd = last.mul != '' && last.name != '' ? false : true
   return (
     <div>
       <Text.Block size="large" weight="bold">
@@ -406,6 +439,12 @@ const ExperienceLevel = ({
       </StyledButton>
     </div>
   )
+}
+
+ExperienceLevel.propTypes = {
+  expLevels: PropTypes.array.isRequired,
+  onAddExpLevel: PropTypes.func.isRequired,
+  generateExpLevelHandler: PropTypes.func.isRequired,
 }
 
 const StyledNumberInput = styled(TextInput)`

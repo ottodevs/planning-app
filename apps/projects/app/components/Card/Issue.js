@@ -2,18 +2,11 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 
-import {
-  Text,
-  theme,
-  Badge,
-  Checkbox,
-  ContextMenu,
-  ContextMenuItem,
-} from '@aragon/ui'
+import { Text, theme, Badge, Checkbox, ContextMenu } from '@aragon/ui'
 
 import { formatDistance } from 'date-fns'
 import { BountyContextMenu } from '../Shared'
-import { BOUNTY_STATUS, BOUNTY_BADGE_COLOR } from '../../utils/bounty-status'
+import { BOUNTY_BADGE_COLOR } from '../../utils/bounty-status'
 
 const ClickArea = styled.div`
   height: 100%;
@@ -65,7 +58,6 @@ const Issue = ({
   symbol,
   deadline,
   requestsData,
-  bountySettings,
   expLevel,
   slots,
 }) => {
@@ -76,8 +68,8 @@ const Issue = ({
     requestsData === undefined
       ? 'Unallocated (' + slots + ')'
       : requestsData.length < slots
-        ? 'Slots available: ' + (slots - requestsData.length) + '/' + slots
-        : 'Allocated'
+      ? 'Slots available: ' + (slots - requestsData.length) + '/' + slots
+      : 'Allocated'
 
   return (
     <StyledIssue>
@@ -140,16 +132,32 @@ const Issue = ({
 }
 
 Issue.propTypes = {
-  title: PropTypes.string.isRequired,
-  repo: PropTypes.string.isRequired,
-  number: PropTypes.number.isRequired,
+  balance: PropTypes.number.isRequired,
+  deadline: PropTypes.object.isRequired,
+  expLevel: PropTypes.number.isRequired,
   isSelected: PropTypes.bool,
+  labels: PropTypes.array.isRequired,
+  number: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired,
-  onSelect: PropTypes.func,
-  workStatus: PropTypes.oneOf([ undefined, 'funded', 'review-applicants', 'in-progress', 'review-work', 'fulfilled' ]),
-  work: PropTypes.oneOf([
+  onSelect: PropTypes.func.isRequired,
+  onSubmitWork: PropTypes.func.isRequired,
+  onRequestAssignment: PropTypes.func.isRequired,
+  onReviewApplication: PropTypes.func.isRequired,
+  onReviewWork: PropTypes.func.isRequired,
+  onAllocateSingleBounty: PropTypes.func.isRequired,
+  repo: PropTypes.string.isRequired,
+  requestsData: PropTypes.object.isRequired,
+  slots: PropTypes.number.isRequired,
+  symbol: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  work: PropTypes.oneOf([undefined, PropTypes.object]),
+  workStatus: PropTypes.oneOf([
     undefined,
-    PropTypes.object,
+    'funded',
+    'review-applicants',
+    'in-progress',
+    'review-work',
+    'fulfilled',
   ]),
 }
 

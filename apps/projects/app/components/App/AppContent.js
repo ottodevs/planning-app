@@ -39,8 +39,8 @@ const AppContent = props => {
       tabButton: {
         caption: 'New Issue',
         onClick: props.onNewIssue,
-        disabled: () => (props.projects.length ? false : true),
-        hidden: () => (props.projects.length ? false : true),
+        disabled: () => (props.projects.length > 0 ? false : true),
+        hidden: () => (props.projects.length > 0 ? false : true),
       },
     },
     {
@@ -57,8 +57,7 @@ const AppContent = props => {
 
   return (
     <React.Fragment>
-      {appTitleButton &&
-        !appTitleButton.hidden() && (
+      {appTitleButton && !appTitleButton.hidden() && (
         <AppTitleButton
           caption={appTitleButton.caption}
           onClick={appTitleButton.onClick}

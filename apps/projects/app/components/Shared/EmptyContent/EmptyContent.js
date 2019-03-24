@@ -1,8 +1,10 @@
+import PropTypes from 'prop-types'
 import React from 'react'
+
 import styled from 'styled-components'
 import { unselectable } from '@aragon/ui'
 
-import { EmptyStateCard } from '.'
+import EmptyStateCard from './EmptyStateCard'
 
 const EmptyWrapper = styled.div`
   ${unselectable};
@@ -23,5 +25,15 @@ const EmptyContent = props => (
     />
   </EmptyWrapper>
 )
+
+EmptyContent.propTypes = {
+  emptyState: PropTypes.shape({
+    action: PropTypes.func.isRequired,
+    actionText: PropTypes.string.isRequired,
+    icon: PropTypes.object.isRequired,
+    text: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+  }),
+}
 
 export default EmptyContent

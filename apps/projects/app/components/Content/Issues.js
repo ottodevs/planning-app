@@ -22,8 +22,28 @@ import Unauthorized from './Unauthorized'
 
 class Issues extends React.PureComponent {
   static propTypes = {
+    activeIndex: PropTypes.shape({
+      tabData: PropTypes.shape({
+        filterIssuesByRepoId: PropTypes.string.isRequired,
+      }),
+    }),
+    bountyIssues: PropTypes.array.isRequired,
+    bountySettings: PropTypes.shape({
+      expLevels: PropTypes.shape({
+        split: PropTypes.arrayOf(PropTypes.string).isRequired,
+      }),
+    }),
+    onAllocateBounties: PropTypes.func.isRequired,
+    onCurateIssues: PropTypes.func.isRequired,
     onLogin: PropTypes.func.isRequired,
+    onNewProject: PropTypes.func.isRequired,
+    onRequestAssignment: PropTypes.func.isRequired,
+    onReviewApplication: PropTypes.func.isRequired,
+    onReviewWork: PropTypes.func.isRequired,
+    onSubmitWork: PropTypes.func.isRequired,
+    projects: PropTypes.array.isRequired,
     status: PropTypes.string.isRequired,
+    tokens: PropTypes.array.isRequired,
   }
 
   state = {
@@ -66,7 +86,7 @@ class Issues extends React.PureComponent {
   }
 
   handleAllocateBounties = () => {
-    console.log('handleAllocationBounties:', this.state.selectedIssues)
+    // console.log('handleAllocationBounties:', this.state.selectedIssues)
     this.props.onAllocateBounties(this.state.selectedIssues)
     // this is called from ActionMenu, on selected Issues -
     // return to default state where nothing is selected
@@ -162,13 +182,14 @@ class Issues extends React.PureComponent {
       if (Object.keys(filters.statuses).length === 0) return true
       // should bountyless issues pass?
 
-      const status = bountyIssueObj[issue.number] ? bountyIssueObj[issue.number] : 'not-funded'
+      const status = bountyIssueObj[issue.number]
+        ? bountyIssueObj[issue.number]
+        : 'not-funded'
       if ('not-funded' in filters.statuses && !bountyIssueObj[issue.number])
         return true
       // if issues without a status should not pass, they are rejected below
       if (status === 'not-funded') return false
-      if (status in filters.statuses)
-        return true
+      if (status in filters.statuses) return true
       return false
     })
     // console.log('FILTER STATUS: ', issuesByStatus)
@@ -185,7 +206,7 @@ class Issues extends React.PureComponent {
 
   handleIssueSelection = issue => {
     this.setState(({ selectedIssues }) => {
-      console.log('handleIssueSelection', issue)
+      // console.log('handleIssueSelection', issue)
       const newSelectedIssues = selectedIssues
         .map(selectedIssue => selectedIssue.id)
         .includes(issue.id)
@@ -299,31 +320,33 @@ class Issues extends React.PureComponent {
         symbol: token.symbol,
         decimals: token.decimals,
       }
-      console.log('tokenObj:', tokenObj)
+      // console.log('tokenObj:', tokenObj)
     })
-    return issues.map(({ __typename, repository: { id, name }, ...fields }) => {
-      if (bountyIssueObj[fields.number]) {
-        const data = bountyIssueObj[fields.number].data
-        const balance = BigNumber(bountyIssueObj[fields.number].data.balance)
-          .div(BigNumber(10 ** tokenObj[data.token].decimals))
-          .dp(3)
-          .toString()
-        return { 
+    return issues.map(
+      ({ /*typename,*/ repository: { id, name }, ...fields }) => {
+        if (bountyIssueObj[fields.number]) {
+          const data = bountyIssueObj[fields.number].data
+          const balance = BigNumber(bountyIssueObj[fields.number].data.balance)
+            .div(BigNumber(10 ** tokenObj[data.token].decimals))
+            .dp(3)
+            .toString()
+          return {
+            ...fields,
+            ...bountyIssueObj[fields.number].data,
+            repoId: id,
+            repo: name,
+            symbol: tokenObj[data.token].symbol,
+            expLevel: expLevels[data.exp].name,
+            balance: balance,
+          }
+        }
+        return {
           ...fields,
-          ...bountyIssueObj[fields.number].data,
           repoId: id,
           repo: name,
-          symbol: tokenObj[data.token].symbol,
-          expLevel: expLevels[data.exp].name,
-          balance: balance
         }
       }
-      return {
-        ...fields,
-        repoId: id,
-        repo: name,
-      }
-    })
+    )
   }
 
   generateSorter = () => {
@@ -336,10 +359,9 @@ class Issues extends React.PureComponent {
       }
     else if (what === 'Creation Date')
       return (i1, i2) => {
-        return direction == 1 ? 
-          compareAsc(new Date(i1.createdAt), new Date(i2.createdAt))
-          :
-          compareDesc(new Date(i1.createdAt), new Date(i2.createdAt))
+        return direction == 1
+          ? compareAsc(new Date(i1.createdAt), new Date(i2.createdAt))
+          : compareDesc(new Date(i1.createdAt), new Date(i2.createdAt))
       }
   }
 
@@ -350,10 +372,10 @@ class Issues extends React.PureComponent {
     const {
       projects,
       onNewProject,
-      activeIndex,
-      tokens,
-      bountyIssues,
-      bountySettings,
+      // activeIndex,
+      // tokens,
+      // bountyIssues,
+      // bountySettings,
     } = this.props
     const { currentIssue, showIssueDetail } = this.state
 
@@ -385,7 +407,7 @@ class Issues extends React.PureComponent {
         />
       )
 
-    const { allSelected } = this.state
+    // const { allSelected } = this.state
     const reposIds = projects.map(project => project.data._repo)
 
     // Build an array of plain issues by flattening the data obtained from github API
@@ -401,7 +423,7 @@ class Issues extends React.PureComponent {
         fetchPolicy="cache-first"
         query={GET_ISSUES}
         variables={{ reposIds }}
-        onError={console.error}
+        onError={console.error} // eslint-disable-line no-console
       >
         {({ data, loading, error, refetch }) => {
           if (data && data.nodes) {

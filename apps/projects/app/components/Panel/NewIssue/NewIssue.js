@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { Mutation } from 'react-apollo'
-import { gql } from 'apollo-boost'
-import { theme, Field, Info, TextInput, Button, DropDown } from '@aragon/ui'
+import { Field, TextInput, DropDown } from '@aragon/ui'
 import { NEW_ISSUE, GET_ISSUES } from '../../../utils/gql-queries.js'
 import { Form } from '../../Form'
 import { LoadingAnimation } from '../../Shared'
@@ -29,6 +27,7 @@ const Creating = () => (
 class NewIssue extends React.PureComponent {
   state = NewIssue.initialState
   static propTypes = {
+    closePanel: PropTypes.func.isRequired,
     reposManaged: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.arrayOf(
@@ -82,38 +81,26 @@ class NewIssue extends React.PureComponent {
   canSubmit = () => !(this.state.title !== '' && this.state.selectedProject > 0)
 
   render() {
-    const {
-      title,
-      description,
-      labels,
-      isValid,
-      selectedProject,
-    } = this.state
+    const { title, description, selectedProject } = this.state
     const { reposManaged } = this.props
-    const {
-      projectChange,
-      titleChange,
-      descriptionChange,
-      labelsChange,
-      formSubmit,
-    } = this
+    const { projectChange, titleChange, descriptionChange } = this
 
     const items =
       typeof reposManaged === 'string'
         ? 'No repos'
-        : [ 'Select a project', ...reposManaged.map(repo => repo.name) ]
-    
+        : ['Select a project', ...reposManaged.map(repo => repo.name)]
+
     const reposIds =
-      typeof reposManaged === 'string'
-        ? []
-        : reposManaged.map(repo => repo.id)
-    
+      typeof reposManaged === 'string' ? [] : reposManaged.map(repo => repo.id)
+
     const id = selectedProject > 0 ? reposIds[selectedProject - 1] : ''
 
-    const reGet = [{
-      query: GET_ISSUES,
-      variables: { reposIds }
-    }]
+    const reGet = [
+      {
+        query: GET_ISSUES,
+        variables: { reposIds },
+      },
+    ]
 
     return (
       <Mutation
@@ -121,7 +108,7 @@ class NewIssue extends React.PureComponent {
         refetchQueries={reGet}
         variables={{ title, description, id }}
         onError={() => {
-          console.error
+          // console.error
         }}
       >
         {(newIssue, result) => {

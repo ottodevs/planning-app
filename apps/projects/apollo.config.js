@@ -1,3 +1,4 @@
+/* global module */
 module.exports = {
   client: {
     name: 'apps-projects',

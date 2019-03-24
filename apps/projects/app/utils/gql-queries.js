@@ -63,24 +63,23 @@ export const GET_REPOSITORIES = gql`
   query {
     viewer {
       id
-     repositories(
-       first: 100,
-       orderBy: {field: UPDATED_AT, direction: DESC}
-       ownerAffiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER],
-       affiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER]) {
-       totalCount
-       edges {
-        node {
-          nameWithOwner
-          id
-          owner {
+      repositories(
+        first: 100
+        orderBy: { field: UPDATED_AT, direction: DESC }
+        ownerAffiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER]
+        affiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER]
+      ) {
+        totalCount
+        edges {
+          node {
+            nameWithOwner
             id
+            owner {
+              id
+            }
           }
         }
       }
-     }
-   }
- }
+    }
+  }
 `
-
-

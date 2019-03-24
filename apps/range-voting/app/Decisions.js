@@ -8,7 +8,6 @@ import tokenBalanceOfAbi from './abi/token-balanceof.json'
 import tokenDecimalsAbi from './abi/token-decimals.json'
 import { safeDiv } from './utils/math-utils'
 import { hasLoadedVoteSettings } from './utils/vote-settings'
-import { VOTE_YEA } from './utils/vote-types'
 import { isBefore } from 'date-fns'
 import { EmptyStateCard, SidePanel } from '@aragon/ui'
 import { VotePanelContent } from './components/Panels'
@@ -20,7 +19,17 @@ const EmptyIcon = () => <img src={emptyIcon} alt="" />
 
 class Decisions extends React.Component {
   static propTypes = {
-    app: PropTypes.object.isRequired,
+    app: PropTypes.shape({
+      external: PropTypes.func.isRequired,
+      newVote: PropTypes.func.isRequired,
+      vote: PropTypes.func.isRequired,
+    }).isRequired,
+    tokenAddress: PropTypes.string.isRequired,
+    votes: PropTypes.array.isRequired,
+    userAccount: PropTypes.array.isRequired,
+    minParticipationPct: PropTypes.array.isRequired,
+    pctBase: PropTypes.array.isRequired,
+    voteTime: PropTypes.array.isRequired,
   }
   static defaultProps = {
     pctBase: 100,
@@ -161,7 +170,6 @@ class Decisions extends React.Component {
       userAccount,
       votes,
       voteTime,
-      tokenAddress,
     } = this.props
     const {
       createVoteVisible,
@@ -177,17 +185,17 @@ class Decisions extends React.Component {
     // Add useful properties to the votes
     const preparedVotes = displayVotes
       ? votes.map(vote => {
-        const endDate = new Date(vote.data.startDate + voteTime)
-        return {
-          ...vote,
-          endDate,
-          // Open if not executed and now is still before end date
-          open: !vote.data.executed && isBefore(new Date(), endDate),
-          quorum: safeDiv(vote.data.minAcceptQuorum, pctBase),
-          quorumProgress: getQuorumProgress(vote.data),
-          description: vote.data.metadata
-        }
-      })
+          const endDate = new Date(vote.data.startDate + voteTime)
+          return {
+            ...vote,
+            endDate,
+            // Open if not executed and now is still before end date
+            open: !vote.data.executed && isBefore(new Date(), endDate),
+            quorum: safeDiv(vote.data.minAcceptQuorum, pctBase),
+            quorumProgress: getQuorumProgress(vote.data),
+            description: vote.data.metadata,
+          }
+        })
       : votes
 
     const currentVote =
@@ -226,8 +234,8 @@ class Decisions extends React.Component {
             title={
               currentVote
                 ? `${currentVote.description} (${
-                  currentVote.open ? 'Open' : 'Closed'
-                })`
+                    currentVote.open ? 'Open' : 'Closed'
+                  })`
                 : 'currentVote'
             }
             opened={Boolean(!createVoteVisible && voteVisible)}

@@ -29,11 +29,18 @@ class NewProject extends React.Component {
       : this.props.onGithubSignIn
 
     if (this.state.started)
-      return <RepoSelector onCreateProject={this.props.onCreateProject} reposAlreadyAdded={this.props.reposAlreadyAdded} />
+      return (
+        <RepoSelector
+          onCreateProject={this.props.onCreateProject}
+          reposAlreadyAdded={this.props.reposAlreadyAdded}
+        />
+      )
 
     return (
       <React.Fragment>
-        <Text size="large" style={{ marginTop: '20px' }} children={bodyText} />
+        <Text size="large" style={{ marginTop: '20px' }}>
+          {bodyText}
+        </Text>
         <ul style={{ margin: '20px' }}>
           <li>Prioritize your backlog</li>
           <li>Reach consensus on issue valuations</li>
@@ -50,12 +57,9 @@ class NewProject extends React.Component {
         {/* <Field label="Personal Token">
               <TextInput onChange={this.handleTokenChange} required wide />
             </Field> */}
-        <Button
-          mode="strong"
-          wide
-          onClick={buttonAction}
-          children={buttonText}
-        />
+        <Button mode="strong" wide onClick={buttonAction}>
+          {buttonText}
+        </Button>
       </React.Fragment>
     )
   }

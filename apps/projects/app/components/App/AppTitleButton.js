@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import PropTypes from 'prop-types'
+
 import { Button } from '@aragon/ui'
 
 const AppTitleButton = ({ caption, onClick, disabled }) => (
@@ -11,7 +12,8 @@ const AppTitleButton = ({ caption, onClick, disabled }) => (
 
 AppTitleButton.propTypes = {
   caption: PropTypes.string,
-  onClick: PropTypes.func
+  disabled: PropTypes.bool,
+  onClick: PropTypes.func,
 }
 
 const StyledButton = styled(Button)`
@@ -22,4 +24,3 @@ const StyledButton = styled(Button)`
 `
 
 export default AppTitleButton
-

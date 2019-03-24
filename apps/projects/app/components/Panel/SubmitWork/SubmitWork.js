@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 
-import { Checkbox, Text, TextInput, theme, Info, SafeLink } from '@aragon/ui'
+import { Checkbox, Text, TextInput, theme, SafeLink } from '@aragon/ui'
 
 import { Form, FormField, DescriptionInput } from '../../Form'
 import { IconGitHub } from '../../Shared'
@@ -26,17 +26,17 @@ class SubmitWork extends React.Component {
   setAck2 = () => this.setState(prevState => ({ ack2: !prevState.ack2 }))
 
   onSubmitWork = () => {
-    console.log('Submit', this.state)
-    console.log('issue: ', this.props.issue)
-    let today = new Date()
-    this.props.onSubmitWork(
-      {
-        user: this.props.githubCurrentUser,
-        submissionDate: today.toISOString(),
-        ...this.state,
-      },
-      this.props.issue
-    )
+    // console.log('Submit', this.state)
+    // console.log('issue:', this.props.issue)
+    // const today = new Date()
+    // this.props.onSubmitWork(
+    //   {
+    //     user: this.props.githubCurrentUser,
+    //     submissionDate: today.toISOString(),
+    //     ...this.state,
+    //   },
+    //   this.props.issue
+    // )
   }
 
   canSubmit = () =>
@@ -50,7 +50,6 @@ class SubmitWork extends React.Component {
 
   render() {
     // TODO: replace with props
-    const { login } = this.props.githubCurrentUser
 
     const { title, repo, number, url } = this.props.issue
 
@@ -131,7 +130,7 @@ class SubmitWork extends React.Component {
           </AckText>
         </AckRow>
 
-        { /* TODO: restore when GitHub commenting works
+        {/* TODO: restore when GitHub commenting works
         <Info.Alert
           title="Submission note"
           background="#FFFAEE"
@@ -140,7 +139,7 @@ class SubmitWork extends React.Component {
           Your inputs will be added as a comment to the Github issue from your “
           {login}” account.
         </Info.Alert>
-        */ }
+        */}
       </Form>
     )
   }

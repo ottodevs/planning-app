@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { IconAdd, theme, unselectable } from '@aragon/ui'
@@ -10,6 +11,10 @@ const BarButtonItem = props => (
     {props.text}
   </StyledBarButtonItem>
 )
+
+BarButtonItem.propTypes = {
+  text: PropTypes.string.isRequired,
+}
 
 const StyledBarButtonItem = styled.div`
   display: flex;
