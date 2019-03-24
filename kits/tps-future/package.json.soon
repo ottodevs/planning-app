@@ -1,11 +1,10 @@
 {
   "name": "@tps/kits-tps-future",
   "version": "0.0.1",
-  "description": "Kit for deploying That Planning Suite",
-  "author": "Autark",
-  "license": "GPL-3.0-or-later",
+  "description": "Future Kit for deploying That Planning Suite",
   "scripts": {
-    "lint": "solium --dir ./contracts",
+    "lint:sol": "solium --dir ./contracts",
+    "lint:js": "eslint .",
     "test": "truffle compile && yarn docker:run && yarn docker:wait-gas && yarn test:devnet && yarn docker:stop",
     "deploy:deps:devnet": "truffle exec --network devnet scripts/deploy_deps.js",
     "test:devnet": "ENS=$(yarn deploy:deps:devnet | tail -1) truffle test --network devnet test/agp1_devnet.js",
@@ -38,12 +37,25 @@
   "devDependencies": {
     "@aragon/test-helpers": "^1.1.0",
     "@tps/test-helpers": "^0.0.1",
-    "ethlint": "1.2.3",
-    "truffle": "4.1.14"
+    "@tps/eslint-config": "^0.0.1",
+    "solium-config-tps": "^0.0.1",
+    "ethlint": "^1.2.3",
+    "eslint": "^5.15.3",
+    "prettier": "^1.16.4"
   },
+  "author": "Autark LLC <autark.xyz>",
   "repository": {
     "type": "git",
     "url": "https://github.com/AutarkLabs/planning-suite"
   },
-  "keywords": []
+  "keywords": [],
+  "license": "GPL-3.0",
+  "eslintConfig": {
+    "extends": "@tps"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "semi": false,
+    "singleQuote": true
+  }
 }
