@@ -9,7 +9,8 @@ module.exports = {
     'eslint:recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
-    'plugin:node/recommended',
+    // TODO: clashes with react imports
+    // 'plugin:node/recommended',
     'plugin:promise/recommended',
     'plugin:react/recommended',
     'plugin:unicorn/recommended',
