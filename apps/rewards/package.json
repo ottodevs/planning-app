@@ -11,7 +11,7 @@
     "coverage": "SOLIDITY_COVERAGE=true yarn ganache-cli:test",
     "dev": "yarn sync-assets && parcel app/index.html --port 5555",
     "ganache-cli:test": "../shared/test-helpers/ganache-cli.sh",
-    "lint": "solium --dir ./contracts",
+    "lint:sol": "solium --dir ./contracts",
     "prepublishOnly": "truffle compile --all",
     "publish:http": "yarn publish:http-copy-files && aragon apm publish patch --http localhost:5555 --http-served-from ./dist",
     "publish:http-copy-files": "yarn build:script && mkdir -p dist/images && cp images/icon.svg dist/images/",

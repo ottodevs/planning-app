@@ -40,6 +40,7 @@
     "test:projects": "cd apps/projects && npm test",
     "test:range": "cd apps/range-voting && npm test",
     "test:rewards": "cd apps/rewards && npm test",
+    "lint:sol": "lerna run lint:sol --no-bail",
     "lint": "lerna run lint --no-bail && lerna exec --scope=@tps/apps-* --stream -- eslint app",
     "lint:fix": "lerna exec --scope=@tps/apps-* --stream -- eslint app --fix",
     "lint:address": "cd apps/address-book && yarn lint",

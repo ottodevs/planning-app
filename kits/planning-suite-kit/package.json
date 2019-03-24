@@ -5,7 +5,7 @@
   "scripts": {
     "coverage": "SOLIDITY_COVERAGE=true yarn ganache-cli:test",
     "ganache-cli:test": "../shared/test-helpers/ganache-cli.sh",
-    "lint": "solium --dir ./contracts",
+    "lint:sol": "solium --dir ./contracts",
     "start:kit": "aragon run --kit PlanningKit --kit-init @ARAGON_ENS",
     "test:gas": "GAS_REPORTER=true npm test",
     "test": "TRUFFLE_TEST=true yarn ganache-cli:test"
@@ -23,7 +23,10 @@
     "@tps/apps-range-voting": "^0.0.1",
     "@tps/test-helpers": "^0.0.1"
   },
-  "author": "",
+  "devDependencies": {
+    "solium-config-tps": "^0.0.1",
+    "ethlint": "^1.2.3",
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/AutarkLabs/planning-suite"
