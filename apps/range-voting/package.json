@@ -28,6 +28,7 @@
     "@aragon/ui": "0.32.0",
     "@babel/polyfill": "^7.4.0",
     "@tps/ui": "^0.0.1",
+    "bignumber.js": "^8.1.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
