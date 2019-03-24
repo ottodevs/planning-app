@@ -1,5 +1,5 @@
 {
-  "name": "@tps/solium-config",
+  "name": "solium-config-tps",
   "version": "0.0.1",
   "description": "Ethlint config for That Planning Suite apps",
   "main": "index.js",
