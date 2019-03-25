@@ -4,7 +4,7 @@
   "description": "Aragon Planning Suite developed by Autark",
   "scripts": {
     "coverage": "SOLIDITY_COVERAGE=true yarn ganache-cli:test",
-    "ganache-cli:test": "../shared/test-helpers/ganache-cli.sh",
+    "ganache-cli:test": "../../shared/test-helpers/ganache-cli.sh",
     "lint:sol": "solium --dir ./contracts",
     "lint:js": "eslint --ignore-path .gitignore ./",
     "start:kit": "aragon run --kit PlanningKit --kit-init @ARAGON_ENS",
@@ -25,6 +25,8 @@
     "@tps/test-helpers": "^0.0.1"
   },
   "devDependencies": {
+    "@aragon/id": "^2.0.3",
+    "@aragon/test-helpers": "^1.1.0",
     "@tps/eslint-config": "^0.0.1",
     "solium-config-tps": "^0.0.1",
     "ethlint": "^1.2.3",

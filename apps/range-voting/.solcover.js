@@ -4,7 +4,7 @@ module.exports = {
   // rsync is needed so symlinks are resolved on copy of lerna packages
   copyPackages: ['@tps/test-helpers'],
   skipFiles: [
-    'test/TestImports.sol',
+    'test/Imports.sol',
     // 'test/mocks/ExecutionTarget.sol',
     // 'test/mocks/RangeVotingMock.sol',
   ],

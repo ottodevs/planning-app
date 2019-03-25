@@ -3,19 +3,6 @@
 # Exit script as soon as a command fails.
 set -o errexit
 
-# get_script_dir () {
-#      SOURCE="${BASH_SOURCE[0]}"
-#      # While $SOURCE is a symlink, resolve it
-#      while [ -h "$SOURCE" ]; do
-#           DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-#           SOURCE="$( readlink "$SOURCE" )"
-#           # If $SOURCE was a relative symlink (so no "/" as prefix, need to resolve it relative to the symlink base directory
-#           [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
-#      done
-#      DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-#      echo "$DIR/node_modules/.bin"
-# }
-
 if [ "$SOLIDITY_COVERAGE" = true ]; then
 	testrpc_port=8555
 else
@@ -37,6 +24,9 @@ start_testrpc() {
 		rm -rf ~/.ipfs
 		aragon devchain --reset --port "$testrpc_port" &
 	elif [ "$DEV" = true ]; then
+		aragon devchain --port "$testrpc_port" &
+		lerna run dev --parallel --scope=@tps/apps-* &
+	elif [ "$RESET" = true ]; then
 		aragon devchain --reset --port "$testrpc_port" &
 		lerna run dev --parallel --scope=@tps/apps-* &
 	fi
@@ -63,10 +53,10 @@ elif [ "$TRUFFLE_TEST" = true ]; then
 	truffle test --network rpc "$@" | grep -v 'Compiling'
 	result=$?
 elif [ "$START_KIT" = true ] || [ "$RESTART_KIT" = true ]; then
-	yarn publish:apps && yarn start:kit
+	yarn publish:apps && yarn start:kit "$@"
 	result=$?
 elif [ "$DEV" = true ]; then
-	yarn publish:http && yarn start:kit
+	yarn publish:http && yarn start:kit "$@"
 	result=$?
 elif [ "$CYPRESS" = true ]; then
 	yarn publish:apps && yarn start:kit &> /dev/null &

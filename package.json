@@ -33,7 +33,7 @@
     "start:allocations": "cd apps/allocations && yarn start",
     "start:projects": "cd apps/projects && yarn start",
     "start:range": "cd apps/range-voting && yarn start",
-    "test": "lerna run test --no-bail",
+    "test": "lerna run test --no-bail --stream --concurrency=1",
     "test:gas": "lerna run test:gas",
     "test:address": "cd apps/address-book && npm test",
     "test:allocations": "cd apps/allocations && npm test",

@@ -1,7 +1,7 @@
 module.exports = {
   norpc: true,
   skipFiles: [
-    'test/TestImports.sol',
+    'test/Imports.sol',
     // 'Controlled.sol',
     // 'RewardToken.sol',
     // 'TokenController.sol',
