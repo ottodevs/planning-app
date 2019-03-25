@@ -1,16 +1,17 @@
-/* global artifacts, assert, before, context, contract, it, require, web3 */
-const {
+/* global artifacts, assert, before, context, contract, it, web3 */
+import {
   ACL,
   DAOFactory,
   EVMScriptRegistryFactory,
   Kernel,
   MiniMeToken,
-} = require('@tps/test-helpers/artifacts')
+} from '@tps/test-helpers/artifacts'
 
 const Rewards = artifacts.require('RewardsCore')
 const Vault = artifacts.require('Vault')
-const { assertRevert } = require('@tps/test-helpers/assertThrow')
-const mineBlock = require('@tps/test-helpers/mineBlock')(web3)
+import { assertRevert } from '@tps/test-helpers/assertThrow'
+import mineblock from '@tps/test-helpers/mineBlock'
+const mineBlock = mineblock(web3)
 
 const NULL_ADDRESS = '0x00'
 
@@ -49,19 +50,15 @@ contract('Rewards App', accounts => {
 
     const acl = ACL.at(await dao.acl())
 
-    await acl.createPermission(
-      root,
-      dao.address,
-      await dao.APP_MANAGER_ROLE(),
-      root,
-      { from: root }
-    )
+    let role = await dao.APP_MANAGER_ROLE()
+    await acl.createPermission(root, dao.address, role, root, { from: root })
 
     // TODO: Revert to only use 2 params when truffle is updated
     // read: https://github.com/AutarkLabs/planning-suite/pull/243
+    const rewards = await Rewards.new()
     const receipt = await dao.newAppInstance(
       '0x1234',
-      (await Rewards.new()).address,
+      rewards.address,
       0x0,
       false,
       { from: root }
@@ -72,13 +69,8 @@ contract('Rewards App', accounts => {
     )
 
     // create ACL permissions
-    await acl.createPermission(
-      root,
-      app.address,
-      await app.ADD_REWARD_ROLE(),
-      root,
-      { from: root }
-    )
+    role = await app.ADD_REWARD_ROLE()
+    await acl.createPermission(root, app.address, role, root, { from: root })
 
     vaultBase = await Vault.new()
     const receipt1 = await dao.newAppInstance(
@@ -92,13 +84,10 @@ contract('Rewards App', accounts => {
       receipt1.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy
     )
     await vault.initialize()
-    await acl.createPermission(
-      app.address,
-      vault.address,
-      await vault.TRANSFER_ROLE(),
-      root,
-      { from: root }
-    )
+    role = await vault.TRANSFER_ROLE()
+    await acl.createPermission(app.address, vault.address, role, root, {
+      from: root,
+    })
     await app.initialize(vault.address)
 
     referenceToken = await MiniMeToken.new(
@@ -152,7 +141,7 @@ contract('Rewards App', accounts => {
     })
 
     it('creates a merit reward', async () => {
-      const meritRewardIds = rewardAdded(
+      meritRewardIds = rewardAdded(
         await app.newReward(
           true,
           referenceToken.address,

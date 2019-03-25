@@ -1,10 +1,10 @@
 module.exports = {
   norpc: true,
   skipFiles: [
-    'Controlled.sol',
-    'Migrations.sol',
-    'RewardToken.sol',
-    'TokenController.sol',
+    'test/TestImports.sol',
+    // 'Controlled.sol',
+    // 'RewardToken.sol',
+    // 'TokenController.sol',
   ],
   // TODO: Change this hack when the feel to update solidity-coverage upstream
   // rsync is needed so symlinks are resolved on copy of lerna packages
