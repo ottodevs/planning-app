@@ -5,7 +5,7 @@ import "@tps/test-helpers/contracts/kernel/Kernel.sol";
 import "@tps/test-helpers/contracts/factory/DAOFactory.sol";
 import "@tps/test-helpers/contracts/factory/EVMScriptRegistryFactory.sol";
 
-import "@tps/test-helpers/contracts/lib/misc/Migrations.sol";
+import "@aragon/apps-shared-migrations/contracts/Migrations.sol";
 import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 import "@tps/test-helpers/contracts/lib/bounties/StandardBounties.sol";
 
