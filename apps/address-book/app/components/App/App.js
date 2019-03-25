@@ -1,3 +1,4 @@
+/* global module */
 import { AragonApp, observe, SidePanel, Root, ToastHub } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import React from 'react'

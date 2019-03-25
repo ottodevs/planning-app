@@ -1,4 +1,4 @@
-/*global artifacts, assert, before, context, contract, it*/
+/* global artifacts, assert, before, context, contract, it */
 
 import {
   ACL,
