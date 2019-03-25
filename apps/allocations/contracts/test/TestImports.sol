@@ -5,6 +5,9 @@ import "@tps/test-helpers/contracts/factory/DAOFactory.sol";
 import "@tps/test-helpers/contracts/acl/ACL.sol";
 import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 
+import "@tps/test-helpers/contracts/lib/bounties/StandardBounties.sol";
+
+
 // You might think this file is a bit odd, but let me explain.
 // We only use the MiniMeToken contract in our tests, which
 // means Truffle will not compile it for us, because it is

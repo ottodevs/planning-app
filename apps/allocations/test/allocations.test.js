@@ -50,19 +50,15 @@ contract('Allocations App', accounts => {
 
     const acl = ACL.at(await dao.acl())
 
-    await acl.createPermission(
-      root,
-      dao.address,
-      await dao.APP_MANAGER_ROLE(),
-      root,
-      { from: root }
-    )
+    let role = await dao.APP_MANAGER_ROLE()
+    await acl.createPermission(root, dao.address, role, root, { from: root })
 
     // TODO: Revert to use regular function call when truffle gets updated
     // read: https://github.com/AutarkLabs/planning-suite/pull/243
+    const allocations = await Allocations.new()
     const receipt = await dao.newAppInstance(
       '0x1234',
-      (await Allocations.new()).address,
+      allocations.address,
       0x0,
       false,
       { from: root }
@@ -72,27 +68,18 @@ contract('Allocations App', accounts => {
       receipt.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy
     )
 
-    await acl.createPermission(
-      ANY_ADDR,
-      app.address,
-      await app.START_PAYOUT_ROLE(),
-      root,
-      { from: root }
-    )
-    await acl.createPermission(
-      ANY_ADDR,
-      app.address,
-      await app.SET_DISTRIBUTION_ROLE(),
-      root,
-      { from: root }
-    )
-    await acl.createPermission(
-      ANY_ADDR,
-      app.address,
-      await app.EXECUTE_PAYOUT_ROLE(),
-      root,
-      { from: root }
-    )
+    role = await app.START_PAYOUT_ROLE()
+    await acl.createPermission(ANY_ADDR, app.address, role, root, {
+      from: root,
+    })
+    role = await app.SET_DISTRIBUTION_ROLE()
+    await acl.createPermission(ANY_ADDR, app.address, role, root, {
+      from: root,
+    })
+    role = await app.EXECUTE_PAYOUT_ROLE()
+    await acl.createPermission(ANY_ADDR, app.address, role, root, {
+      from: root,
+    })
 
     // TODO: Fix vault
     // vault = Vault.at(
