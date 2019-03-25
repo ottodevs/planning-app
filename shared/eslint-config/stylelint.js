@@ -1,9 +1,11 @@
+/* global module */
 module.exports = {
   extends: [
     'stylelint-config-standard',
-    'stylelint-config-styled-components',
     'stylelint-order',
-    'stylelint-prettier/recommended',
+    // TODO: false positive with: styled(Component)
+    // 'stylelint-prettier/recommended',
+    'stylelint-config-styled-components',
   ],
   processors: ['stylelint-processor-styled-components'],
   rules: {

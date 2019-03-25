@@ -1,3 +1,4 @@
+/* global module, process, require */
 const homedir = require('homedir')
 const path = require('path')
 
@@ -23,7 +24,7 @@ const configFilePath = filename => path.join(homedir(), `.aragon/${filename}`)
 const mnemonic = () => {
   try {
     return require(configFilePath('mnemonic.json')).mnemonic
-  } catch (e) {
+  } catch (error) {
     return DEFAULT_MNEMONIC
   }
 }
@@ -31,25 +32,25 @@ const mnemonic = () => {
 const settingsForNetwork = network => {
   try {
     return require(configFilePath(`${network}_key.json`))
-  } catch (e) {
+  } catch (error) {
     return {}
   }
 }
 
 // Lazily loaded provider
 const providerForNetwork = network => () => {
-  let { rpc, keys } = settingsForNetwork(network)
-  rpc = rpc || defaultRPC(network)
+  const { rpc, keys } = settingsForNetwork(network)
+  const confRpc = rpc || defaultRPC(network)
 
   if (!keys || keys.length == 0) {
-    return new HDWalletProvider(mnemonic(), rpc)
+    return new HDWalletProvider(mnemonic(), confRpc)
   }
 
-  return new HDWalletProviderPrivkey(keys, rpc)
+  return new HDWalletProviderPrivkey(keys, confRpc)
 }
 
-module.exports = projectRoot = {
-  // contracts_build_directory: path.join(__dirname, './build/contracts/'),
+module.exports = projectRootPath => ({
+  contracts_build_directory: path.join(projectRootPath, './build/contracts/'),
   networks: {
     rpc: {
       network_id: 15,
@@ -82,13 +83,7 @@ module.exports = projectRoot = {
   },
   build: {},
   mocha,
-  // env: {
-  //   mocha: true,
-  // },
-  // globals: {
-  //   artifacts: false,
-  //   contract: false,
-  //   assert: false,
-  //   web3: false,
-  // },
-}
+  env: {
+    mocha: true,
+  },
+})

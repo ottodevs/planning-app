@@ -1,14 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import {
-  Button,
-  IconAdd,
-  IconRemove,
-  TextInput,
-  theme,
-  unselectable,
-} from '@aragon/ui'
+import { Button, IconRemove, TextInput, theme, unselectable } from '@aragon/ui'
 
 const OptionsInput = ({
   input,
@@ -23,7 +16,7 @@ const OptionsInput = ({
   const addOption = () => {
     onChange({
       target: validated
-        ? { name, value: [ ...values, input ] }
+        ? { name, value: [...values, input] }
         : { name: 'addressError', value: true }, // enable error msg if needed
     })
     cleanInputBox()
@@ -51,8 +44,9 @@ const OptionsInput = ({
         style={{ transform: 'scale(.8)' }}
         onClick={() => removeOption(option)}
         title="Click to remove the option"
-        children={<IconRemove />}
-      />
+      >
+        <IconRemove />
+      </IconContainer>
     </StyledOption>
   ))
 
@@ -73,9 +67,10 @@ const OptionsInput = ({
         compact
         mode="secondary"
         onClick={addOption}
-        children={'+ Add option'}
         title={validated ? 'Click to add' : ''}
-      />
+      >
+        {`+ Add option`}
+      </StyledButton>
     </div>
   )
 }
@@ -105,6 +100,28 @@ const StyledOption = styled.div`
   }
 `
 
+const IconContainer = styled.button`
+  ${unselectable};
+  all: unset;
+  color: ${({ disabled }) => (disabled ? theme.disabled : theme.textSecondary)};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  display: flex;
+  justify-content: center;
+  :hover {
+    color: ${({ disabled }) =>
+      disabled ? theme.disabled : theme.contentBorderActive};
+  }
+  :active {
+    color: ${({ disabled }) => (disabled ? theme.disabled : theme.accent)};
+  }
+  > svg {
+    color: inherit;
+    height: 40px;
+    width: 40px;
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+`
+
 const StyledInput = styled(TextInput)`
   ${unselectable}; /* it is possible to select the placeholder without this */
   ::placeholder {
@@ -121,28 +138,6 @@ const StyledInput = styled(TextInput)`
     :focus {
       border-color: ${theme.positive};
     }
-  }
-`
-
-const IconContainer = styled.button`
-  ${unselectable};
-  all: unset;
-  color: ${({ disabled }) => (disabled ? theme.disabled : theme.textSecondary)};
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-  display: flex;
-  justify-content: center;
-  :hover {
-    color: ${({ disabled }) =>
-    disabled ? theme.disabled : theme.contentBorderActive};
-  }
-  :active {
-    color: ${({ disabled }) => (disabled ? theme.disabled : theme.accent)};
-  }
-  > svg {
-    color: inherit;
-    height: 40px;
-    width: 40px;
-    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 `
 
