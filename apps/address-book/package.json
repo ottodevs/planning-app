@@ -10,7 +10,7 @@
     "console": "truffle dev",
     "coverage": "SOLIDITY_COVERAGE=true yarn ganache-cli:test",
     "dev": "yarn sync-assets && parcel app/index.html --port 1111",
-    "ganache-cli:test": "../shared/test-helpers/ganache-cli.sh",
+    "ganache-cli:test": "../../shared/test-helpers/ganache-cli.sh",
     "lint:sol": "solium --dir ./contracts",
     "lint:js": "eslint --ignore-path .gitignore ./",
     "prepublishOnly": "truffle compile --all",

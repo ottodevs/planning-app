@@ -1,7 +1,7 @@
-/*global artifacts*/
+/* global artifacts, module */
 
 const AddressBook = artifacts.require('./AddressBook.sol')
 
-export default function(deployer) {
+module.exports = function(deployer) {
   deployer.deploy(AddressBook)
 }

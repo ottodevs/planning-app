@@ -6,14 +6,15 @@ import {
   EVMScriptRegistryFactory,
   Kernel,
 } from '@tps/test-helpers/artifacts'
+
 import { assertRevert } from '@tps/test-helpers/assertThrow'
 
 const AddressBook = artifacts.require('AddressBook')
 const ANY_ADDR = ' 0xffffffffffffffffffffffffffffffffffffffff'
 
 contract('AddressBook App', accounts => {
-  let daoFact = {},
-    app = {}
+  let daoFact = {}
+  let app = {}
 
   const root = accounts[0]
 
@@ -31,18 +32,13 @@ contract('AddressBook App', accounts => {
       r.logs.filter(l => l.event == 'DeployDAO')[0].args.dao
     )
     const acl = ACL.at(await dao.acl())
+    let role = await dao.APP_MANAGER_ROLE()
 
-    await acl.createPermission(
-      root,
-      dao.address,
-      await dao.APP_MANAGER_ROLE(),
-      root,
-      { from: root }
-    )
-
+    await acl.createPermission(root, dao.address, role, root, { from: root })
+    const addressBook = await AddressBook.new()
     const receipt = await dao.newAppInstance(
       '0x1234',
-      (await AddressBook.new()).address,
+      addressBook.address,
       0x0,
       false,
       { from: root }
@@ -50,23 +46,15 @@ contract('AddressBook App', accounts => {
     app = AddressBook.at(
       receipt.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy
     )
-
     await app.initialize()
-
-    await acl.createPermission(
-      ANY_ADDR,
-      app.address,
-      await app.ADD_ENTRY_ROLE(),
-      root,
-      { from: root }
-    )
-    await acl.createPermission(
-      ANY_ADDR,
-      app.address,
-      await app.REMOVE_ENTRY_ROLE(),
-      root,
-      { from: root }
-    )
+    role = await app.ADD_ENTRY_ROLE()
+    await acl.createPermission(ANY_ADDR, app.address, role, root, {
+      from: root,
+    })
+    ;(role = await app.REMOVE_ENTRY_ROLE()),
+      await acl.createPermission(ANY_ADDR, app.address, role, root, {
+        from: root,
+      })
   })
 
   context('main context', () => {
