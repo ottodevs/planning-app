@@ -51,21 +51,18 @@ contract('Projects App', accounts => {
 
     const acl = ACL.at(await dao.acl())
 
-    //Create DAO admin role
-    await acl.createPermission(
-      root,
-      dao.address,
-      await dao.APP_MANAGER_ROLE(),
-      root,
-      { from: root }
-    )
+    let role = await dao.APP_MANAGER_ROLE()
 
+    //Create DAO admin role
+    await acl.createPermission(root, dao.address, role, root, { from: root })
+
+    const projects = await Projects.new()
     //Deploy Contract to be tested
     // TODO: Revert to use regular function call when truffle gets updated
     // read: https://github.com/AutarkLabs/planning-suite/pull/243
     const receipt = await dao.newAppInstance(
       '0x1234',
-      (await Projects.new()).address,
+      projects.address,
       0x0,
       false,
       { from: root }
@@ -75,73 +72,37 @@ contract('Projects App', accounts => {
     )
 
     // create ACL permissions
-    await acl.createPermission(
-      owner1,
-      app.address,
-      await app.ADD_REPO_ROLE(),
-      root,
-      { from: root }
-    )
-
-    await acl.createPermission(
-      bountyAdder,
-      app.address,
-      await app.ADD_BOUNTY_ROLE(),
-      root,
-      { from: root }
-    )
-
-    await acl.createPermission(
-      repoRemover,
-      app.address,
-      await app.REMOVE_REPO_ROLE(),
-      root,
-      { from: root }
-    )
-
-    await acl.createPermission(
-      root,
-      app.address,
-      await app.CURATE_ISSUES_ROLE(),
-      root,
-      { from: root }
-    )
-
-    await acl.createPermission(
-      bountyAdder,
-      app.address,
-      await app.TASK_ASSIGNMENT_ROLE(),
-      root,
-      { from: root }
-    )
-
-    await acl.createPermission(
-      bountyAdder,
-      app.address,
-      await app.WORK_REVIEW_ROLE(),
-      root,
-      { from: root }
-    )
-
-    await acl.createPermission(
-      root,
-      app.address,
-      await app.CHANGE_SETTINGS_ROLE(),
-      root,
-      { from: root }
-    )
+    role = await app.ADD_REPO_ROLE()
+    await acl.createPermission(owner1, app.address, role, root, { from: root })
+    role = await app.ADD_BOUNTY_ROLE()
+    await acl.createPermission(bountyAdder, app.address, role, root, {
+      from: root,
+    })
+    role = await app.REMOVE_REPO_ROLE()
+    await acl.createPermission(repoRemover, app.address, role, root, {
+      from: root,
+    })
+    role = await app.CURATE_ISSUES_ROLE()
+    await acl.createPermission(root, app.address, role, root, { from: root })
+    role = await app.TASK_ASSIGNMENT_ROLE()
+    await acl.createPermission(bountyAdder, app.address, role, root, {
+      from: root,
+    })
+    role = await app.WORK_REVIEW_ROLE()
+    await acl.createPermission(bountyAdder, app.address, role, root, {
+      from: root,
+    })
+    role = await app.CHANGE_SETTINGS_ROLE()
+    await acl.createPermission(root, app.address, role, root, { from: root })
 
     // Deploy test Bounties contract
     bounties = await StandardBounties.new(web3.toBigNumber(owner1))
     vault = await Vault.new()
 
-    await acl.createPermission(
-      app.address,
-      vault.address,
-      await vault.TRANSFER_ROLE(),
-      root,
-      { from: root }
-    )
+    role = await vault.TRANSFER_ROLE()
+    await acl.createPermission(app.address, vault.address, role, root, {
+      from: root,
+    })
 
     //bounties = StandardBounties.at(registry.address)
 
