@@ -1,36 +1,9 @@
-const {
-  ACL,
-  DAOFactory,
-  EVMScriptRegistryFactory,
-  Kernel,
-  MiniMeToken,
-} = require('@tps/test-helpers/artifacts')
-
-//const RangeVoting = artifacts.require('RangeVotingMock')
-//const ExecutionTarget = artifacts.require('ExecutionTarget')
+/* global artifacts, beforeEach, contract */
 const RewardToken = artifacts.require('RewardToken')
 
-const { assertRevert } = require('@tps/test-helpers/assertThrow')
-const { encodeCallScript } = require('@tps/test-helpers/evmScript')
-const timeTravel = require('@tps/test-helpers/timeTravel')(web3)
-
-const pct16 = x =>
-  new web3.BigNumber(x).times(new web3.BigNumber(10).toPower(16))
-const createdVoteId = receipt =>
-  receipt.logs.filter(x => x.event === 'StartVote')[0].args.voteId
-
-const castedVoteId = receipt =>
-  receipt.logs.filter(x => x.event === 'CastVote')[0].args.voteId
-
-const ANY_ADDR = '0xffffffffffffffffffffffffffffffffffffffff'
-const NULL_ADDRESS = '0x00'
-
 contract('Rewards Token', accounts => {
+  const holder1 = accounts[1]
   let token = {}
-  const root = accounts[0]
-  holder1 = accounts[1]
-  holder2 = accounts[2]
-  holder3 = accounts[3]
 
   beforeEach(async () => {
     token = await RewardToken.new()
