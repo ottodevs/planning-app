@@ -3,7 +3,7 @@ const {
   DAOFactory,
   EVMScriptRegistryFactory,
   Kernel,
-  MiniMeToken
+  MiniMeToken,
 } = require('@tps/test-helpers/artifacts')
 
 //const RangeVoting = artifacts.require('RangeVotingMock')
@@ -34,9 +34,9 @@ contract('Rewards Token', accounts => {
 
   beforeEach(async () => {
     token = await RewardToken.new()
-    await token.mint(holder1, 50e18,)
+    await token.mint(holder1, 50e18)
   })
-/*
+  /*
   it('receives rewards', async () => {
     await token.addReward({from: root, value: web3.toWei(1, 'ether')})
 

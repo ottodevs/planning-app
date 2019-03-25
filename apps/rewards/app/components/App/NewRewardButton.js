@@ -26,4 +26,3 @@ const StyledButton = styled(Button)`
 `
 
 export default NewRewardButton
-

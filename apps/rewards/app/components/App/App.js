@@ -1,10 +1,9 @@
-import { AragonApp, observe, SidePanel, TabBar } from '@aragon/ui'
+import { AragonApp, observe, TabBar } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { Overview, MyRewards } from '../Content'
 import { Title } from '../Shared'
-import { Empty } from '../Card'
 import PanelManager, { PANELS } from '../Panel'
 import NewRewardButton from './NewRewardButton'
 import BigNumber from 'bignumber.js'
@@ -17,7 +16,6 @@ const reward = {
   referenceToken: 'SDN',
   rewardToken: 0x0,
   amount: BigNumber(17e18),
-  amount: 10,
   startDate: new Date('2018-12-17'),
   endDate: new Date('2019-01-17'),
   description: 'Q1 Reward for Space Decentral Contributors',
@@ -34,7 +32,7 @@ class App extends React.Component {
 
   state = {
     selected: 0,
-    tabs: [ 'Overview', 'My Rewards' ],
+    tabs: ['Overview', 'My Rewards'],
   }
 
   closePanel = () => {
@@ -55,13 +53,13 @@ class App extends React.Component {
     })
   }
 
-  onNewReward = reward => {
-    console.log('onNewReward', reward)
+  onNewReward = (/*reward*/) => {
+    // console.log('onNewReward', reward)
     this.closePanel()
   }
 
-  onClaimReward = reward => {
-    console.log('onClaimReward', reward)
+  onClaimReward = (/*reward*/) => {
+    // console.log('onClaimReward', reward)
     this.closePanel()
   }
 
@@ -76,12 +74,12 @@ class App extends React.Component {
     })
   }
 
-  viewReward = (reward) => {
+  viewReward = reward => {
     this.setState({
       panel: PANELS.ViewReward,
       panelProps: {
         reward: reward,
-      }
+      },
     })
   }
 
@@ -98,7 +96,7 @@ class App extends React.Component {
           onSelect={this.selectTab}
         />
 
-        { this.state.selected === 1 ? (
+        {this.state.selected === 1 ? (
           <MyRewards
             rewards={this.props.rewards === undefined ? [] : this.props.rewards}
             onNewReward={this.onNewReward}

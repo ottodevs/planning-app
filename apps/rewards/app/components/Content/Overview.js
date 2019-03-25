@@ -4,11 +4,11 @@ import styled from 'styled-components'
 
 import { Empty } from '../Card'
 
-const Overview = (props) => {
+const Overview = props => {
   const rewardsEmpty = props.rewards.length === 0
 
   if (rewardsEmpty) {
-    return <Empty tab='Overview' action={props.onNewReward} />
+    return <Empty tab="Overview" action={props.onNewReward} />
   }
 
   return <StyledRewards>Rewards Go Here</StyledRewards>

@@ -2,21 +2,21 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 
-import { Info, Text, theme, SafeLink, IconFundraising, IconCheck, IconTime, SidePanelSplit, Button } from '@aragon/ui'
+import {
+  Info,
+  Text,
+  SafeLink,
+  IconFundraising,
+  IconCheck,
+  IconTime,
+  SidePanelSplit,
+  Button,
+} from '@aragon/ui'
 
 import { FieldTitle } from '../../Form'
-import { DateInput, InputDropDown } from '../../../../../../shared/ui'
 import { format } from 'date-fns'
 
-const rewardTypes = [ 'Merit Reward', 'Dividend' ]
-const referenceAssets = [ 'ABC', 'XYZ' ]
-const currencies = [ 'ETH', 'DAI' ]
-const disbursementCycles = ['Quarterly']
-const disbursementCyclesSummary = ['quartery cycle']
-const disbursementDates = [ '1 week', '2 weeks' ]
-const disbursementDatesItems = disbursementDates.map(item => 'Cycle end + ' + item)
-
-const translateToken = (token) => {
+const translateToken = token => {
   if (token == 0x0) {
     return 'ETH'
   }
@@ -24,6 +24,14 @@ const translateToken = (token) => {
 
 class YourReward extends React.Component {
   static propTypes = {
+    reward: PropTypes.shape({
+      amount: PropTypes.string.isRequired,
+      claimed: PropTypes.bool.isRequired,
+      endDate: PropTypes.string.isRequired,
+      referenceToken: PropTypes.string.isRequired,
+      rewardToken: PropTypes.string.isRequired,
+      startDate: PropTypes.string.isRequired,
+    }).isRequired,
     vaultBalance: PropTypes.string.isRequired,
     onClaimReward: PropTypes.func.isRequired,
     onClosePanel: PropTypes.func.isRequired,
@@ -37,15 +45,11 @@ class YourReward extends React.Component {
 
   render() {
     const {
-      creator,
-      isMerit,
       referenceToken,
       rewardToken,
       amount,
       startDate,
       endDate,
-      description,
-      delay,
       claimed,
     } = this.props.reward
 
@@ -83,10 +87,18 @@ class YourReward extends React.Component {
           <TokenIcon />
           <Summary>
             <p>
-              You have been granted a one-time <SummaryBold>{amount} {translateToken(rewardToken)}</SummaryBold> reward, based on the <SummaryBold>{referenceToken}</SummaryBold> you earned from <SummaryBold>{this.formatDate(startDate)}</SummaryBold> to <SummaryBold>{this.formatDate(endDate)}</SummaryBold>.
+              You have been granted a one-time{' '}
+              <SummaryBold>
+                {amount} {translateToken(rewardToken)}
+              </SummaryBold>{' '}
+              reward, based on the <SummaryBold>{referenceToken}</SummaryBold>{' '}
+              you earned from{' '}
+              <SummaryBold>{this.formatDate(startDate)}</SummaryBold> to{' '}
+              <SummaryBold>{this.formatDate(endDate)}</SummaryBold>.
             </p>
             <p>
-              For more details, refer to the origin contract, <SafeLink
+              For more details, refer to the origin contract,{' '}
+              <SafeLink
                 href="#"
                 target="_blank"
                 style={{ textDecoration: 'none', color: '#21AAE7' }}
@@ -98,9 +110,13 @@ class YourReward extends React.Component {
         </Info>
 
         {claimed ? (
-          <Button mode="strong" wide onClick={this.onClosePanel}>Close</Button>
+          <Button mode="strong" wide onClick={this.onClosePanel}>
+            Close
+          </Button>
         ) : (
-          <Button mode="strong" wide onClick={this.onClaimReward}>Claim Reward</Button>
+          <Button mode="strong" wide onClick={this.onClaimReward}>
+            Claim Reward
+          </Button>
         )}
       </div>
     )
