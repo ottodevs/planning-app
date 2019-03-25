@@ -1,8 +1,8 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { spring as springConf } from '@aragon/ui'
+// import { Motion, spring } from 'react-motion'
+import { theme /*, spring as springConf*/ } from '@aragon/ui'
 
 import close from '../assets/close.svg'
 
@@ -25,22 +25,26 @@ import { hasLoadedVoteSettings } from './vote-settings'
 
 const tokenAbi = [].concat(tokenBalanceOfAbi, tokenDecimalsAbi)
 
-const SPRING_SHOW = {
-  stiffness: 120,
-  damping: 17,
-  precision: 0.001
-}
-const SPRING_HIDE = {
-  stiffness: 70,
-  damping: 15,
-  precision: 0.001
-}
-const SPRING_SCREEN = springConf('slow')
+// const SPRING_SHOW = {
+//   stiffness: 120,
+//   damping: 17,
+//   precision: 0.001,
+// }
+// const SPRING_HIDE = {
+//   stiffness: 70,
+//   damping: 15,
+//   precision: 0.001,
+// }
+// const SPRING_SCREEN = springConf('slow')
 
 class RangeVoting extends React.Component {
   static propTypes = {
     app: PropTypes.object.isRequired,
-    handleClose: PropTypes.func.isRequired
+    handleClose: PropTypes.func.isRequired,
+    onComplete: PropTypes.func.isRequired,
+    onCreateContract: PropTypes.func.isRequired,
+    tokenAddress: PropTypes.string.isRequired,
+    visible: PropTypes.bool,
   }
   static defaultProps = {
     account: '',
@@ -52,7 +56,7 @@ class RangeVoting extends React.Component {
     connected: false,
     contractCreationStatus: 'none',
     onComplete: noop,
-    onCreateContract: noop
+    onCreateContract: noop,
   }
   constructor(props) {
     super(props)
@@ -66,7 +70,7 @@ class RangeVoting extends React.Component {
       settingsLoaded: false,
       tokenContract: this.getTokenContract(props.tokenAddress),
       voteVisible: false,
-      voteSidebarOpened: false
+      voteSidebarOpened: false,
     }
   }
   getTokenContract(tokenAddress) {
@@ -80,12 +84,12 @@ class RangeVoting extends React.Component {
     // Is this the first time we've loaded the settings?
     if (!settingsLoaded && hasLoadedVoteSettings(nextProps)) {
       this.setState({
-        settingsLoaded: true
+        settingsLoaded: true,
       })
     }
     if (nextProps.tokenAddress !== this.props.tokenAddress) {
       this.setState({
-        tokenContract: this.getTokenContract(nextProps.tokenAddress)
+        tokenContract: this.getTokenContract(nextProps.tokenAddress),
       })
     }
 
@@ -99,16 +103,16 @@ class RangeVoting extends React.Component {
 
     const configureSteps = Templates.has(template)
       ? Templates.get(template).screens.map(step => ({
-        ...step,
-        group: Steps.Configure
-      }))
+          ...step,
+          group: Steps.Configure,
+        }))
       : []
 
     return [
       { screen: 'template', group: Steps.Template },
       ...configureSteps,
       { screen: 'review', group: Steps.Review },
-      { screen: 'launch', group: Steps.Launch }
+      { screen: 'launch', group: Steps.Launch },
     ]
   }
 
@@ -124,9 +128,9 @@ class RangeVoting extends React.Component {
     }
     const fields = Templates.get(template).fields
     return Object.entries(fields).reduce(
-      (fields, [ name, { defaultValue }]) => ({
+      (fields, [name, { defaultValue }]) => ({
         ...fields,
-        [name]: defaultValue()
+        [name]: defaultValue(),
       }),
       {}
     )
@@ -169,8 +173,8 @@ class RangeVoting extends React.Component {
       return {
         templateData: {
           ...templateData,
-          ...updatedFields
-        }
+          ...updatedFields,
+        },
       }
     })
   }
@@ -178,7 +182,7 @@ class RangeVoting extends React.Component {
   handleTemplateSelect = (template = null) => {
     this.setState({
       template,
-      templateData: this.getInitialDataFromTemplate(template)
+      templateData: this.getInitialDataFromTemplate(template),
     })
   }
 
@@ -203,7 +207,7 @@ class RangeVoting extends React.Component {
     const templateData = Templates.get(template)
     const data = templateData.prepareData(this.state.templateData)
 
-    console.log('onCreateContract ', data)
+    // console.log('onCreateContract', data)
     this.props.onCreateContract(templateData.name, data)
   }
 
@@ -257,73 +261,73 @@ class RangeVoting extends React.Component {
   }
 
   render() {
-    const { direction, stepIndex } = this.state
-    const { visible } = this.props
+    const { direction /*stepIndex*/ } = this.state
+    // const { visible } = this.props
     const step = this.currentStep()
     const steps = this.getSteps()
 
     return (
-      <Motion
-        style={{
-          showProgress: spring(
-            Number(visible),
-            visible ? SPRING_SHOW : SPRING_HIDE
-          )
-        }}
+      // <Motion
+      //   style={{
+      //     showProgress: spring(
+      //       Number(visible),
+      //       visible ? SPRING_SHOW : SPRING_HIDE
+      //     ),
+      //   }}
+      // >
+      //   {({ showProgress }) => (
+      <Main
+      // style={{
+      //   transform: visible
+      //     ? 'none'
+      //     : `translateY(${100 * (1 - showProgress)}%)`,
+      //   opacity: visible ? showProgress : 1,
+      // }}
       >
-        {({ showProgress }) => (
-          <Main
-            style={{
-              transform: visible
-                ? 'none'
-                : `translateY(${100 * (1 - showProgress)}%)`,
-              opacity: visible ? showProgress : 1
-            }}
-          >
-            <View>
-              <Window>
-                <RangeWizardCloseButton
-                  type="button"
-                  onClick={this.props.handleClose}
-                >
-                  <img src={close} alt="Close" />
-                </RangeWizardCloseButton>
+        <View>
+          <Window>
+            <RangeWizardCloseButton
+              type="button"
+              onClick={this.props.handleClose}
+            >
+              <img src={close} alt="Close" />
+            </RangeWizardCloseButton>
 
-                <Motion
-                  style={{ screenProgress: spring(stepIndex, SPRING_SCREEN) }}
-                >
-                  {({ screenProgress }) => (
-                    <React.Fragment>
-                      <StepsBar activeGroup={step.group} />
-                      <div>
-                        {steps.map(({ screen }, i) => (
-                          <Screen active={screen === step.screen} key={screen}>
-                            {this.renderScreen(
-                              screen,
-                              i - stepIndex,
-                              i - screenProgress,
-                              step.screen
-                            )}
-                          </Screen>
-                        ))}
-                      </div>
-                      <PrevNext
-                        visible={this.isPrevNextVisible()}
-                        direction={direction}
-                        onPrev={this.prevStep}
-                        onNext={this.nextStep}
-                        enableNext={this.isNextEnabled()}
-                        enablePrev={this.isPrevEnabled()}
-                        isLaunchingNext={this.isLaunchingNext()}
-                      />
-                    </React.Fragment>
-                  )}
-                </Motion>
-              </Window>
-            </View>
-          </Main>
-        )}
-      </Motion>
+            {/* <Motion
+              style={{ screenProgress: spring(stepIndex, SPRING_SCREEN) }}
+            >
+              {({ screenProgress }) => ( */}
+            <React.Fragment>
+              <StepsBar activeGroup={step.group} />
+              <div>
+                {steps.map(({ screen } /*,i*/) => (
+                  <Screen active={screen === step.screen} key={screen}>
+                    {/* {this.renderScreen(
+                      screen,
+                      i - stepIndex,
+                      i - screenProgress,
+                      step.screen
+                    )} */}
+                  </Screen>
+                ))}
+              </div>
+              <PrevNext
+                visible={this.isPrevNextVisible()}
+                direction={direction}
+                onPrev={this.prevStep}
+                onNext={this.nextStep}
+                enableNext={this.isNextEnabled()}
+                enablePrev={this.isPrevEnabled()}
+                isLaunchingNext={this.isLaunchingNext()}
+              />
+            </React.Fragment>
+            {/* )}
+            </Motion> */}
+          </Window>
+        </View>
+      </Main>
+      //   )}
+      // </Motion>
     )
   }
 
@@ -334,7 +338,7 @@ class RangeVoting extends React.Component {
       //account,
       //network,
       //balance,
-      onComplete
+      onComplete,
     } = this.props
 
     positionProgress = Math.min(1, Math.max(-1, positionProgress))
@@ -433,7 +437,9 @@ const Screen = styled.div`
   pointer-events: ${({ active }) => (active ? 'auto' : 'none')};
 `
 
+// TODO: Fix this css seems non standard
 const RangeWizardCloseButton = styled.button`
+  /* stylelint-disable-next-line declaration-block-semicolon-newline-after, no-duplicate-selectors */
   ${Window} & {
     position: absolute;
     padding: 20px;

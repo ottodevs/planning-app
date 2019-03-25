@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { Field, TextInput } from '@aragon/ui'
@@ -6,6 +7,14 @@ import { lerp } from '../../../utils/math-utils'
 import { noop } from '../../../utils/utils'
 
 class ConfigureVotingDefaults extends React.Component {
+  static propTypes = {
+    fields: PropTypes.object.isRequired,
+    positionProgress: PropTypes.number.isRequired,
+    onFieldUpdate: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    warm: PropTypes.bool.isRequired,
+  }
+
   static defaultProps = {
     warm: false,
     positionProgress: 0,
@@ -65,6 +74,15 @@ class ConfigureVotingDefaults extends React.Component {
 }
 
 class ConfigureVotingDefaultsContent extends React.PureComponent {
+  static propTypes = {
+    fields: PropTypes.object.isRequired,
+    handleSupportChange: PropTypes.func.isRequired,
+    handleMinQuorumChange: PropTypes.func.isRequired,
+    handleVoteDurationChange: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    formRef: PropTypes.object.isRequired,
+  }
+
   render() {
     const {
       fields,
@@ -126,6 +144,11 @@ const SubmitForm = ({ children, ref = noop, ...props }) => (
   </form>
 )
 
+SubmitForm.propTypes = {
+  children: PropTypes.node.isRequired,
+  ref: PropTypes.object,
+}
+
 const StepContainer = styled.div`
   display: flex;
   align-items: flex-start;
@@ -146,7 +169,7 @@ const Fields = styled.div`
 `
 Fields.Field = styled(Field)`
   position: relative;
-  &:after {
+  &::after {
     position: absolute;
     bottom: 6px;
     left: 100px;
@@ -154,12 +177,12 @@ Fields.Field = styled(Field)`
   }
 `
 Fields.PercentageField = styled(Fields.Field)`
-  &:after {
+  &::after {
     content: '%';
   }
 `
 Fields.HoursField = styled(Fields.Field)`
-  &:after {
+  &::after {
     content: 'H';
   }
 `

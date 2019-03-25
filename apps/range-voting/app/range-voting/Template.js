@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { noop } from '../utils/utils'
@@ -6,6 +7,16 @@ import TemplateCard from '../components/TemplateCard'
 import { Main, Content, Title, Subtitle } from '../style'
 
 class Template extends React.Component {
+  static propTypes = {
+    // configurationData: PropTypes.object.isRequired,
+    activeTemplate: PropTypes.number.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    positionProgress: PropTypes.number.isRequired,
+    templates: PropTypes.shape({ entries: PropTypes.func.isRequired })
+      .isRequired,
+    warm: PropTypes.bool.isRequired,
+  }
+
   static defaultProps = {
     warm: false,
     positionProgress: 0,
@@ -37,19 +48,25 @@ class Template extends React.Component {
 }
 
 class TemplateContent extends React.PureComponent {
+  static propTypes = {
+    activeTemplate: PropTypes.number.isRequired,
+    handleTemplateSelect: PropTypes.func.isRequired,
+    templates: PropTypes.shape({ entries: PropTypes.func.isRequired })
+      .isRequired,
+  }
   render() {
     return (
       <React.Fragment>
         <Title>Create multi-option vote</Title>
 
         <Subtitle>
-          A way to gather votes and opinions on questions that have multiple
+          {`A way to gather votes and opinions on questions that have multiple
           options. Choose a template to get started quickly. Don't worry - you
-          can change it later.
+          can change it later.`}
         </Subtitle>
         <Templates>
           {[...this.props.templates.entries()].map(
-            ([ template, { label, icon, description }], i) => (
+            ([template, { label, icon, description }], i) => (
               <TemplateCardWrapper key={i}>
                 <TemplateCard
                   template={template}

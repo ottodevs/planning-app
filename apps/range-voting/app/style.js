@@ -22,7 +22,7 @@ const Subtitle = styled.div`
   text-align: left;
   width: 80%;
   color: ${theme.textTertiary};
-  margin-bottom: 12px
+  margin-bottom: 12px;
 `
 
 const Title = styled.h1`

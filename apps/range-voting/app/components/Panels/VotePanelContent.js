@@ -1,5 +1,6 @@
-import React from 'react'
+/* global web3 */
 import PropTypes from 'prop-types'
+import React from 'react'
 import styled from 'styled-components'
 import { BigNumber } from 'bignumber.js'
 import {
@@ -15,17 +16,20 @@ import {
 } from '@aragon/ui'
 import { combineLatest } from '../../rxjs'
 import { provideNetwork } from '../../../../../shared/ui'
-import { VOTE_NAY, VOTE_YEA } from '../../utils/vote-types'
 import { safeDiv } from '../../utils/math-utils'
-import VoteSummary from '../VoteSummary'
 import VoteStatus from '../VoteStatus'
 import ProgressBarThick from '../ProgressBarThick'
 import Slider from '../Slider'
 
 class VotePanelContent extends React.Component {
   static propTypes = {
-    app: PropTypes.object, // TODO: isRequired?
-    network: PropTypes.object,
+    app: PropTypes.object.isRequired,
+    minParticipationPct: PropTypes.number.isRequired,
+    network: PropTypes.object.isRequired,
+    onVote: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired,
+    tokenContract: PropTypes.string.isRequired,
+    vote: PropTypes.shape({ voteId: PropTypes.string.isRequired }).isRequired,
   }
   state = {
     userCanVote: false,
@@ -54,12 +58,12 @@ class VotePanelContent extends React.Component {
     let optionsArray = []
 
     this.state.voteOptions.forEach(element => {
-      let voteWeight = element.sliderValue
+      const voteWeight = element.sliderValue
         ? Math.round(
-          parseFloat(
-            (element.sliderValue * this.state.userBalance).toFixed(2)
+            parseFloat(
+              (element.sliderValue * this.state.userBalance).toFixed(2)
+            )
           )
-        )
         : 0
       optionsArray.push(voteWeight)
     })
@@ -68,20 +72,20 @@ class VotePanelContent extends React.Component {
     const valueTotal = optionsArray.reduce((a, b) => a + b, 0)
     valueTotal > parseInt(this.state.userBalance)
       ? (optionsArray = optionsArray.map(
-        tokenSupport =>
-          (tokenSupport / valueTotal) *
+          tokenSupport =>
+            (tokenSupport / valueTotal) *
             (parseInt(this.state.userBalance) * 0.9999)
-      ))
+        ))
       : 0
     // TODO: Let these comments here for a while to be sure we are working with correct values:
-    console.log('Sum of values:', valueTotal)
-    console.log('userBalance', this.state.userBalance)
-    console.log(
-      'onVote voteId:',
-      this.props.vote.voteId,
-      'optionsArray',
-      optionsArray
-    )
+    // console.log('Sum of values:', valueTotal)
+    // console.log('userBalance', this.state.userBalance)
+    // console.log(
+    //   'onVote voteId:',
+    //   this.props.vote.voteId,
+    //   'optionsArray',
+    //   optionsArray
+    // )
     this.props.onVote(this.props.vote.voteId, optionsArray)
   }
   executeVote = () => {
@@ -92,7 +96,7 @@ class VotePanelContent extends React.Component {
     if (tokenContract && user) {
       combineLatest(tokenContract.balanceOf(user), tokenContract.decimals())
         .first()
-        .subscribe(([ balance, decimals ]) => {
+        .subscribe(([balance, decimals]) => {
           this.setState({
             userBalance: balance,
             decimals: decimals,
@@ -136,7 +140,10 @@ class VotePanelContent extends React.Component {
       0
     )
     if (total <= 100) {
-      this.state.voteOptions[idx].sliderValue = value
+      const sliderToUpdate = this.state.voteOptions[idx]
+      this.setState({
+        [sliderToUpdate]: { ...sliderToUpdate, sliderValue: value },
+      })
       this.setState({ remaining: 100 - total })
     }
   }
@@ -146,7 +153,7 @@ class VotePanelContent extends React.Component {
       .call('getVoterState', this.props.vote.voteId, this.props.user)
       .toPromise()
 
-    // TODO: Bignumber.js vs >8.2 supports .sum function to initialize from a sum of bignumbers, replace when updating
+    // TODO: Bignumber.js vs >8.2 supports .sum function to initialize from a sum of big numbers, replace when updating
     const totalVotesCount = result.reduce(
       (acc, vote) => acc.plus(vote),
       new BigNumber(0)
@@ -170,10 +177,10 @@ class VotePanelContent extends React.Component {
   }
 
   render() {
-    const { network, vote, ready, minParticipationPct } = this.props
+    const { network, vote, /*ready,*/ minParticipationPct } = this.props
     const {
-      userBalance,
-      userCanVote,
+      // userBalance,
+      // userCanVote,
       showResults,
       voteOptions,
       remaining,
@@ -186,15 +193,15 @@ class VotePanelContent extends React.Component {
       return null
     }
 
-    const { endDate, open, quorum, support } = vote
+    const { endDate, open, /*quorum,*/ support } = vote
     const {
       participationPct,
-      canExecute,
+      // canExecute,
       creator,
-      metadata,
+      // metadata,
       totalVoters,
       description,
-      candidates,
+      // candidates,
       options,
       type,
     } = vote.data
@@ -208,8 +215,8 @@ class VotePanelContent extends React.Component {
       2
     )
     // TODO: This block is wrong and has no sense
-    if (!voteOptions.length) {
-      this.state.voteOptions = options
+    if (!voteOptions.length > 0) {
+      this.setState({ voteOptions: options })
     }
 
     let totalSupport = 0
@@ -468,13 +475,13 @@ const SliderAndValueContainer = styled.div`
   align-items: center;
 `
 
-const SliderContainer = styled.div`
-  width: 320px;
-  & > :nth-child(2) {
-    padding: 0;
-    padding-right: 17px;
-  }
-`
+// const SliderContainer = styled.div`
+//   width: 320px;
+//   & > :nth-child(2) {
+//     padding: 0;
+//     padding-right: 17px;
+//   }
+// `
 
 const SubmitButton = styled(Button)`
   margin: 1rem 0;
@@ -498,27 +505,27 @@ const Part = styled.div`
   }
 `
 
-const Question = styled.p`
-  max-width: 100%;
-  overflow: hidden;
-  word-break: break-all;
-  hyphens: auto;
-`
+// const Question = styled.p`
+//   max-width: 100%;
+//   overflow: hidden;
+//   word-break: break-all;
+//   hyphens: auto;
+// `
 
 const Creator = styled.div`
   display: flex;
   align-items: center;
 `
 
-const VotingButtons = styled.div`
-  display: flex;
-  padding: 30px 0 20px;
-  & > * {
-    width: 50%;
-    &:first-child {
-      margin-right: 10px;
-    }
-  }
-`
+// const VotingButtons = styled.div`
+//   display: flex;
+//   padding: 30px 0 20px;
+//   & > * {
+//     width: 50%;
+//     &:first-child {
+//       margin-right: 10px;
+//     }
+//   }
+// `
 
 export default provideNetwork(VotePanelContent)

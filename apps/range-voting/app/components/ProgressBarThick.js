@@ -1,30 +1,27 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
+// import { Motion, spring } from 'react-motion'
 import { Text, theme } from '@aragon/ui'
 
 const ProgressBar = ({ progress, label }) => (
-  <Motion defaultStyle={{ progress: 0 }} style={{ progress: spring(progress) }}>
-    {({ progress }) => (
-      <Main>
-        <Label>{label}</Label>
-        <Base>
-          <Progress
-            color={theme.accent}
-            style={{ width: `${progress * 100}%` }}
-          />
-          <Text
-            size="xsmall"
-            color={theme.textSecondary}
-            style={{ paddingRight: '4px' }}
-          >
-            {Math.round(progress * 100)}%
-          </Text>
-        </Base>
-      </Main>
-    )}
-  </Motion>
+  // <Motion defaultStyle={{ progress: 0 }} style={{ progress: spring(progress) }}>
+  //   {({ progress }) => (
+  <Main>
+    <Label>{label}</Label>
+    <Base>
+      <Progress color={theme.accent} style={{ width: `${progress * 100}%` }} />
+      <Text
+        size="xsmall"
+        color={theme.textSecondary}
+        style={{ paddingRight: '4px' }}
+      >
+        {Math.round(progress * 100)}%
+      </Text>
+    </Base>
+  </Main>
+  //   )}
+  // </Motion>
 )
 
 ProgressBar.defaultProps = {
@@ -32,8 +29,8 @@ ProgressBar.defaultProps = {
 }
 
 ProgressBar.propTypes = {
-  // type: PropTypes.oneOf(['positive', 'negative']).isRequired,
-  type: PropTypes.oneOf([ 'positive', 'negative' ]),
+  label: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['positive', 'negative']).isRequired,
   progress: PropTypes.number,
 }
 

@@ -13,7 +13,7 @@
  * @param {Number} istop        Upper bound of the value's current range
  * @param {Number} ostart       Lower bound of the value's target range
  * @param {Number} ostop        Upper bound of the value's target range
- * @returns {Number}
+ * @returns {Number} the result of the operation
  */
 export function map(value, istart, istop, ostart, ostop) {
   return ostart + (ostop - ostart) * ((value - istart) / (istop - istart))
@@ -31,7 +31,7 @@ export function map(value, istart, istop, ostart, ostop) {
  * @param {Number} aNumber    The incoming value to be converted
  * @param {Number} low        Lower bound of the value's current range
  * @param {Number} high       Upper bound of the value's current range
- * @returns {Number}
+ * @returns {Number} the result of the normalization
  */
 export function norm(aNumber, low, high) {
   return (aNumber - low) / (high - low)
@@ -49,7 +49,7 @@ export function norm(aNumber, low, high) {
  * @param {Number} progress     between 0.0 and 1.0
  * @param {Number} value1       first value
  * @param {Number} value2       second value
- * @returns {Number}
+ * @returns {Number} result of the operation
  */
 export function lerp(progress, value1, value2) {
   return (value2 - value1) * progress + value1
@@ -60,10 +60,10 @@ export function lerp(progress, value1, value2) {
  *
  * From Processing.js
  *
- * @param {Number} value   the value to constrain
- * @param {Number} value   minimum limit
- * @param {Number} value   maximum limit
- * @returns {Number}
+ * @param {Number} aNumber   the value to constrain
+ * @param {Number} aMin   minimum limit
+ * @param {Number} aMax   maximum limit
+ * @returns {Number} result of the operation
  */
 export function clamp(aNumber, aMin, aMax) {
   return aNumber > aMax ? aMax : aNumber < aMin ? aMin : aNumber
@@ -77,7 +77,7 @@ export function clamp(aNumber, aMin, aMax) {
  *
  * @param {Number} min    The minimum number (included)
  * @param {Number} max    The maximum number (excluded)
- * @returns {Number}
+ * @returns {Number} the random integer obtained
  */
 export function randomInt(min, max) {
   min = Math.ceil(min)
@@ -92,7 +92,7 @@ export function randomInt(min, max) {
  *
  * @param {Number} min The minimum number (included)
  * @param {Number} max The maximum number (excluded)
- * @returns {Number}
+ * @returns {Number} The result of the division or zero if NaN
  */
 export function random(min = 0, max = 1) {
   return Math.floor(Math.random() * (max - min)) + min
@@ -102,4 +102,3 @@ export function random(min = 0, max = 1) {
 export function safeDiv(num, denom) {
   return denom ? num / denom : 0
 }
-

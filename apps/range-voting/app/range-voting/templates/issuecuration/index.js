@@ -3,7 +3,7 @@ import ConfigureVotingConditions from './ConfigureVotingConditions'
 import ConfigureVotingDefaults from './ConfigureVotingDefaults'
 import icon from './assets/icon.svg'
 
-const isIntegerString = value => /^[0-9]*$/.test(value)
+const isIntegerString = value => /^\d*$/.test(value)
 
 const template = {
   name: 'issuecuration',
@@ -67,7 +67,7 @@ const template = {
         // needs adding
         return true
       },
-      Component: ConfigureVotingName
+      Component: ConfigureVotingName,
     },
     {
       screen: 'voting-conditions',
@@ -75,7 +75,7 @@ const template = {
         // needs adding
         return true
       },
-      Component: ConfigureVotingConditions
+      Component: ConfigureVotingConditions,
     },
     {
       screen: 'voting-defaults',
@@ -94,11 +94,7 @@ const template = {
       Component: ConfigureVotingDefaults,
     },
   ],
-  prepareData: ({
-    support,
-    minQuorum,
-    voteDuration,
-  }) => {
+  prepareData: ({ support, minQuorum, voteDuration }) => {
     return {
       supportNeeded: support / 100,
       minAcceptanceQuorum: minQuorum / 100,
@@ -108,4 +104,3 @@ const template = {
 }
 
 export default template
-

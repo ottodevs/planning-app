@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { Field, TextInput, Text, theme } from '@aragon/ui'
@@ -5,6 +6,23 @@ import { lerp } from '../../../utils/math-utils'
 import { noop } from '../../../utils/utils'
 
 class ConfigureVotingName extends React.Component {
+  static propTypes = {
+    fields: PropTypes.object.isRequired,
+    positionProgress: PropTypes.number.isRequired,
+    onFieldUpdate: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    warm: PropTypes.bool.isRequired,
+  }
+
+  static propTypes = {
+    active: PropTypes.bool.isRequired,
+    description: PropTypes.string.isRequired,
+    icon: PropTypes.object.isRequired,
+    label: PropTypes.string.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    template: PropTypes.object.isRequired,
+  }
+
   static defaultProps = {
     warm: false,
     positionProgress: 0,
@@ -64,6 +82,15 @@ class ConfigureVotingName extends React.Component {
 }
 
 class ConfigureVotingDefaultsContent extends React.PureComponent {
+  static propTypes = {
+    fields: PropTypes.object.isRequired,
+    handleSupportChange: PropTypes.func.isRequired,
+    handleMinQuorumChange: PropTypes.func.isRequired,
+    handleVoteDurationChange: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    formRef: PropTypes.object.isRequired,
+  }
+
   render() {
     const {
       fields,
@@ -121,6 +148,11 @@ const SubmitForm = ({ children, ref = noop, ...props }) => (
   </form>
 )
 
+SubmitForm.propTypes = {
+  children: PropTypes.node.isRequired,
+  ref: PropTypes.object,
+}
+
 const Main = styled.div`
   display: flex;
   align-items: flex-start;
@@ -168,7 +200,7 @@ Fields.Field = styled(Field)`
   & + & {
     margin-left: 55px;
   }
-  &:after {
+  &::after {
     position: absolute;
     bottom: 6px;
     left: 100px;
@@ -176,12 +208,12 @@ Fields.Field = styled(Field)`
   }
 `
 Fields.PercentageField = styled(Fields.Field)`
-  &:after {
+  &::after {
     content: '%';
   }
 `
 Fields.HoursField = styled(Fields.Field)`
-  &:after {
+  &::after {
     content: 'H';
   }
 `

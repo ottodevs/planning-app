@@ -1,9 +1,15 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { BadgeNumber, colors } from '@aragon/ui'
 import VotesTable from '../components/VotesTable'
 
 class Votes extends React.Component {
+  static propTypes = {
+    onSelectVote: PropTypes.func.isRequired,
+    votes: PropTypes.array.isRequired,
+  }
+
   render() {
     const { votes, onSelectVote } = this.props
     const openedVotes = votes.filter(({ open }) => open)

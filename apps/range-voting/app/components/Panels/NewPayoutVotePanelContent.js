@@ -15,7 +15,7 @@ const { accent, textSecondary, textTertiary } = theme
 const initialState = {
   description: '',
   votingTokens: null,
-  options: [ 'Mars', 'The Moon' ],
+  options: ['Mars', 'The Moon'],
   optionInputText: '',
 }
 
@@ -35,15 +35,15 @@ class NewPayoutVotePanel extends Component {
     optionInputText &&
       !options.includes(optionInputText) &&
       this.setState(({ options, optionInputText }) => ({
-        options: [ ...options, optionInputText ],
+        options: [...options, optionInputText],
         optionInputText: '',
       }))
   }
 
   handleRemoveOption = option => {
-    let index = this.state.options.indexOf(option)
+    const index = this.state.options.indexOf(option)
     this.setState(({ options }) => ({
-      options: [ ...options.slice(0, index), ...options.slice(index + 1) ],
+      options: [...options.slice(0, index), ...options.slice(index + 1)],
     }))
   }
 
@@ -94,6 +94,21 @@ class NewPayoutVotePanel extends Component {
 const StyledPanel = styled.div`
   display: flex;
   flex-direction: column;
+  & > :nth-child(5) {
+    & input {
+      width: calc(100% - 38px);
+      margin-bottom: 10px;
+    }
+    & > :last-child > svg {
+      cursor: pointer;
+      margin-left: 3px;
+      margin-top: -3px;
+      height: auto;
+      width: 35px;
+      color: ${textSecondary};
+      vertical-align: middle;
+    }
+  }
   & > :not(:first-child):not(:last-child) {
     margin-bottom: 1.2rem;
     & span:first-of-type {
@@ -114,21 +129,6 @@ const StyledPanel = styled.div`
     & textarea {
       overflow: auto;
       resize: none;
-    }
-  }
-  & > :nth-child(5) {
-    & input {
-      width: calc(100% - 38px);
-      margin-bottom: 10px;
-    }
-    & > :last-child > svg {
-      cursor: pointer;
-      margin-left: 3px;
-      margin-top: -3px;
-      height: auto;
-      width: 35px;
-      color: ${textSecondary};
-      vertical-align: middle;
     }
   }
 `

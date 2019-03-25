@@ -1,16 +1,26 @@
-import React from '../../../../../../.cache/typescript/2.9/node_modules/@types/react'
-import styled from '../../../allocations/node_modules/styled-components'
-import { theme, Text, Button } from '../../../allocations/node_modules/@aragon/ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import styled from 'styled-components'
+import { theme, Text, Button } from '@aragon/ui'
 import { lerp } from '../utils/math-utils'
 import { Main, Content, Title } from '../style'
-import { BigNumber } from 'bignumber.js'
-import { addTool } from '../stores/AllocationStore'
 
 import imgPending from '../assets/transaction-pending.svg'
 import imgSuccess from '../assets/transaction-success.svg'
 import imgError from '../assets/transaction-error.svg'
 
 class Launch extends React.Component {
+  static propTypes = {
+    active: PropTypes.number.isRequired,
+    // addTool: PropTypes.func.isRequired,
+    app: PropTypes.object.isRequired,
+    configurationData: PropTypes.object.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    onTryAgain: PropTypes.func.isRequired,
+    positionProgress: PropTypes.number.isRequired,
+    warm: PropTypes.object.isRequired,
+  }
+
   static defaultProps = {
     warm: false,
     positionProgress: 0,
@@ -26,44 +36,38 @@ class Launch extends React.Component {
     const { active, app, configurationData } = nextProps
     // Hacky way to only initialize once
     if (active && !this.state.active) {
-      this.state.active = true
-      app.initialize(
-        '0xffffffffffffffffffffffffffffffffffffffff',
-        configurationData.supportNeeded * 10**16,
-        configurationData.minAcceptanceQuorum * 10**16,
-        configurationData.voteDuration * 60 * 60,
-      ).subscribe(
-        (data) => {
+      this.setState({ active: true })
+      app
+        .initialize(
+          '0xffffffffffffffffffffffffffffffffffffffff',
+          configurationData.supportNeeded * 10 ** 16,
+          configurationData.minAcceptanceQuorum * 10 ** 16,
+          configurationData.voteDuration * 60 * 60
+        )
+        .subscribe(data => {
           if (data) {
             this.setState({ contractCreationStatus: 'success' })
-            addTool({
-              label: 'Monthly Reward DAO',
-              description: 'Allocate our monthly reward DAO accross four circles: Governance, Dapp, Social Coding, and Comms',
-              address: '0x45f3...5567',
-              stats: [
-                { label: 'BALANCE', value: '10 ETH' },
-                { label: 'BUDGET', value: '5 ETH / Month' }
-              ]
-            })
+            // addTool({
+            //   label: 'Monthly Reward DAO',
+            //   description:
+            //     'Allocate our monthly reward DAO across four circles: Governance, Dapp, Social Coding, and Comms',
+            //   address: '0x45f3...5567',
+            //   stats: [
+            //     { label: 'BALANCE', value: '10 ETH' },
+            //     { label: 'BUDGET', value: '5 ETH / Month' },
+            //   ],
+            // })
           } else {
             this.setState({ contractCreationStatus: 'error' })
           }
-        }
-      )
+        })
     }
   }
   handleTemplateSelect = template => {
     this.props.onSelect(template)
   }
   render() {
-    const {
-      active,
-      app,
-      configurationData,
-      positionProgress,
-      warm,
-      onTryAgain,
-    } = this.props
+    const { positionProgress, warm, onTryAgain } = this.props
     const { contractCreationStatus } = this.state
 
     return (
@@ -86,8 +90,13 @@ class Launch extends React.Component {
 }
 
 class SignContent extends React.PureComponent {
+  static propTypes = {
+    contractCreationStatus: PropTypes.string.isRequired,
+    onTryAgain: PropTypes.func.isRequired,
+  }
+
   render() {
-    const { contractCreationStatus, onTryAgain, app } = this.props
+    const { contractCreationStatus, onTryAgain } = this.props
 
     return (
       <React.Fragment>
@@ -99,7 +108,8 @@ class SignContent extends React.PureComponent {
 
         <p>
           <Text size="large" color={theme.textSecondary}>
-            Your wallet should open and you need to sign the transaction to initialize range voting.
+            Your wallet should open and you need to sign the transaction to
+            initialize range voting.
           </Text>
         </p>
 
@@ -228,4 +238,3 @@ const TryAgain = styled.div`
 `
 
 export default Launch
-

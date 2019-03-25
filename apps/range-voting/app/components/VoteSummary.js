@@ -1,12 +1,13 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { SidePanel, Text, theme, spring as springConf } from '@aragon/ui'
+// import { Motion, spring } from 'react-motion'
+import { /*SidePanel,*/ Text, theme /*spring as springConf*/ } from '@aragon/ui'
 import { safeDiv } from '../utils/math-utils'
 
-const { PANEL_INNER_WIDTH } = SidePanel
+// const { PANEL_INNER_WIDTH } = SidePanel
 
-const fast = springConf('fast')
+// const fast = springConf('fast')
 
 // consider using:
 // https://www.npmjs.com/package/color-scheme
@@ -17,22 +18,22 @@ const VoteSummary = ({
   quorum,
   quorumProgress,
   support,
-  ready
+  // ready,
 }) => {
-  var totalVotes = 0
+  let totalVotes = 0
 
-  for (var k in candidates) {
-    console.log('k: ' + k + ', v: ' + candidates[k])
+  for (const k in candidates) {
+    // console.log('k: ' + k + ', v: ' + candidates[k])
     totalVotes += candidates[k]
   }
 
-  var bars = []
-  var items = []
+  const bars = []
+  const items = []
 
   //  uint256 public candidateSupportPct; voting power
   //  uint256 public minParticipationPct; voters
 
-  for (k in candidates) {
+  for (const k in candidates) {
     const votesPct = safeDiv(candidates[k], tokenSupply)
     const votesVotersPct = safeDiv(candidates[k], totalVotes)
 
@@ -40,7 +41,7 @@ const VoteSummary = ({
       <Votes
         color={theme.accept}
         style={{
-          transform: `scaleX(${votesPct * 10})`
+          transform: `scaleX(${votesPct * 10})`,
         }}
       />
     )
@@ -59,38 +60,47 @@ const VoteSummary = ({
   }
 
   return (
-    <Motion
-      defaultStyle={{ progress: 0 }}
-      style={{ progress: spring(Number(ready), fast) }}
-    >
-      {({ progress }) => (
-        <Main>
-          <Header>
-            <span>
-              <Label>
-                Quorum: <strong>{Math.round(quorumProgress * 100)}%</strong>{' '}
-              </Label>
-              <Text size="xsmall" color={theme.textSecondary}>
-                ({Math.round(quorum * 100)}% needed)
-              </Text>
-            </span>
-          </Header>
-          <BarWrapper>
-            <QuorumBar
-              style={{
-                transform: `
-                translateX(${PANEL_INNER_WIDTH * quorum * progress}px)
-                scaleY(${quorum ? progress : 0})
-              `
-              }}
-            />
-            <Bar>{bars}</Bar>
-          </BarWrapper>
-          {items}
-        </Main>
-      )}
-    </Motion>
+    // <Motion
+    //   defaultStyle={{ progress: 0 }}
+    //   style={{ progress: spring(Number(ready), fast) }}
+    // >
+    //   {({ progress }) => (
+    <Main>
+      <Header>
+        <span>
+          <Label>
+            Quorum: <strong>{Math.round(quorumProgress * 100)}%</strong>{' '}
+          </Label>
+          <Text size="xsmall" color={theme.textSecondary}>
+            ({Math.round(quorum * 100)}% needed)
+          </Text>
+        </span>
+      </Header>
+      <BarWrapper>
+        <QuorumBar
+        // style={{
+        //   transform: `
+        //       translateX(${PANEL_INNER_WIDTH * quorum * progress}px)
+        //       scaleY(${quorum ? progress : 0})
+        //     `,
+        // }}
+        />
+        <Bar>{bars}</Bar>
+      </BarWrapper>
+      {items}
+    </Main>
+    //   )}
+    // </Motion>
   )
+}
+
+VoteSummary.propTypes = {
+  candidates: PropTypes.array.isRequired,
+  tokenSupply: PropTypes.number.isRequired,
+  quorum: PropTypes.number.isRequired,
+  quorumProgress: PropTypes.number.isRequired,
+  support: PropTypes.number.isRequired,
+  ready: PropTypes.bool.isRequired,
 }
 
 const Main = styled.div`
@@ -104,7 +114,7 @@ const Header = styled.h2`
 
 const Label = styled(Text).attrs({
   smallcaps: true,
-  color: theme.textSecondary
+  color: theme.textSecondary,
 })`
   strong {
     color: ${theme.text};
@@ -155,7 +165,7 @@ const Candidate = styled.div`
   &:first-child {
     margin-bottom: 10px;
   }
-  &:before {
+  &::before {
     content: '';
     display: block;
     width: 10px;
@@ -165,7 +175,7 @@ const Candidate = styled.div`
     background: ${({ color }) => color};
   }
   span:first-child {
-    //width: 35px;
+    /* width: 35px; */
     color: ${theme.textSecondary};
   }
   span:last-child {

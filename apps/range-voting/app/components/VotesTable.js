@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { compareDesc } from 'date-fns'
 import { Table, TableHeader, TableRow } from '@aragon/ui'
@@ -28,5 +29,11 @@ const VotesTable = ({ votes, opened, onSelectVote }) => (
       ))}
   </Table>
 )
+
+VotesTable.propTypes = {
+  onSelectVote: PropTypes.func.isRequired,
+  opened: PropTypes.bool.isRequired,
+  votes: PropTypes.array.isRequired,
+}
 
 export default VotesTable

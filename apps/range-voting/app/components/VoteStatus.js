@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { theme, IconTime, IconCross, IconCheck } from '@aragon/ui'
@@ -35,6 +36,10 @@ const VoteStatus = ({ vote: { data, support, quorum } }) => {
       <StatusLabel>{label}</StatusLabel>
     </Main>
   )
+}
+
+VoteStatus.propTypes = {
+  vote: PropTypes.shape({ data: PropTypes.object.isRequired }).isRequired,
 }
 
 const Main = styled.span`

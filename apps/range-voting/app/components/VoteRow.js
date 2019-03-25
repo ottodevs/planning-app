@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import {
-  Button,
+  // Button,
   Countdown,
   TableCell,
   TableRow,
@@ -11,7 +12,7 @@ import {
 import ProgressBar from './ProgressBar'
 import VoteStatus from './VoteStatus'
 import { safeDiv } from '../utils/math-utils'
-import BigNumber from 'bignumber.js'
+// import BigNumber from 'bignumber.js'
 
 const generateBadge = (foreground, background, text) => (
   <Badge foreground={foreground} background={background}>
@@ -20,6 +21,11 @@ const generateBadge = (foreground, background, text) => (
 )
 
 class VoteRow extends React.Component {
+  static propTypes = {
+    onSelectVote: PropTypes.func.isRequired,
+    vote: PropTypes.shape({ voteId: PropTypes.string.isRequired }).isRequired,
+  }
+
   static defaultProps = {
     onSelectVote: () => {},
   }
@@ -38,7 +44,7 @@ class VoteRow extends React.Component {
     const {
       metadata: question,
       description,
-      candidates,
+      // candidates,
       options,
       participationPct,
       type,
@@ -137,9 +143,9 @@ const BarsCell = styled(Cell)`
   cursor: auto;
 `
 
-const ActionsCell = styled(Cell)`
-  width: 0;
-`
+// const ActionsCell = styled(Cell)`
+//   width: 0;
+// `
 
 const QuestionWrapper = styled.p`
   margin-right: 20px;
@@ -149,6 +155,7 @@ const QuestionWrapper = styled.p`
 const DescriptionWrapper = styled.p`
   margin-right: 20px;
 
+  /* stylelint-disable-next-line declaration-block-semicolon-newline-after */
   ${QuestionWrapper} + & {
     margin-top: 10px;
   }

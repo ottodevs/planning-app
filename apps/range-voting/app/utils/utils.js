@@ -1,3 +1,4 @@
+/* global process */
 // Stealing this from recompose / etc for now
 export function compose(...funcs) {
   if (funcs.length === 0) {
@@ -29,8 +30,8 @@ export function removeTrailingSlash(str) {
   return str.replace(/\/+$/, '')
 }
 
-export function log(...params) {
+export function log(/*...params*/) {
   if (process.env.NODE_ENV !== 'production') {
-    console.log(...params)
+    // console.log(...params)
   }
 }

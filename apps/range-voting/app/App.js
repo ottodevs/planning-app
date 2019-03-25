@@ -1,17 +1,18 @@
+/* global module */
+import PropTypes from 'prop-types'
 import React from 'react'
 import { hot } from 'react-hot-loader'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
+// import styled from 'styled-components'
 
 import {
   AragonApp,
   AppBar,
-  Button,
+  // Button,
   Root,
   SidePanel,
-  IconAdd,
+  // IconAdd,
   observe,
-  theme,
+  // theme,
   ToastHub,
 } from '@aragon/ui'
 import AppLayout from './components/AppLayout'
@@ -31,6 +32,12 @@ const initialState = {
 class App extends React.Component {
   static propTypes = {
     app: PropTypes.object.isRequired,
+    network: PropTypes.object.isRequired,
+    votes: PropTypes.array.isRequired,
+    voteTime: PropTypes.object.isRequired,
+    minParticipationPct: PropTypes.number.isRequired,
+    tokenAddress: PropTypes.string.isRequired,
+    userAccount: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
@@ -76,27 +83,27 @@ class App extends React.Component {
   }
 
   render() {
-    const barButton = (
-      <DropDownButton>
-        <Button Button mode="strong">
-          Actions
-        </Button>
-        <DropDownContent>
-          <DropDownItem>
-            <CloseIcon />
-            New Payout Engine
-          </DropDownItem>
-          <DropDownItem>
-            <CloseIcon />
-            New Issue Curation
-          </DropDownItem>
-          <DropDownItem>
-            <CloseIcon />
-            New Budget Engine
-          </DropDownItem>
-        </DropDownContent>
-      </DropDownButton>
-    )
+    // const barButton = (
+    //   <DropDownButton>
+    //     <Button Button mode="strong">
+    //       Actions
+    //     </Button>
+    //     <DropDownContent>
+    //       <DropDownItem>
+    //         <CloseIcon />
+    //         New Payout Engine
+    //       </DropDownItem>
+    //       <DropDownItem>
+    //         <CloseIcon />
+    //         New Issue Curation
+    //       </DropDownItem>
+    //       <DropDownItem>
+    //         <CloseIcon />
+    //         New Budget Engine
+    //       </DropDownItem>
+    //     </DropDownContent>
+    //   </DropDownButton>
+    // )
 
     return (
       <Root.Provider>
@@ -143,39 +150,39 @@ class App extends React.Component {
   }
 }
 
-const DropDownContent = styled.div`
-  display: none;
-  position: absolute;
-  background-color: ${theme.contentBackground};
-  border: 1px solid · ${theme.contentBorder};
-  box-shadow: 0 4px 4px 0 ${theme.shadow};
-  border-radius: 3px;
-  padding: 0.5rem 0;
-  z-index: 1;
-  margin-left: -8rem;
-  white-space: nowrap;
-`
-const DropDownItem = styled.div`
-  padding: 0.5rem 1rem;
-  display: flex;
-  &:hover {
-    color: ${theme.mainBgGradientStart};
-    cursor: pointer;
-  }
-`
+// const DropDownContent = styled.div`
+//   display: none;
+//   position: absolute;
+//   background-color: ${theme.contentBackground};
+//   border: 1px solid · ${theme.contentBorder};
+//   box-shadow: 0 4px 4px 0 ${theme.shadow};
+//   border-radius: 3px;
+//   padding: 0.5rem 0;
+//   z-index: 1;
+//   margin-left: -8rem;
+//   white-space: nowrap;
+// `
+// const DropDownItem = styled.div`
+//   padding: 0.5rem 1rem;
+//   display: flex;
+//   &:hover {
+//     color: ${theme.mainBgGradientStart};
+//     cursor: pointer;
+//   }
+// `
 
-const DropDownButton = styled.div`
-  position: relative;
-  display: inline-block;
-  &:hover ${DropDownContent} {
-    display: block;
-  }
-`
+// const DropDownButton = styled.div`
+//   position: relative;
+//   display: inline-block;
+//   &:hover ${DropDownContent} {
+//     display: block;
+//   }
+// `
 
-const CloseIcon = styled(IconAdd)`
-  color: ${theme.textSecondary};
-  margin-right: 0.5rem;
-`
+// const CloseIcon = styled(IconAdd)`
+//   color: ${theme.textSecondary};
+//   margin-right: 0.5rem;
+// `
 
 export default observe(
   observable => observable.map(state => ({ ...state })),

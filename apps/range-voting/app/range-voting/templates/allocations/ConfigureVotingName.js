@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { Field, TextInput } from '@aragon/ui'
@@ -6,6 +7,14 @@ import { lerp } from '../../../utils/math-utils'
 import { noop } from '../../../utils/utils'
 
 class ConfigureVotingName extends React.Component {
+  static propTypes = {
+    fields: PropTypes.object.isRequired,
+    positionProgress: PropTypes.number.isRequired,
+    onFieldUpdate: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    warm: PropTypes.bool.isRequired,
+  }
+
   static defaultProps = {
     warm: false,
     positionProgress: 0,
@@ -63,6 +72,14 @@ class ConfigureVotingName extends React.Component {
 }
 
 class ConfigureVotingNameContent extends React.PureComponent {
+  static propTypes = {
+    fields: PropTypes.object.isRequired,
+    handleNameChange: PropTypes.func.isRequired,
+    handleDescriptionChange: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    formRef: PropTypes.object.isRequired,
+  }
+
   render() {
     const {
       fields,
@@ -112,6 +129,11 @@ const SubmitForm = ({ children, ref = noop, ...props }) => (
   </form>
 )
 
+SubmitForm.propTypes = {
+  children: PropTypes.node.isRequired,
+  ref: PropTypes.object,
+}
+
 const StepContainer = styled.div`
   display: flex;
   align-items: flex-start;
@@ -122,14 +144,13 @@ const StepContainer = styled.div`
 
 const Fields = styled.div`
   justify-content: center;
-  margin-top: 40px;
   width: 80%;
-  margin: auto;
+  margin: 40px auto auto auto;
 `
 
 Fields.Field = styled(Field)`
   position: relative;
-  &:after {
+  &::after {
     position: absolute;
     bottom: 6px;
     left: 100px;

@@ -1,13 +1,22 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { spring as springConf, Text } from '@aragon/ui'
+// import { Motion, spring } from 'react-motion'
+import { /*spring as springConf,*/ Text } from '@aragon/ui'
 import * as Steps from '../range-voting/steps'
-import { lerp } from '../utils/math-utils'
+// import { lerp } from '../utils/math-utils'
 
 const STEPS_COUNT = Steps.ProgressBarGroups.length
 
 class ProgressBar extends React.Component {
+  static propTypes = {
+    activeGroup: PropTypes.number.isRequired,
+    // description: PropTypes.string.isRequired,
+    // icon: PropTypes.object.isRequired,
+    // onSelect: PropTypes.func.isRequired,
+    // template: PropTypes.object.isRequired,
+  }
+
   static defaultProps = {
     activeGroup: Steps.ProgressBarGroups[0].group,
   }
@@ -17,56 +26,61 @@ class ProgressBar extends React.Component {
     )
   }
   render() {
-    const stepIndex = this.currentStepIndex()
-    const visible = stepIndex > -1
+    // const stepIndex = this.currentStepIndex()
+    // const visible = stepIndex > -1
 
     return (
-      <Motion
-        style={{
-          showProgress: spring(Number(visible), springConf('fast')),
-          stepProgress:
-            stepIndex > 0 ? spring(stepIndex, springConf('fast')) : 0,
-        }}
+      // <Motion
+      //   style={{
+      //     showProgress: spring(Number(visible), springConf('fast')),
+      //     stepProgress:
+      //       stepIndex > 0 ? spring(stepIndex, springConf('fast')) : 0,
+      //   }}
+      // >
+      //   {({ showProgress, stepProgress }) => (
+      <Main
+      // style={{
+      //   pointerEvents: visible ? 'auto' : 'none',
+      //   transform: `translateY(${lerp(showProgress, -40, 0)}px)`,
+      //   opacity: showProgress,
+      // }}
       >
-        {({ showProgress, stepProgress }) => (
-          <Main
-            style={{
-              pointerEvents: visible ? 'auto' : 'none',
-              transform: `translateY(${lerp(showProgress, -40, 0)}px)`,
-              opacity: showProgress,
-            }}
-          >
-            <Progress>
-              <Line />
-              <Line
-                style={{
-                  transform: `scaleX(
-                    ${Math.max(0, stepProgress) / (STEPS_COUNT - 1)}
-                  )`,
-                }}
-                active
+        <Progress>
+          <Line />
+          <Line
+            // style={{
+            //   transform: `scaleX(
+            //         ${Math.max(0, stepProgress) / (STEPS_COUNT - 1)}
+            //       )`,
+            // }}
+            active
+          />
+          <StepsContainer>
+            {Steps.ProgressBarGroups.map(({ label }, index) => (
+              <StepWrapper
+                key={index}
+                label={label}
+                // active={
+                //   stepIndex >= index ||
+                //   Math.floor(stepProgress + 0.05) >= index + 1
+                // }
               />
-              <StepsContainer>
-                {Steps.ProgressBarGroups.map(({ label }, index) => (
-                  <StepWrapper
-                    key={index}
-                    label={label}
-                    active={
-                      stepIndex >= index ||
-                      Math.floor(stepProgress + 0.05) >= index + 1
-                    }
-                  />
-                ))}
-              </StepsContainer>
-            </Progress>
-          </Main>
-        )}
-      </Motion>
+            ))}
+          </StepsContainer>
+        </Progress>
+      </Main>
+      //   )}
+      // </Motion>
     )
   }
 }
 
 class StepWrapper extends React.PureComponent {
+  static propTypes = {
+    active: PropTypes.number.isRequired,
+    label: PropTypes.string.isRequired,
+  }
+
   render() {
     const { label, active } = this.props
     return (

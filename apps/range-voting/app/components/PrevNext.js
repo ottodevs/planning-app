@@ -1,52 +1,73 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { spring as springConf, Button } from '@aragon/ui'
-import { lerp } from '../utils/math-utils'
+// import { Motion, spring } from 'react-motion'
+import { /* spring as springConf,*/ Button } from '@aragon/ui'
+// import { lerp } from '../utils/math-utils'
 
 class PrevNext extends React.Component {
+  static propTypes = {
+    enableNext: PropTypes.func.isRequired,
+    enablePrev: PropTypes.func.isRequired,
+    isLaunchingNext: PropTypes.bool.isRequired,
+    onNext: PropTypes.func.isRequired,
+    onPrev: PropTypes.func.isRequired,
+    // direction: PropTypes.func.isRequired,
+    // visible: PropTypes.func.isRequired,
+  }
+
   render() {
     const {
       onPrev,
       onNext,
       enablePrev,
       enableNext,
-      visible,
-      direction,
+      // visible,
+      // direction,
       isLaunchingNext,
     } = this.props
     return (
-      <Motion
-        style={{
-          showProgress: spring(Number(visible), springConf('fast')),
-        }}
+      // <Motion
+      //   style={{
+      //     showProgress: spring(Number(visible), springConf('fast')),
+      //   }}
+      // >
+      //   {({ showProgress }) => (
+      <Main
+      // style={{
+      //   pointerEvents: visible ? 'auto' : 'none',
+      //   transform:
+      //     direction === 1
+      //       ? `translateY(${lerp(showProgress, 40, 0)}px)`
+      //       : 'none',
+      //   opacity: showProgress,
+      // }}
       >
-        {({ showProgress }) => (
-          <Main
-            style={{
-              pointerEvents: visible ? 'auto' : 'none',
-              transform:
-                direction === 1
-                  ? `translateY(${lerp(showProgress, 40, 0)}px)`
-                  : 'none',
-              opacity: showProgress,
-            }}
-          >
-            <PrevNextContent
-              onPrev={onPrev}
-              onNext={onNext}
-              enablePrev={enablePrev}
-              enableNext={enableNext}
-              isLaunchingNext={isLaunchingNext}
-            />
-          </Main>
-        )}
-      </Motion>
+        <PrevNextContent
+          onPrev={onPrev}
+          onNext={onNext}
+          enablePrev={enablePrev}
+          enableNext={enableNext}
+          isLaunchingNext={isLaunchingNext}
+        />
+      </Main>
+      //   )}
+      // </Motion>
     )
   }
 }
 
 class PrevNextContent extends React.PureComponent {
+  static propTypes = {
+    enableNext: PropTypes.func.isRequired,
+    enablePrev: PropTypes.func.isRequired,
+    isLaunchingNext: PropTypes.func.isRequired,
+    onNext: PropTypes.func.isRequired,
+    onPrev: PropTypes.func.isRequired,
+    // direction: PropTypes.func.isRequired,
+    // visible: PropTypes.func.isRequired,
+  }
+
   render() {
     return (
       <React.Fragment>

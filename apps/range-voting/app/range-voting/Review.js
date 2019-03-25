@@ -1,9 +1,16 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { theme, Text } from '@aragon/ui'
 import { Main, Content } from '../style'
 
 class Review extends React.Component {
+  static propTypes = {
+    configurationData: PropTypes.object.isRequired,
+    positionProgress: PropTypes.number.isRequired,
+    warm: PropTypes.bool.isRequired,
+  }
+
   static defaultProps = {
     warm: false,
     positionProgress: 0,
@@ -46,7 +53,6 @@ class Review extends React.Component {
 
             <Label>Vote Duration</Label>
             <Text>{configurationData.voteDuration}</Text>
-
           </ScrollWrapper>
         </Content>
       </Main>
@@ -69,4 +75,3 @@ const Label = styled.div`
   margin-top: 8px;
 `
 export default Review
-

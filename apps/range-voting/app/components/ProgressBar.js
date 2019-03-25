@@ -1,26 +1,28 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
+// import { Motion, spring } from 'react-motion'
 import { Text, theme } from '@aragon/ui'
 
 const ProgressBar = ({ progress, label }) => (
-  <Motion defaultStyle={{ progress: 0 }} style={{ progress: spring(progress) }}>
-    {({ progress }) => (
-      <Main>
-        <Label size="xsmall" color={theme.textSecondary}>
-          {label}
-        </Label>
-        <Base>
-          <Progress
-            color={theme.accent}
-            style={{ width: `${progress * 100}%` }}
-          />
-        </Base>
-      </Main>
-    )}
-  </Motion>
+  // <Motion defaultStyle={{ progress: 0 }} style={{ progress: spring(progress) }}>
+  //   {({ progress }) => (
+  <Main>
+    <Label size="xsmall" color={theme.textSecondary}>
+      {label}
+    </Label>
+    <Base>
+      <Progress color={theme.accent} style={{ width: `${progress * 100}%` }} />
+    </Base>
+  </Main>
+  //   )}
+  // </Motion>
 )
+
+ProgressBar.propTypes = {
+  progress: PropTypes.number.isRequired,
+  label: PropTypes.string.isRequired,
+}
 
 const Main = styled.div`
   width: 100%;
