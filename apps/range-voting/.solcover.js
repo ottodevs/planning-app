@@ -5,7 +5,7 @@ module.exports = {
   copyPackages: ['@tps/test-helpers'],
   skipFiles: [
     'test/TestImports.sol',
-    'test/mocks/ExecutionTarget.sol',
-    'test/mocks/RangeVotingMock.sol',
-  ]
+    // 'test/mocks/ExecutionTarget.sol',
+    // 'test/mocks/RangeVotingMock.sol',
+  ],
 }

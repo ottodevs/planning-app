@@ -1,4 +1,4 @@
-/* global artifacts, assert, before, beforeEach, context, contract, it, web3, xit*/
+/* global artifacts, assert, before, beforeEach, context, contract, it, web3, xit */
 import {
   ACL,
   DAOFactory,
@@ -21,8 +21,8 @@ const pct16 = x =>
 const createdVoteId = receipt =>
   receipt.logs.filter(x => x.event === 'StartVote')[0].args.voteId
 
-// const castedVoteId = receipt =>
-//   receipt.logs.filter(x => x.event === 'CastVote')[0].args.voteId
+const castedVoteId = receipt =>
+  receipt.logs.filter(x => x.event === 'CastVote')[0].args.voteId
 
 const ANY_ADDR = '0xffffffffffffffffffffffffffffffffffffffff'
 const NULL_ADDRESS = '0x00'
@@ -55,19 +55,15 @@ contract('RangeVoting App', accounts => {
 
     const acl = ACL.at(await dao.acl())
 
-    await acl.createPermission(
-      root,
-      dao.address,
-      await dao.APP_MANAGER_ROLE(),
-      root,
-      { from: root }
-    )
+    let role = await dao.APP_MANAGER_ROLE()
+    await acl.createPermission(root, dao.address, role, root, { from: root })
 
     // TODO: Revert to only use 2 params when truffle is updated
     // read: https://github.com/AutarkLabs/planning-suite/pull/243
+    const rangeVoting = await RangeVoting.new()
     const receipt = await dao.newAppInstance(
       '0x1234',
-      (await RangeVoting.new()).address,
+      rangeVoting.address,
       0x0,
       false,
       { from: root }
@@ -76,28 +72,18 @@ contract('RangeVoting App', accounts => {
     app = RangeVoting.at(
       receipt.logs.filter(l => l.event === 'NewAppProxy')[0].args.proxy
     )
-
-    await acl.createPermission(
-      ANY_ADDR,
-      app.address,
-      await app.CREATE_VOTES_ROLE(),
-      root,
-      { from: root }
-    )
-    await acl.createPermission(
-      ANY_ADDR,
-      app.address,
-      await app.ADD_CANDIDATES_ROLE(),
-      root,
-      { from: root }
-    )
-    await acl.createPermission(
-      ANY_ADDR,
-      app.address,
-      await app.MODIFY_PARTICIPATION_ROLE(),
-      root,
-      { from: root }
-    )
+    role = await app.CREATE_VOTES_ROLE()
+    await acl.createPermission(ANY_ADDR, app.address, role, root, {
+      from: root,
+    })
+    role = await app.ADD_CANDIDATES_ROLE()
+    await acl.createPermission(ANY_ADDR, app.address, role, root, {
+      from: root,
+    })
+    role = await app.MODIFY_PARTICIPATION_ROLE()
+    await acl.createPermission(ANY_ADDR, app.address, role, root, {
+      from: root,
+    })
   })
 
   context('normal token supply', () => {
@@ -169,48 +155,48 @@ contract('RangeVoting App', accounts => {
       assert.equal(voteId, 1, 'A vote should be created with empty script')
     })
     it('can cast votes', async () => {
+      const data = executionTarget.contract.setSignal.getData(
+        // original args: address[], uint256[] supports
+        //  updated args: address[], uint256[] supports, uint256[] infoIndex, string Info
+        [accounts[7], accounts[8], accounts[9]],
+        [0, 0, 0],
+        [4, 4, 4],
+        'arg1arg2arg3',
+        ['0x0', '0x0', '0x0'],
+        ['0x0', '0x0', '0x0'],
+        5,
+        false
+      )
       const action = {
         to: executionTarget.address,
-        calldata: executionTarget.contract.setSignal.getData(
-          // original args: address[], uint256[] supports
-          //  updated args: address[], uint256[] supports, uint256[] infoIndex, string Info
-          [accounts[7], accounts[8], accounts[9]],
-          [0, 0, 0],
-          [4, 4, 4],
-          'arg1arg2arg3',
-          ['0x0', '0x0', '0x0'],
-          ['0x0', '0x0', '0x0'],
-          5,
-          false
-        ),
+        calldata: data,
       }
       const script = encodeCallScript([action])
-      const voteId = createdVoteId(
-        await app.newVote(script, '', { from: holder50 })
-      )
+      let vote = await app.newVote(script, '', { from: holder50 })
+      let voteId = createdVoteId(vote)
       assert.equal(voteId, 1, 'A vote should be created with empty script')
-      const vote = [10, 15, 25]
+      const votes = [10, 15, 25]
       const voter = holder50
-      const castedVoteId = castedVoteId(
-        await app.vote(voteId, vote, { from: voter })
-      )
-      assert.equal(castedVoteId, 1, 'A vote should have been casted')
+      vote = await app.vote(voteId, votes, { from: voter })
+      voteId = castedVoteId(vote)
+      assert.equal(voteId, 1, 'A vote should have been casted')
     })
     it('execution scripts can execute actions', async () => {
+      const data = executionTarget.contract.setSignal.getData(
+        // original args: address[], uint256[] supports
+        //  updated args: address[], uint256[] supports, uint256[] infoIndex, string Info
+        [accounts[7], accounts[8], accounts[9]],
+        [0, 0, 0],
+        [4, 4, 4],
+        'arg1arg2arg3',
+        [1, 2, 3],
+        [2, 4, 6],
+        5,
+        true
+      )
       const action = {
         to: executionTarget.address,
-        calldata: executionTarget.contract.setSignal.getData(
-          // original args: address[], uint256[] supports
-          //  updated args: address[], uint256[] supports, uint256[] infoIndex, string Info
-          [accounts[7], accounts[8], accounts[9]],
-          [0, 0, 0],
-          [4, 4, 4],
-          'arg1arg2arg3',
-          [1, 2, 3],
-          [2, 4, 6],
-          5,
-          true
-        ),
+        calldata: data,
       }
       const script = encodeCallScript([action])
       const voteId = createdVoteId(
@@ -304,13 +290,15 @@ contract('RangeVoting App', accounts => {
       assert.equal(voteId, 1, 'RangeVoting should have been created')
     })
 
-    xit('can change minimum candidate support', async () => {})
+    it('can change minimum candidate support', async () => {})
 
     context('creating vote with normal distributions', () => {
       let voteId = {}
       let script = ''
       let candidateState
-      const [, ...candidates] = accounts.slice(0, 5)
+      // TODO: improve this assignment
+      /* eslint-disable-next-line unicorn/no-unreadable-array-destructuring */
+      const [, , ...candidates] = accounts.slice(0, 5)
       const [apple, orange, banana] = candidates
 
       beforeEach(async () => {
@@ -328,9 +316,8 @@ contract('RangeVoting App', accounts => {
             false
           ),
         }
-
-        script = encodeCallScript([action])
-        //console.log(script)
+        script = await encodeCallScript([action])
+        // console.log(script)
         const newvote = await app.newVote(script, 'metadata', {
           from: nonHolder,
         })

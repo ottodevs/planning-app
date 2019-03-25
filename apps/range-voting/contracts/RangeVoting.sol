@@ -11,9 +11,9 @@ import "@aragon/os/contracts/lib/math/SafeMath64.sol";
 import "@tps/test-helpers/contracts/evmscript/ScriptHelpers.sol";
 
 
-import "@tps/test-helpers/contracts/common/IForwarder.sol";
+import "@aragon/os/contracts/common/IForwarder.sol";
 
-import "@tps/test-helpers/contracts/lib/misc/Migrations.sol";
+// import "@tps/test-helpers/contracts/lib/misc/Migrations.sol";
 
 // import "@tps/test-helpers/contracts/common/IForwarder.sol";
 /* Temp hack to pass coverage until further research */
