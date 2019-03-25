@@ -1,4 +1,21 @@
 /* global module, process, require */
+
+require('@babel/register')({
+  ignore: [/node_modules/],
+  presets: [
+    [
+      'env',
+      {
+        targets: {
+          node: '8.0',
+        },
+      },
+    ],
+  ],
+  retainLines: true,
+})
+require('@babel/polyfill')
+
 const homedir = require('homedir')
 const path = require('path')
 
