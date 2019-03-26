@@ -1,50 +1,60 @@
 /* global artifacts, errorOut, module, process, require, web3 */
+require('dotenv').config({ path: '../.env' })
 
-require('dotenv').config({
-  path: '../../../node_modules/@aragon/kits-beta-base/.env',
-})
+const deploy_ens = require('@aragon/os/scripts/deploy-test-ens')
+const deploy_apm = require('@aragon/os/scripts/deploy-apm')
+const deploy_id = require('@aragon/id/scripts/deploy-beta-aragonid')
+const deployKitBase = require('./deploy-kit-base')
+const deployKit = require('./deploy-kit')
 
-const deploy_ens = require('@aragon/os/scripts/deploy-test-ens.js')
-const deploy_apm = require('@aragon/os/scripts/deploy-apm.js')
-const deploy_id = require('@aragon/id/scripts/deploy-beta-aragonid.js')
-const deploy_kit = require('./deploy-kit')
+const existentENS = process.env.ENS
 
-module.exports = async (/*callback*/) => {
+module.exports = async callback => {
   // eslint-disable-next-line no-console
   console.log(`Deploying Planning Suite Kit, Owner ${process.env.OWNER}`)
-
-  console.log('hola?')
 
   if (process.argv.length < 5) {
     errorOut('Usage: truffle exec --network <network> scripts/deploy.js')
   }
 
-  console.log('seguimos')
+  // get network (sometimes node is prepended so we should shift the network position)
+  const network =
+    process.argv[4] === '--network' ? process.argv[5] : process.argv[4]
 
-  // get network
-  const network = process.argv[4]
+  console.log('Deploying on network:', network)
 
-  console.log('log')
+  let ens
+  if (!existentENS) {
+    // ENS
+    const { deployedENS } = await deploy_ens(null, { artifacts, web3 })
+    ens = deployedENS
+    // APM
+    await deploy_apm(null, { artifacts, web3, ensAddress: ens.address })
+    // aragonID
+    await deploy_id(null, { artifacts, web3, ensAddress: ens.address })
+  } else {
+    console.log('Skipping deployments, using previous ENS', existentENS)
 
-  // ENS
-  const { ens } = await deploy_ens(null, {
+    ens = existentENS
+  }
+
+  // planning suite base kit
+  await deployKitBase(null, {
     artifacts,
-    web3,
-    owner: process.env.OWNER,
-  })
-  console.log('ens')
-
-  // APM
-  await deploy_apm(null, { artifacts, web3, ensAddress: ens.address })
-
-  // aragonID
-  await deploy_id(null, { artifacts, web3, ensAddress: ens.address })
-
-  await deploy_kit(null, {
-    artifacts,
-    kitName: 'planning-suite',
-    kitContractName: 'PlanningSuite',
-    network: network,
+    network,
     ensAddress: ens.address,
+    kitName: 'planning-kit-base',
+    kitContractName: 'PlanningKitBase',
   })
+
+  // // planning suite kit
+  // await deployKit(null, {
+  //   artifacts,
+  //   network,
+  //   ensAddress: ens.address,
+  //   kitName: 'planning-suite',
+  //   kitContractName: 'PlanningSuite',
+  // })
+
+  callback()
 }
