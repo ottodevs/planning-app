@@ -1,6 +1,6 @@
-/* global artifacts, module */
+/* global artifacts, module, require */
 
-import deployKit from '@aragon/kits-beta-base/scripts/deploy_kit.js'
+const deployKit = require('./deploy-kit.js')
 
 // Make sure that you have deployed ENS and APM and that you set the first one
 // in `ENS` env variable
@@ -9,7 +9,7 @@ module.exports = async callback => {
     artifacts,
     kitName: 'planning-suite',
     kitContractName: 'PlanningSuite',
-    returnKit: true,
+    // returnKit: true,
   }
 
   const { address } = await deployKit(null, deployConfig)

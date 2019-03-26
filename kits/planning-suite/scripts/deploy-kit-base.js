@@ -159,7 +159,7 @@ module.exports = async (
     ) {
       log('Deploying apps in local network')
       await newRepo(apm, 'voting', owner, 'Voting')
-      await newRepo(apm, 'finance', owner, 'Finance')
+      // await newRepo(apm, 'finance', owner, 'Finance')
       await newRepo(apm, 'token-manager', owner, 'TokenManager')
       await newRepo(apm, 'vault', owner, 'Vault')
     }
