@@ -1,0 +1,11 @@
+{
+  "environments": {
+    "devnet": {
+      "registry": "0xe9c86e832e3716e1bbf2d0f8373fe4c7bea6229c",
+      "appName": "planning-kit-base.aragonpm.eth",
+      "network": "devnet",
+      "address": "0x74b35ced090a47a5110a37988d5ceb336c402ea7"
+    }
+  },
+  "path": "contracts/PlanningSuite.sol"
+}
