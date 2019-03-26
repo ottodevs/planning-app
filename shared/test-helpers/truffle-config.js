@@ -66,15 +66,25 @@ const providerForNetwork = network => () => {
   return new HDWalletProviderPrivkey(keys, confRpc)
 }
 
-module.exports = projectRootPath => ({
-  contracts_build_directory: path.join(projectRootPath, './build/contracts/'),
+module.exports = {
+  //projectRootPath => ({
+  // contracts_build_directory: path.join(projectRootPath, './build/contracts/'),
   networks: {
+    devnet: {
+      network_id: 16,
+      host: 'localhost',
+      port: 8535,
+      gas: 6.9e6,
+      gasPrice: 15000000001,
+    },
     rpc: {
-      network_id: 15,
+      // network_id: '*',
       host: 'localhost',
       port: 8545,
-      gas: 6.9e6,
+      // gas: 7984452, // Block Gas Limit same as latest on Mainnet https://ethstats.net/
+      // gasPrice: 2000000000, // same as latest on Mainnet https://ethstats.net/
     },
+    // TODO: Clean networks
     development: {
       host: 'localhost',
       port: 8545,
@@ -103,4 +113,4 @@ module.exports = projectRootPath => ({
   env: {
     mocha: true,
   },
-})
+}
