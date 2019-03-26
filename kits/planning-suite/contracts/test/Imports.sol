@@ -3,10 +3,10 @@ pragma solidity ^0.4.24;
 
 // import "@aragon/os/contracts/acl/ACL.sol";
 // import "@aragon/os/contracts/factory/DAOFactory.sol";
-import "@aragon/os/contracts/factory/ENSFactory.sol";
-import "@aragon/os/contracts/factory/APMRegistryFactory.sol";
-import "@aragon/os/contracts/factory/EVMScriptRegistryFactory.sol";
-import "@aragon/id/contracts/FIFSResolvingRegistrar.sol";
+// import "@aragon/os/contracts/factory/ENSFactory.sol";
+// import "@aragon/os/contracts/factory/APMRegistryFactory.sol";
+// import "@aragon/os/contracts/factory/EVMScriptRegistryFactory.sol";
+// import "@aragon/id/contracts/FIFSResolvingRegistrar.sol";
 import "@aragon/apps-shared-migrations/contracts/Migrations.sol";
 // import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 // import "@tps/test-helpers/contracts/lib/bounties/StandardBounties.sol";

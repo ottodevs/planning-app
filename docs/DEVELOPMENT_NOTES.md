@@ -50,11 +50,11 @@ lerna info versioning independent
 - `yarn start`
 
 This script checks/install dependencies through lerna bootstrap, then concurrently starts a local development blockchain to deploy the individual apps there calling `aragon apm publish` on each app, also with help of lerna.
-When individual apps are deployed, the aragon/cli --kit option compiles and deploys the PlanningKit dao template sitting in contracts folder.
+When individual apps are deployed, the aragon/cli --kit option compiles and deploys the PlanningSuite kit dao template sitting in contracts folder.
 
 This folder contains also a PlanningDummy smart contract. This is needed to conform the minimal requirements to be an Aragon App, call it bare, skeleton, minimal. This smart contract is actually never deployed nor called from any other contract.
 
-The PlanningKit smart contract takes care of installing individual apps along with native Aragon official apps, and also setting the roles and permissions.
+The PlanningSuite kit smart contract takes care of installing individual apps along with native Aragon official apps, and also setting the roles and permissions.
 
 Finally, the script launches the Aragon Wrapper with the complete planning suite.
 
@@ -67,7 +67,7 @@ Finally, the script launches the Aragon Wrapper with the complete planning suite
   To debug if the individual apps are being published, if more control is needed, individual app publishing can be called by `cd apps/app_folder && yarn publish`
 - `yarn devchain or yarn devchain:reset`
   Is needed to be run in another terminal window to be able to deploy all apps together. `yarn start` script does this by using concurrently npm package.
-- If previous steps where successful, then run: `aragon run --kit PlanningKit --kit-init @ARAGON_ENS`
+- If previous steps where successful, then run: `aragon run --kit PlanningSuite --kit-init <ensName>` , where ensName is a desired ens sub domain for the DAO
   To deploy the kit and launch the Aragon Wrapper in the browser.
   It needs the same local blockchain to find the locally deployed apps, so better to keep the devchain open and running (Again, with `yarn start` is not needed (but allowed) because is launched in parallel with concurrently).
 
