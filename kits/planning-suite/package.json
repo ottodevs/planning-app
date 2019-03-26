@@ -18,11 +18,12 @@
     "docker:stop": "cd ../../node_modules/@aragon/kits-beta-base/; docker-compose down; cd -",
     "lint": "solium --dir ./contracts",
     "test:prepare": "truffle compile && yarn docker:run && yarn docker:wait-gas && yarn deploy:devnet",
-    "test": "yarn test:prepare && yarn test:devnet && yarn docker:stop'",
+    "test:prepare:rpc": "truffle compile && yarn deploy:rpc",
+    "test": "yarn test:rpc",
     "test:devnet": "truffle test --network devnet test/planning-suite.test.js",
-    "test:rpc": "truffle test --network rpc test/planning-suite.test.js",
+    "test:rpc": "yarn test:prepare:rpc && truffle test --network rpc test/planning-suite.test.js",
     "test:rinkeby": "truffle test --network rinkeby test/planning-suite.test.js",
-    "test:docker": "truffle compile && yarn docker:run && yarn docker:wait-gas && yarn deploy:devnet && yarn test:devnet && yarn docker:stop",
+    "test:docker": "yarn test:prepare && yarn test:devnet && yarn docker:stop",
     "console": "truffle dev",
     "ganache-cli:dev": "../../node_modules/@aragon/test-helpers/ganache-cli.sh",
     "ganache-cli:coverage": "SOLIDITY_COVERAGE=true yarn ganache-cli:dev",
@@ -36,11 +37,13 @@
     "deploy:kit:mainnet": "aragon contracts compile --all && ENS=0x314159265dd8dbb310642f98f50c066173c1259b aragon contracts exec --network mainnet scripts/planning-suite-deploy.js"
   },
   "dependencies": {
-    "@aragon/apps-finance": "^2.1.0",
+    "@aragon/apps-finance": "^2.0.0",
     "@aragon/apps-shared-minime": "^1.0.1",
     "@aragon/apps-survey": "^1.0.0-rc.3",
     "@aragon/apps-token-manager": "^2.0.0",
     "@aragon/apps-voting": "^2.0.0",
+    "@aragon/apps-vault": "^3.0.0",
+    "@aragon/apps-payroll": "^0.0.1",
     "@aragon/kits-base": "^1.0.0",
     "@aragon/kits-beta-base": "^1.0.0",
     "@aragon/os": "4.0.1",
@@ -51,6 +54,7 @@
     "@tps/test-helpers": "^0.0.1"
   },
   "devDependencies": {
+    "@aragon/aragen": "^3.0.0-beta.5",
     "@aragon/id": "^2.0.3",
     "@aragon/test-helpers": "^1.1.0",
     "@tps/eslint-config": "^0.0.1",

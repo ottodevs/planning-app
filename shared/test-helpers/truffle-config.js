@@ -78,7 +78,7 @@ module.exports = {
       gasPrice: 15000000001,
     },
     rpc: {
-      // network_id: '*',
+      network_id: '*',
       host: 'localhost',
       port: 8545,
       // gas: 7984452, // Block Gas Limit same as latest on Mainnet https://ethstats.net/
