@@ -72,21 +72,25 @@ contract DotVoting is IForwarder, AragonApp {
     uint256 constant public EX_ID2_PARAM_LOC = 7;
     uint256 constant public TOTAL_DYNAMIC_PARAMS = 7;
 
+    string private constant ERROR_CANDIDATE_ADDED = "ERROR_CANDIDATE_ALREADY_ADDED";
+    string private constant ERROR_CANNOT_FORWARD = "ERROR_CANNOT_FORWARD";
+    
+    // Order optimized for storage
     struct Vote {
         address creator;
+        bool executed;
         uint64 startDate;
-        uint256 snapshotBlock;
         uint256 candidateSupportPct; //aka minAcceptQuorumPct;
-        uint256 totalVoters;
-        uint256 totalParticipation;
         uint256 externalId;
-        string metadata;
-        string voteDescription;
         uint256 infoStringLength;
-        bytes executionScript;
+        uint256 totalParticipation;
+        uint256 totalVoters;
         uint256 scriptOffset;
         uint256 scriptRemainder;
-        bool executed;
+        uint256 snapshotBlock;
+        string metadata;
+        string voteDescription;
+        bytes executionScript;
         bytes32[] candidateKeys;
         mapping (bytes32 => CandidateState) candidates;
         mapping (address => uint256[]) voters;
@@ -216,7 +220,7 @@ contract DotVoting is IForwarder, AragonApp {
         bytes32 cKey = keccak256(abi.encodePacked(_description));
         CandidateState storage candidate = voteInstance.candidates[cKey];
         // Make sure that this candidate has not already been added
-        require(candidate.added == false); // solium-disable-line error-reason
+        require(candidate.added == false, ERROR_CANDIDATE_ADDED);
         // Set all data for the candidate
         candidate.added = true;
         candidate.keyArrayIndex = uint8(keys.length);
@@ -255,7 +259,7 @@ contract DotVoting is IForwarder, AragonApp {
     * @param _key The bytes32 key used when adding the candidate.
     */
     function getCandidateDescription(bytes32 _key) // solium-disable-line function-order
-    external view returns(address)
+    public view returns(address)
     {
         return(candidateAddresses[_key]);
     }
@@ -293,7 +297,7 @@ contract DotVoting is IForwarder, AragonApp {
     * @param _evmScript Start vote with script
     */
     function forward(bytes _evmScript) public { // solium-disable-line function-order
-        require(canForward(msg.sender, _evmScript)); // solium-disable-line error-reason
+        require(canForward(msg.sender, _evmScript), ERROR_CANNOT_FORWARD);
         _newVote(_evmScript, ""); /*, true);*/
     }
 
