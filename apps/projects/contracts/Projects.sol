@@ -656,14 +656,14 @@ contract Projects is IsContract, AragonApp {
 
     function _activateBounty(
         bool _tokenBounty,
-        address _tokenCountract,
+        address _tokenContract,
         uint _bountySize,
         uint _standardBountyId
     ) internal
     {
         if (_tokenBounty) {
-            vault.transfer(_tokenCountract, this, _bountySize);
-            TokenApproval(_tokenCountract).approve(bounties, _bountySize);
+            vault.transfer(_tokenContract, this, _bountySize);
+            TokenApproval(_tokenContract).approve(bounties, _bountySize);
             // Activate the bounty so it can be fulfilled
             bounties.activateBounty(_standardBountyId, _bountySize);
         } else {
