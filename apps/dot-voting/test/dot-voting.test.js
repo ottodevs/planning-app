@@ -3,7 +3,7 @@ const {
   DAOFactory,
   EVMScriptRegistryFactory,
   Kernel,
-  MiniMeToken
+  MiniMeToken,
 } = require('@tps/test-helpers/artifacts')
 
 const DotVoting = artifacts.require('DotVotingMock')
@@ -188,13 +188,19 @@ contract('DotVoting App', accounts => {
           [ 0x61, 0x61, 0x61 ],
           5,
           false
-        )
+        ),
       }
       const script = encodeCallScript([action])
       const voteId = createdVoteId(
         await app.newVote(script, '', { from: holder50 })
       )
       assert.equal(voteId, 1, 'A vote should be created with empty script')
+    })
+    it('fails creating a vote with invalid script', async () => {
+      return assertRevert(async () => {
+        // invalid script
+        await app.newVote('badExecutionScript', '', { from: holder50 })
+      })
     })
     it('can cast votes', async () => {
       let action = {
@@ -209,7 +215,7 @@ contract('DotVoting App', accounts => {
           [ '0x0', '0x0', '0x0' ],
           5,
           false
-        )
+        ),
       }
       const script = encodeCallScript([action])
       const voteId = createdVoteId(
@@ -222,6 +228,13 @@ contract('DotVoting App', accounts => {
         await app.vote(voteId, vote, { from: voter })
       )
       assert.equal(castedvoteId, 1, 'A vote should have been casted')
+    })
+    it('cannot cast more votes than snapshot stake', async () => {
+      let vote = Array(3).fill(10 ** 10)
+      let voter = holder50
+      assertRevert(async () => {
+        await app.vote(voteId, vote, { from: voter })
+      })
     })
     it('execution scripts can execute actions', async () => {
       let action = {
@@ -236,7 +249,7 @@ contract('DotVoting App', accounts => {
           [ 2, 4, 6 ],
           5,
           true
-        )
+        ),
       }
       const script = encodeCallScript([action])
       const voteId = createdVoteId(
@@ -258,13 +271,13 @@ contract('DotVoting App', accounts => {
         )
         assert.equal(
           signal[1].toNumber(),
-          (i+1),
-          'Id1 ' + ( i + 1 ) + 'is incorrect'
+          i + 1,
+          'Id1 ' + (i + 1) + 'is incorrect'
         )
         assert.equal(
           signal[2].toNumber(),
-          ( 2 * ( i + 1 )),
-          'Id2 ' + ( 2 * ( i + 1 ))+ ' is incorrect'
+          2 * (i + 1),
+          'Id2 ' + 2 * (i + 1) + ' is incorrect'
         )
       }
     })
@@ -284,7 +297,7 @@ contract('DotVoting App', accounts => {
           [ 2, 4, 6 ],
           5,
           true
-        )
+        ),
       }
 
       let script = encodeCallScript([action])
@@ -306,16 +319,26 @@ contract('DotVoting App', accounts => {
     it('execution throws if any action on script throws', async () => {
       let action = {
         to: executionTarget.address,
-        calldata: executionTarget.contract.setSignal.getData([], [], [], '', '', [],[],0,true)
+        calldata: executionTarget.contract.setSignal.getData(
+          [],
+          [],
+          [],
+          '',
+          '',
+          [],
+          [],
+          0,
+          true
+        ),
       }
       const script = encodeCallScript([action])
       const voteId = createdVoteId(
         await app.newVote(script, '', { from: holder50 })
       )
       let vote = [ 10, 15, 25 ]
-      await app.addCandidate(voteId, '0x', accounts[7],0x0,0x0)
-      await app.addCandidate(voteId, '0x', accounts[8],0x0,0x0)
-      await app.addCandidate(voteId, '0x', accounts[9],0x0,0x0)
+      await app.addCandidate(voteId, '0x', accounts[7], 0x0, 0x0)
+      await app.addCandidate(voteId, '0x', accounts[8], 0x0, 0x0)
+      await app.addCandidate(voteId, '0x', accounts[9], 0x0, 0x0)
       let voter = holder50
       await app.vote(voteId, vote, { from: voter })
       return assertRevert(async () => {
@@ -336,7 +359,7 @@ contract('DotVoting App', accounts => {
           [ '0x0', '0x0', '0x0' ],
           5,
           false
-        )
+        ),
       }
       const script = encodeCallScript([action])
       const voteId = createdVoteId(
@@ -345,7 +368,7 @@ contract('DotVoting App', accounts => {
       assert.equal(voteId, 1, 'DotVoting should have been created')
     })
 
-    xit('can change minimum candidate support', async () => { })
+    it('can change minimum candidate support', async () => {})
 
     context('creating vote with normal distributions', () => {
       let voteId = {}
@@ -368,7 +391,7 @@ contract('DotVoting App', accounts => {
             [ 0x1, 0x2, 0x3 ],
             5,
             false
-          )
+          ),
         }
 
         script = encodeCallScript([action])
@@ -381,18 +404,19 @@ contract('DotVoting App', accounts => {
       })
 
       it('stored the candidate addresses correctly', async () => {
-        let appleState = (await app.getCandidate(
+        let appleState = await app.getCandidate(
           voteId,
           candidates.indexOf(apple)
-        ))
-        let orangeState = (await app.getCandidate(
+        )
+        //console.log(appleState)
+        let orangeState = await app.getCandidate(
           voteId,
           candidates.indexOf(orange)
-        ))
-        let bananaState = (await app.getCandidate(
+        )
+        let bananaState = await app.getCandidate(
           voteId,
           candidates.indexOf(banana)
-        ))
+        )
         assert.equal(
           appleState[0],
           apple,
@@ -453,18 +477,18 @@ contract('DotVoting App', accounts => {
           'vote and voter state should match after casting ballot'
         )
 
-        let appleInfo = (await app.getCandidate(
+        let appleInfo = await app.getCandidate(
           voteId,
           candidates.indexOf(apple)
-        ))
-        let orangeInfo = (await app.getCandidate(
+        )
+        let orangeInfo = await app.getCandidate(
           voteId,
           candidates.indexOf(orange)
-        ))
-        let bananaInfo = (await app.getCandidate(
+        )
+        let bananaInfo = await app.getCandidate(
           voteId,
           candidates.indexOf(banana)
-        ))
+        )
 
         assert.equal(
           appleInfo[1].toNumber(),
@@ -481,6 +505,15 @@ contract('DotVoting App', accounts => {
           vote[2],
           'The correct amount of support should be logged for Banana'
         )
+      })
+
+      it('non holder cannot vote', async () => {
+        let vote = [ 1, 2, 3 ]
+        let voter = nonHolder
+
+        assertRevert(async () => {
+          await app.vote(voteId, vote, { from: voter })
+        })
       })
 
       it('holder can modify vote without getting double-counted', async () => {
@@ -507,18 +540,18 @@ contract('DotVoting App', accounts => {
           'vote and voter state should match after casting ballot'
         )
 
-        let appleInfo = (await app.getCandidate(
+        let appleInfo = await app.getCandidate(
           voteId,
           candidates.indexOf(apple)
-        ))
-        let orangeInfo = (await app.getCandidate(
+        )
+        let orangeInfo = await app.getCandidate(
           voteId,
           candidates.indexOf(orange)
-        ))
-        let bananaInfo = (await app.getCandidate(
+        )
+        let bananaInfo = await app.getCandidate(
           voteId,
           candidates.indexOf(banana)
-        ))
+        )
 
         assert.equal(
           appleInfo[1].toNumber(),
@@ -653,6 +686,20 @@ contract('DotVoting App', accounts => {
         )
         candidates.pop()
       })
+      it('holder can get candidate description', async () => {
+        mango = accounts[5]
+        await app.addCandidate(voteId, '0xbeefdead', mango, 0x1, 0x1)
+        const description = await app.getCandidateDescriptionFromAddress(mango)
+        assert.equal(description, mango)
+      })
+
+      it('holder cannot re add existing candidates', async () => {
+        mango = accounts[5]
+        await app.addCandidate(voteId, '0xbeefdead', mango, 0x1, 0x1)
+        assertRevert(async () => {
+          await app.addCandidate(voteId, '0xbeefdead', mango, 0x1, 0x1)
+        })
+      })
       it('holder can get total number of candidates', async () => {
         const totalcandidates = await app.getCandidateLength(voteId)
         assert.equal(
@@ -663,11 +710,7 @@ contract('DotVoting App', accounts => {
       })
       it('holder can get vote metadata', async () => {
         const metadata = await app.getVoteMetadata(voteId)
-        assert.equal(
-          metadata,
-          'metadata',
-          'Vote has metadata'
-        )
+        assert.equal(metadata, 'metadata', 'Vote has metadata')
       })
     })
   })
@@ -721,6 +764,15 @@ contract('DotVoting App', accounts => {
   })
 
   context('before init', () => {
+    it('should be a forwarder', async () => {
+      const isForwarder = await app.isForwarder()
+      assert(isForwarder)
+    })
+    it('fails when invalid forward', async () => {
+      assertRevert(async () => {
+        await app.forward(0x0, { from: nonHolder })
+      })
+    })
     it('fails creating a vote before initialization', async () => {
       return assertRevert(async () => {
         await app.newVote(encodeCallScript([]), '')
