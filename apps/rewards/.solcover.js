@@ -2,7 +2,7 @@ module.exports = {
   norpc: true,
   skipFiles: [
     'Controlled.sol',
-    'Migrations.sol',
+    'misc/Migrations.sol',
     'RewardToken.sol',
     'TokenController.sol',
   ],
