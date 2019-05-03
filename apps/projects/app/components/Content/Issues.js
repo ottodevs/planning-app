@@ -334,6 +334,7 @@ class Issues extends React.PureComponent {
       <FilterBar
         setParentFilters={this.setParentFilters}
         filters={this.state.filters}
+        sortBy={this.state.sortBy}
         handleSelectAll={this.toggleSelectAll(issuesFiltered)}
         allSelected={this.state.allSelected}
         issues={issues}
