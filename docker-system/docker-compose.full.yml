@@ -1,0 +1,22 @@
+version: "3.3"
+services:
+  full:
+    build: ./full
+    user: "1000"
+    ports:
+      - "1111:1111"
+      - "2222:2222"
+      - "3333:3333"
+      - "4444:4444"
+      - "5555:5555"
+      - "8545:8545"
+      - "3000:3000"
+    volumes:
+      - ../:/planning-suite
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: "bridge"
+
