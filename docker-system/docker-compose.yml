@@ -17,9 +17,7 @@ services:
     ports:
       - "8545:8545"
     networks:
-      backend:
-        aliases:
-          - localhost
+      - backend
 
   multiparcel:
     build: ./multiparcel
@@ -32,6 +30,20 @@ services:
       - "3333:3333"
       - "4444:4444"
       - "5555:5555"
+    networks:
+      - backend
+  workspace:
+    build: ./workspace
+    user: "1000"
+    volumes:
+      - ../:/planning-suite
+    networks:
+      - backend
+  full:
+    build: ./full
+    user: "1000"
+    volumes:
+      - ../:/planning-suite
     networks:
       - backend
 
