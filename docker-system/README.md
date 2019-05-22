@@ -12,3 +12,9 @@ docker ps
 docker build -t service_name ./path
 docker images | grep ...
 docker run -p "8080:8080" service_name
+
+
+
+
+# Docker compose
+cd docker-system && docker-compose build && docker-compose up
