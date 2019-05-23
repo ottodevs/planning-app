@@ -1,0 +1,32 @@
+version: '2'
+services:
+  base:
+    image: node:11
+    environment:
+      - NPM_CONFIG_PREFIX=/home/node/.npm-global
+    user: '1000'
+    volumes:
+      - nodemodules:/home/node/app/node_modules
+      - ..:/home/node/app
+    working_dir: /home/node/app
+
+  install:
+    extends:
+      service: base
+    environment:
+      - NPM_CONFIG_PREFIX=/home/node/.npm-global
+    user: '1000'
+    command: npm i
+
+  # build:
+  #   extends:
+  #     service: base
+  #   command: npm run build
+  # create-bundles:
+  #   extends:
+  #     service: base
+  #   command: npm run create-bundles
+
+volumes:
+  nodemodules:
+    external: true

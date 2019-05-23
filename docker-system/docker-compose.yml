@@ -1,53 +1,26 @@
-version: "3.3"
+version: '3'
 services:
-  planning-suite:
-    build: ./planning-suite
-    user: "1000"
+  dev:
+    image: node:11
     volumes:
-      - ../:/planning-suite
+      - nodemodules:/home/node/app/node_modules
+      - ..:/home/node/app
+    working_dir: /home/node/app
+    command: npm run start:dev
     ports:
-      - "3000:3000"
-    networks:
-      - backend
-  devchain:
-    build: ./devchain
-    user: "1000"
-    volumes:
-      - ../:/planning-suite
-    ports:
-      - "8545:8545"
-    networks:
-      - backend
+      - 1110:1110
+      - 1111:1111
+      - 2220:2220
+      - 2222:2222
+      - 3001:3001
+      - 3330:3330
+      - 3333:3333
+      - 4440:4440
+      - 4444:4444
+      - 5550:5550
+      - 5555:5555
+      - 8545:8545
 
-  multiparcel:
-    build: ./multiparcel
-    user: "1000"
-    volumes:
-      - ../:/planning-suite
-    ports:
-      - "1111:1111"
-      - "2222:2222"
-      - "3333:3333"
-      - "4444:4444"
-      - "5555:5555"
-    networks:
-      - backend
-  workspace:
-    build: ./workspace
-    user: "1000"
-    volumes:
-      - ../:/planning-suite
-    networks:
-      - backend
-  full:
-    build: ./full
-    user: "1000"
-    volumes:
-      - ../:/planning-suite
-    networks:
-      - backend
-
-networks:
-  backend:
-    driver: "bridge"
-
+volumes:
+  nodemodules:
+    external: true
