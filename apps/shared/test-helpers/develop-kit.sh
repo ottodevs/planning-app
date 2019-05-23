@@ -93,8 +93,8 @@ start_kit() {
 }
 
 echo "Compiling and getting deployed contract address"
-lerna exec --scope=@tps/apps-* --concurrency=1 -- deploy_contract
-lerna exec --scope=@tps/apps-* -- aragon apm versions
+lerna exec --scope=@tps/apps-address-book --concurrency=1 -- deploy_contract
+lerna exec --scope=@tps/apps-address-book -- aragon apm versions
 echo "Starting multi parcel instances in parallel execution"
 start_multi_parcel "$@"
 sleep 10

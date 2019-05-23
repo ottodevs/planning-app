@@ -1,12 +1,10 @@
 version: '3'
 services:
   dev:
-    image: node:11
+    build: ./full
     volumes:
-      - nodemodules:/home/node/app/node_modules
       - ..:/home/node/app
-    working_dir: /home/node/app
-    command: npm run start:dev
+    user: '1000'
     ports:
       - 1110:1110
       - 1111:1111
@@ -20,6 +18,12 @@ services:
       - 5550:5550
       - 5555:5555
       - 8545:8545
+  workspace:
+    image: node:11
+    volumes:
+      - ..:/home/node/app
+    working_dir: /home/node/app
+    user: '1000'
 
 volumes:
   nodemodules:

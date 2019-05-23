@@ -6,7 +6,6 @@ services:
       - NPM_CONFIG_PREFIX=/home/node/.npm-global
     user: '1000'
     volumes:
-      - nodemodules:/home/node/app/node_modules
       - ..:/home/node/app
     working_dir: /home/node/app
 
