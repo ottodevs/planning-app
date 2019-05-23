@@ -1,6 +1,6 @@
 #!/bin/sh
 start_multi_parcel() {
-	node_modules/.bin/lerna run dev --log-level=silent --parallel "$@"
+	npx lerna run dev --log-level=silent --parallel "$@"
 	parallel_pid=$!
 }
 

@@ -7,9 +7,9 @@ start_testrpc() {
 	if [ "$RESET" = true ]; then
 		echo "RESET=true -> Will delete ~/.aragon folder ctrl+c to abort now" && sleep 2
 		rm -rf ~/.aragon
-		node_modules/.bin/aragon devchain --reset
+		npx aragon devchain --reset
 	else
-		node_modules/.bin/aragon devchain --port "$testrpc_port"
+		npx aragon devchain --port "$testrpc_port"
 	fi
 
 	testrpc_pid=$!
@@ -58,8 +58,8 @@ start_kit() {
 }
 
 echo "Compiling and getting deployed contract address"
-node_modules/.bin/lerna exec --scope=@tps/apps-* --concurrency=1 -- deploy_contract
-node_modules/.bin/lerna exec --scope=@tps/apps-* -- aragon apm versions
+npx lerna exec --scope=@tps/apps-* --concurrency=1 -- deploy_contract
+npx lerna exec --scope=@tps/apps-* -- aragon apm versions
 
 start_kit
 
