@@ -1,12 +1,18 @@
 # Use an official node runtime image as a parent image
 FROM node:11
-
+RUN apt-get update && \
+    apt-get -y install rsync apt-utils && \
+    apt-get -y remove apt-utils && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/*
 # Set the container working directory to /planning-suite
 WORKDIR /home/node/app
 # Copy initialization script and give execution permissions
 COPY docker-entrypoint.sh /
 ENV NODE_PATH=/home/node/app/node_modules
 RUN chmod +x /docker-entrypoint.sh
+
+
 # Set user to primary user (Should be set from an environment variable)
 USER 1000
 

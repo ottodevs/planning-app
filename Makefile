@@ -1,8 +1,5 @@
-setup:
-	docker volume create nodemodules --opt type=tmpfs --opt device=tmpfs --opt o=uid=1000,gid=1000
-
 install:
-	docker-compose -f docker-system/docker-compose.builder.yml run --rm install
+	docker-compose -f docker-system/docker-compose.yml run --rm workspace npm i
 
 dev:
 	docker-compose -f docker-system/docker-compose.yml up dev
