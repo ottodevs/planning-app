@@ -1,5 +1,5 @@
 # Use an official node runtime image as a parent image
-FROM node:10-alpine
+FROM node:11-alpine
 
 # These deps are mostly for ganache and deprecated ipfs-api
 # --no-cache: download package index on-the-fly, no need to cleanup afterwards
