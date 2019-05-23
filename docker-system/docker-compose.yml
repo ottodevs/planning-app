@@ -4,6 +4,7 @@ services:
     build: ./full
     volumes:
       - ..:/home/node/app
+      - ~/.aragon:/home/node/.aragon
     user: '1000'
     ports:
       - 8545:8545
@@ -13,6 +14,7 @@ services:
     build: ./suite
     volumes:
       - ..:/home/node/app
+      - ~/.aragon:/home/node/.aragon
     user: '1000'
     ports:
       - 1110:1110
@@ -30,5 +32,6 @@ services:
     build: ./workspace
     volumes:
       - ..:/home/node/app
+      - ~/.aragon:/home/node/.aragon
     working_dir: /home/node/app
     user: '1000'
