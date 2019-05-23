@@ -1,5 +1,5 @@
 # Use an official node runtime image as a parent image
-FROM node:11-alpine
+FROM node:10-alpine
 
 # These deps are mostly for ganache and deprecated ipfs-api
 # --no-cache: download package index on-the-fly, no need to cleanup afterwards
@@ -17,7 +17,7 @@ RUN apk --no-cache --virtual .gyp add \
 
 
 # Set the container working directory to /planning-suite
-WORKDIR /planning-suite
+WORKDIR /home/node/app/
 # Copy initialization script and give execution permissions
 COPY docker-entrypoint.sh /
 
@@ -26,5 +26,3 @@ RUN chmod +x /docker-entrypoint.sh
 USER 1000
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-
-EXPOSE 3000

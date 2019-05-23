@@ -17,4 +17,4 @@ docker run -p "8080:8080" service_name
 
 
 # Docker compose
-cd docker-system && docker-compose build && docker-compose up
+cd docker-system && docker-compose build && docker-compose up aragon suite

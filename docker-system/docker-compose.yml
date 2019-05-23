@@ -1,7 +1,16 @@
 version: '3'
 services:
-  dev:
+  aragon:
     build: ./full
+    volumes:
+      - ..:/home/node/app
+    user: '1000'
+    ports:
+      - 8545:8545
+      - 3000:3000
+
+  suite:
+    build: ./suite
     volumes:
       - ..:/home/node/app
     user: '1000'
@@ -10,21 +19,16 @@ services:
       - 1111:1111
       - 2220:2220
       - 2222:2222
-      - 3001:3001
       - 3330:3330
       - 3333:3333
       - 4440:4440
       - 4444:4444
       - 5550:5550
       - 5555:5555
-      - 8545:8545
+
   workspace:
-    image: node:11
+    build: ./workspace
     volumes:
       - ..:/home/node/app
     working_dir: /home/node/app
     user: '1000'
-
-volumes:
-  nodemodules:
-    external: true
