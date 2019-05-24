@@ -7,9 +7,9 @@ start_testrpc() {
 	if [ "$RESET" = true ]; then
 		echo "RESET=true -> Will delete ~/.aragon folder ctrl+c to abort now" && sleep 2
 		rm -rf ~/.aragon
-		npx aragon devchain --reset
+		npx aragon devchain --reset &
 	else
-		npx aragon devchain --port "$testrpc_port"
+		npx aragon devchain --port "$testrpc_port" &
 	fi
 
 	testrpc_pid=$!
@@ -17,6 +17,7 @@ start_testrpc() {
 
 echo "Starting our own testrpc instance at port $testrpc_port"
 start_testrpc
+sleep 5
 
 # Exit script as soon as a command fails.
 replace_manifest_path() {

@@ -14,7 +14,7 @@ RUN apk --no-cache --virtual .gyp add \
     python \
     rsync \
     bash
-
+ 
 
 # Copy initialization script and give execution permissions
 COPY docker-entrypoint.sh /
