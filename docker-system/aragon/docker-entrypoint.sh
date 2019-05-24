@@ -19,7 +19,6 @@ echo "Starting our own testrpc instance at port $testrpc_port"
 start_testrpc
 sleep 15
 npm run publish:http
-start_kit
 npm run start:kit
 
 exec "$@"
