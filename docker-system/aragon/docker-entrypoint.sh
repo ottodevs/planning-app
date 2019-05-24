@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 testrpc_port=8545
 
@@ -26,9 +26,13 @@ replace_manifest_path() {
 	sed "s/dist\\///g" "$file" >"$output"
 }
 
+export -f replace_manifest_path
+
 copy_assets() {
 	mkdir -p dist/images && cp images/icon.svg dist/images/
 }
+
+export -f copy_assets
 
 deploy_contract() {
 	# TODO: Are we sure we want to mute truffle output? we should discuss this maybe
@@ -41,6 +45,8 @@ deploy_contract() {
 	copy_assets
 	sleep 2
 }
+
+export -f deploy_contract
 
 start_kit() {
 	# Exit error mode so the testrpc and parallel parcel instances always gets killed
