@@ -1,8 +1,8 @@
 pragma solidity ^0.4.24;
 
-import "@tps/test-helpers/contracts/factory/EVMScriptRegistryFactory.sol";
-import "@tps/test-helpers/contracts/factory/DAOFactory.sol";
-import "@tps/test-helpers/contracts/acl/ACL.sol";
+import "@aragon/os/contracts/factory/EVMScriptRegistryFactory.sol";
+import "@aragon/os/contracts/factory/DAOFactory.sol";
+import "@aragon/os/contracts/acl/ACL.sol";
 import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 
 // You might think this file is a bit odd, but let me explain.

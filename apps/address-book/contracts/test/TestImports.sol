@@ -1,11 +1,11 @@
 pragma solidity ^0.4.24;
 
-import "@tps/test-helpers/contracts/acl/ACL.sol";
-import "@tps/test-helpers/contracts/kernel/Kernel.sol";
-import "@tps/test-helpers/contracts/factory/DAOFactory.sol";
-import "@tps/test-helpers/contracts/factory/EVMScriptRegistryFactory.sol";
+import "@aragon/os/contracts/acl/ACL.sol";
+import "@aragon/os/contracts/kernel/Kernel.sol";
+import "@aragon/os/contracts/factory/DAOFactory.sol";
+import "@aragon/os/contracts/factory/EVMScriptRegistryFactory.sol";
 
-import "@tps/test-helpers/contracts/lib/misc/Migrations.sol";
+import "@aragon/os/contracts/lib/misc/Migrations.sol";
 import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 import "@tps/test-helpers/contracts/lib/bounties/StandardBounties.sol";
 
