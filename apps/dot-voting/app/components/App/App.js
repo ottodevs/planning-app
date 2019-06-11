@@ -6,10 +6,10 @@ import { map } from 'rxjs/operators'
 
 import { AppBar, Main, SidePanel, observe, font } from '@aragon/ui'
 import Decisions from './Decisions'
-import { hasLoadedVoteSettings } from './utils/vote-settings'
-import { NewPayoutVotePanelContent } from './components/Panels'
-import { networkContextType, AppTitle } from '../../../shared/ui'
-import AppView from './components/AppView'
+import { hasLoadedVoteSettings } from '../../utils/vote-settings'
+import { NewPayoutVotePanelContent } from '../Panels'
+import { networkContextType, AppTitle } from '../../../../../shared/ui'
+import AppView from './AppView'
 
 const initialState = {
   template: null,
