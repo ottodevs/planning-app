@@ -19,7 +19,7 @@ import { first } from 'rxjs/operators' // Make sure observables have .first
 import { provideNetwork } from '../../../../../shared/ui'
 import { safeDiv } from '../../utils/math-utils'
 import VoteStatus from '../VoteStatus'
-import ProgressBarThick from '../ProgressBarThick'
+import ProgressBarThick from '../../../../../shared/ui/components/assets/components/ProgressBarThick'
 import Slider from '../Slider'
 import { getVoteStatus } from '../../utils/vote-utils'
 import {

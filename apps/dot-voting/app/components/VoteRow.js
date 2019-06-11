@@ -8,7 +8,7 @@ import {
   Badge,
   theme,
 } from '@aragon/ui'
-import ProgressBar from './ProgressBar'
+import ProgressBar from '../../../../shared/ui/components/assets/components/ProgressBar'
 import VoteStatus from './VoteStatus'
 import { safeDiv } from '../utils/math-utils'
 import BigNumber from 'bignumber.js'

@@ -9,7 +9,7 @@ import {
   Badge,
   Countdown,
 } from '@aragon/ui'
-import ProgressBar from '../ProgressBar'
+import ProgressBar from '../../../../../shared/ui/components/assets/components/ProgressBar'
 import VoteStatus from '../VoteStatus'
 import { VOTE_STATUS_SUCCESSFUL } from '../../utils/vote-types'
 import { getVoteStatus } from '../../utils/vote-utils'
