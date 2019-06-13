@@ -74,36 +74,42 @@ contract('AddressBook App', accounts => {
     let starfleet = accounts[0]
 
     it('should add a new entry', async () => {
-      const receipt = await app.addEntry(starfleet, exampleCid)
+      const receipt = await app.addEntry(starfleet, 'Starfleet', 'Group', exampleCid)
       const addedAddress = receipt.logs.filter(l => l.event == 'EntryAdded')[0]
         .args.addr
       assert.equal(addedAddress, starfleet)
     })
     it('should get the previously added entry', async () => {
       entry1 = await app.getEntry(starfleet)
-      assert.equal(entry1, exampleCid)
+      assert.equal(entry1[0], starfleet)
+      assert.equal(entry1[1], 'Starfleet')
+      assert.equal(entry1[2], 'Group')
+      assert.equal(entry1[3], exampleCid)
     })
     it('should remove the previously added entry', async () => {
       await app.removeEntry(starfleet)
     })
-    it('should allow to re-add same address from previously removed entry', async () => {
-      await app.addEntry(starfleet, exampleCid)
+    it('should allow to use the same name from previously removed entry', async () => {
+      await app.addEntry(accounts[1], 'Starfleet', 'Dejavu', exampleCid)
+    })
+    it('should allow to use the same address from previously removed entry', async () => {
+      await app.addEntry(starfleet, 'NewStar', 'Dejavu', exampleCid)
     })
   })
   context('invalid operations', () => {
     let [ borg, jeanluc, bates ] = accounts.splice(1, 3)
     before(async () => {
-      app.addEntry(borg, exampleCid)
+      app.addEntry(borg, 'Borg', 'Individual', exampleCid)
     })
 
     it('should revert when adding duplicate address', async () => {
       return assertRevert(async () => {
-        await app.addEntry(borg, exampleCid)
+        await app.addEntry(borg, 'Burg', 'N/A', exampleCid)
       })
     })
     it('should revert when removing not existant entry', async () => {
       return assertRevert(async () => {
-        await app.removeEntry(jeanluc)
+        await app.addEntry(jeanluc, 'Borg', 'Captain', exampleCid)
       })
     })
     it('should revert when a CID =/= 46 chars', async () => {
@@ -112,7 +118,10 @@ contract('AddressBook App', accounts => {
       })
     })
     it('should return a zero-address when getting non-existant entry', async () => {
-      const entryCid  = await app.getEntry(jeanluc)
+      const [ entryAddress, name, entryType, entryCid ] = await app.getEntry(jeanluc)
+      assert.strictEqual(entryAddress, '0x0000000000000000000000000000000000000000', 'address should be 0x0')
+      assert.strictEqual(name, '', 'name should be empty')
+      assert.strictEqual(entryType, '', 'entry Type should be empty')
       assert.strictEqual(entryCid, '', 'CID should be an empty string')
     })
   })
