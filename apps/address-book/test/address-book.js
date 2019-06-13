@@ -117,6 +117,11 @@ contract('AddressBook App', accounts => {
         await app.addEntry(bates, 'test_CID')
       })
     })
+    it('should revert when a CID =/= 46 chars', async () => {
+      return assertRevert(async () => {
+        await app.addEntry(bates, 'Patrick Bateman', 'VP', 'test_CID')
+      })
+    })
     it('should return a zero-address when getting non-existant entry', async () => {
       const [ entryAddress, name, entryType, entryCid ] = await app.getEntry(jeanluc)
       assert.strictEqual(entryAddress, '0x0000000000000000000000000000000000000000', 'address should be 0x0')
