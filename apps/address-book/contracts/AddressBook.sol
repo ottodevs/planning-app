@@ -27,13 +27,6 @@ import "@aragon/os/contracts/apps/AragonApp.sol";
 *******************************************************************************/
 contract AddressBook is AragonApp {
 
-    struct Entry {
-        address entryAddress;
-        string name;
-        string entryType;
-        string ipfsHash;
-    }
-
     // The entries in the registry.
     mapping(address => string) entries;
     // Fired when an entry is added to the registry.
@@ -55,22 +48,13 @@ contract AddressBook is AragonApp {
      */
     function addEntry(
         address _addr,
-        string _name,
-        string _entryType,
         string _cid
     ) public auth(ADD_ENTRY_ROLE)
     {
-        require(entries[_addr].entryAddress == 0, "entry exists with that address");
-        require(!nameUsed[keccak256(abi.encodePacked(_name))], "name already in use");
+        require(bytes(entries[_addr]).length == 0, "entry exists with that address");
         require(bytes(_cid).length == 46, "CID malformed");
 
-        Entry storage entry = entries[_addr];
-        entry.entryAddress = _addr;
-        entry.name = _name;
-        entry.entryType = _entryType;
-        entry.ipfsHash = _cid;
-
-        nameUsed[keccak256(abi.encodePacked(entries[_addr].name))] = true;
+        entries[_addr] = _cid;
 
         emit EntryAdded(_addr);
     }
@@ -95,16 +79,8 @@ contract AddressBook is AragonApp {
      */
     function getEntry(
         address _addr
-    ) public view returns (address _entryAddress, string _name, string _entryType, string contentId)
+    ) public view returns (string contentId)
     {
-        Entry storage entry = entries[_addr];
-        if (!nameUsed[keccak256(abi.encodePacked(entry.name))]) {
-            return(address(0), "", "","");
-        } else {
-            _entryAddress = entry.entryAddress;
-            _name = entry.name;
-            _entryType = entry.entryType;
-            contentId = entry.ipfsHash;
-        }
+        contentId = entries[_addr];
     }
 }
