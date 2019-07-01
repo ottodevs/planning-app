@@ -79,30 +79,12 @@ contract AddressBook is AragonApp {
     }
 
     /**
-     * @notice Remove address `_addr` from the registry.
-     * @param _addr The ID of the entry to update
-     * @param _cid The ID of the entry to update
-     */
-    function updateEntry(
-        address _addr,
-        string _cid
-    ) public auth(UPDATE_ENTRY_ROLE)
-    {
-        require(bytes(_cid).length == 46, "CID malformed");
-        require(bytes(entries[_addr]).length != 0, "entry does not exist");
-
-        entries[_addr] = _cid;
-        emit EntryUpdated(_addr);
-    }
-
-    /**
-     * Get an entry from the registry.
+     * @notice Get data associated to entry `_addr` from the registry.
+     * @dev getter for the entries mapping for an addres
      * @param _addr The ID of the entry to get
+     * @return contentId pointing to the IPFS structured content object for the entry
      */
-    function getEntry(
-        address _addr
-    ) public view returns (string contentId)
-    {
+    function getEntry(address _addr) public view entryExists(_addr) returns (string contentId) {
         contentId = entries[_addr];
     }
 }
