@@ -51,7 +51,7 @@ contract AddressBook is AragonApp {
     }
 
     /**
-     * @notice Add the address `_addr` to the registry.
+     * @notice Add the entity `_cid` with address `_addr` to the registry.
      * @param _addr The address of the entry to add to the registry
      * @param _cid The IPFS hash of the entry to add to the registry
      */
@@ -64,12 +64,29 @@ contract AddressBook is AragonApp {
     }
 
     /**
-     * @notice Remove address `_addr` from the registry.
+     * @notice Remove entity `_cid` with address `_addr` from the registry.
      * @param _addr The ID of the entry to remove
+     * @param _cid The IPFS hash of the entry to remove from the registry; used only for radpec here
      */
-    function removeEntry(address _addr) public auth(REMOVE_ENTRY_ROLE) entryExists(_addr) {
+    function removeEntry(address _addr, string _cid) public auth(REMOVE_ENTRY_ROLE) entryExists(_addr) {
         delete entries[_addr];
         emit EntryRemoved(_addr);
+    }
+
+    /**
+     * @notice Update address `_addr` with new entity `_cid` in the registry.
+     * @param _addr The ID of the entry to update
+     * @param _cid The new CID of updated entity info
+     */
+    function updateEntry(
+        address _addr,
+        string _cid
+    ) public auth(UPDATE_ENTRY_ROLE) entryExists(_addr)
+    {
+        require(bytes(_cid).length == 46, "CID malformed");
+    
+        entries[_addr] = _cid;
+        emit EntryUpdated(_addr);
     }
 
     /**

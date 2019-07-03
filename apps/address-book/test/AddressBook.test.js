@@ -4,7 +4,8 @@ const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 const getContract = name => artifacts.require(name)
 
 /** Helper function to read events from receipts */
-const getReceipt = (receipt, event, arg) => receipt.logs.filter(l => l.event === event)[0].args[arg]
+const getReceipt = (receipt, event, arg) =>
+  receipt.logs.filter(l => l.event === event)[0].args[arg]
 
 /** Useful constants */
 const ANY_ADDRESS = '0xffffffffffffffffffffffffffffffffffffffff'
@@ -36,21 +37,42 @@ contract('AddressBook', accounts => {
 
     /** Create the dao from the dao factory */
     const daoReceipt = await daoFact.newDAO(root)
-    const dao = getContract('Kernel').at(getReceipt(daoReceipt, 'DeployDAO', 'dao'))
+    const dao = getContract('Kernel').at(
+      getReceipt(daoReceipt, 'DeployDAO', 'dao')
+    )
 
     /** Setup permission to install app */
     const acl = getContract('ACL').at(await dao.acl())
     await acl.createPermission(root, dao.address, APP_MANAGER_ROLE, root)
 
     /** Install an app instance to the dao */
-    const appReceipt = await dao.newAppInstance('0x1234', appBase.address, '0x', false)
-    app = getContract('AddressBook').at(getReceipt(appReceipt, 'NewAppProxy', 'proxy'))
+    const appReceipt = await dao.newAppInstance(
+      '0x1234',
+      appBase.address,
+      '0x',
+      false
+    )
+    app = getContract('AddressBook').at(
+      getReceipt(appReceipt, 'NewAppProxy', 'proxy')
+    )
 
     /** Setup permission to create address entries */
     await acl.createPermission(ANY_ADDRESS, app.address, ADD_ENTRY_ROLE, root)
 
     /** Setup permission to remove address entries */
-    await acl.createPermission(ANY_ADDRESS, app.address, REMOVE_ENTRY_ROLE, root)
+    await acl.createPermission(
+      ANY_ADDRESS,
+      app.address,
+      REMOVE_ENTRY_ROLE,
+      root
+    )
+    /** Setup permission to update address entries */
+    await acl.createPermission(
+      ANY_ADDRESS,
+      app.address,
+      UPDATE_ENTRY_ROLE,
+      root
+    )
 
     /** Initialize app */
     await app.initialize()
@@ -72,7 +94,7 @@ contract('AddressBook', accounts => {
     })
 
     it('should remove the previously added entry', async () => {
-      await app.removeEntry(starfleet)
+      await app.removeEntry(starfleet, '')
     })
 
     it('should allow to re-add same address from previously removed entry', async () => {
@@ -81,7 +103,7 @@ contract('AddressBook', accounts => {
   })
 
   context('invalid operations', () => {
-    const [ borg, jeanluc, bates ] = accounts.splice(1, 3)
+    const [borg, jeanluc, bates] = accounts.splice(1, 3)
     before(async () => {
       app.addEntry(borg, exampleCid)
     })
@@ -94,7 +116,7 @@ contract('AddressBook', accounts => {
 
     it('should revert when removing not existent entry', async () => {
       return assertRevert(async () => {
-        await app.removeEntry(jeanluc)
+        await app.removeEntry(jeanluc, '')
       })
     })
 
