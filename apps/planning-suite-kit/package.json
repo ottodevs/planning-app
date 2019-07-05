@@ -32,11 +32,5 @@
     "url": "https://github.com/AutarkLabs/planning-suite"
   },
   "keywords": [],
-  "license": "GPL-3.0",
-  "browserslist": [
-    ">2%",
-    "last 1 edge versions",
-    "not ie > 0",
-    "not op_mini all"
-  ]
+  "license": "GPL-3.0"
 }
