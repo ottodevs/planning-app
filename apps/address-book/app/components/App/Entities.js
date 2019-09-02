@@ -24,7 +24,8 @@ const ENTITY_TYPES = [
   { name: 'Project', fg: '#B30FB3', bg: '#B30FB333' },
 ]
 
-const entitiesSort = (a, b) => a.data.name.toUpperCase() > b.data.name.toUpperCase() ? 1 : -1
+const entitiesSort = (a, b) =>
+  a.data.name.toUpperCase() > b.data.name.toUpperCase() ? 1 : -1
 
 const Entities = ({ entities, onNewEntity, onRemoveEntity }) => {
   const network = useNetwork()
@@ -34,55 +35,49 @@ const Entities = ({ entities, onNewEntity, onRemoveEntity }) => {
     return <Empty action={onNewEntity} />
   } else {
     return (
-      <Table
-        header={
-          <TableRow>
-            <TableHeader title="Entity" />
-          </TableRow>
-        }
-      >
-        {entities.sort(entitiesSort).map(({ data: { name, entryAddress, entryType } }) => {
-          const typeRow = ENTITY_TYPES.filter(row => row.name === entryType)[0]
-          return (
-            <TableRow key={entryAddress}>
-              <EntityCell>
-                <EntityWrapper>
-                  <Text
-                    size="xlarge"
-                    style={{
-                      paddingBottom: '5px',
-                    }}
-                  >
-                    {name}
-                  </Text>
-                  <LocalIdentityBadge
-                    networkType={network && network.type}
-                    entity={entryAddress}
-                    shorten={true}
-                  />
-                </EntityWrapper>
-              </EntityCell>
-              <EntityCell align="right">
-                <Badge foreground={typeRow.fg} background={typeRow.bg}>
-                  {typeRow.name}
-                </Badge>
-              </EntityCell>
-              <EntityCell
-                align="right"
-                style={{
-                  width: '30px',
-                }}
-              >
-                <ContextMenu>
-                  <ContextMenuItem onClick={removeEntity(entryAddress)}>
-                    Remove
-                  </ContextMenuItem>
-                </ContextMenu>
-              </EntityCell>
-            </TableRow>
-          )
-        })}
-      </Table>
+      <DataView
+        mode="adaptive"
+        fields={['Name', 'Address', 'Type']}
+        entries={entities
+          .sort(entitiesSort)
+          .map(({ addr: address, data: { name, type } }) => [
+            address,
+            name,
+            type,
+          ])}
+        renderEntry={([address, name, type]) => {
+          const typeRow = ENTITY_TYPES.filter(row => row.name === type)[0]
+          const values = [
+            // eslint-disable-next-line react/jsx-key
+            <Text size="xlarge" css="padding-bottom: 5px">
+              {name}
+            </Text>,
+            <LocalIdentityBadge
+              key={address}
+              networkType={network && network.type}
+              entity={address}
+              shorten={true}
+            />,
+
+            // eslint-disable-next-line react/jsx-key
+            <Badge
+              foreground={typeRow.fg}
+              background={typeRow.bg}
+              css="text-align: right"
+            >
+              {typeRow.name}
+            </Badge>,
+          ]
+          return values
+        }}
+        renderEntryActions={([address]) => (
+          <ContextMenu>
+            <ContextMenuItem onClick={removeEntity(address)}>
+              Remove
+            </ContextMenuItem>
+          </ContextMenu>
+        )}
+      />
     )
   }
 }
