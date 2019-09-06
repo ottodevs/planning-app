@@ -51,21 +51,15 @@ export const onEntryUpdated = async ({ entries = [] }, { addr }) => {
 /*    AddressBook helper functions    */
 /// /////////////////////////////////////
 
-const loadEntryData = (addr) => {
-  return new Promise((resolve, reject) => {
+const loadEntryData = addr => {
+  return new Promise(resolve => {
     app.call('getEntry', addr).subscribe(async cid => {
-      if (!cid) resolve() // entry probably removed in a future block
-      try {
+      if (!cid) {
+        resolve() // entry probably removed in a future block
+      } else {
         const entryData = await ipfsGet(cid)
         // It is also needed track the cid because the remove function needs it
         resolve({ ...entryData, cid })
-      } catch (error) {
-        console.error(error) // TODO: incorporate this info into the errorCode & errorMessage below!!
-        reject({
-          caughtError: error,
-          errorCode: 'ipfs_resolution_error',
-          errorMessage: 'could not resolve ipfs blah blah blah; fix this error message in apps/address-book/app/store/entry.js',
-        })
       }
     })
   })
