@@ -172,66 +172,69 @@ const App = () => {
   }
 
   return (
-    <Main>
-      <AppLogicProvider>
-        <ApolloProvider client={client}>
-          <PanelContext.Provider value={configurePanel}>
-            <IdentityProvider
-              onResolve={handleResolveLocalIdentity}
-              onShowLocalIdentityModal={handleShowLocalIdentityModal}
-            >
-              <DecoratedReposProvider>
-                <Header
-                  primary="Projects"
-                  secondary={
-                    <TabAction />
-                  }
-                />
-                <ErrorBoundary>
+    <ApolloProvider client={client}>
+      <PanelContext.Provider value={configurePanel}>
+        <IdentityProvider
+          onResolve={handleResolveLocalIdentity}
+          onShowLocalIdentityModal={handleShowLocalIdentityModal}
+        >
+          <DecoratedReposProvider>
+            <Header
+              primary="Projects"
+              secondary={
+                <TabAction />
+              }
+            />
+            <ErrorBoundary>
 
-                  {selectedIssue
-                    ? (
-                      <React.Fragment>
-                        <Bar>
-                          <BackButton onClick={() => selectIssue(null)} />
-                        </Bar>
-                        <IssueDetail issueId={selectedIssue.id} />
-                      </React.Fragment>
-                    )
-                    : (
-                      <React.Fragment>
-                        <Tabs
-                          items={tabs.map(t => t.name)}
-                          onChange={handleSelect}
-                          selected={activeIndex.tabIndex}
-                        />
-                        <TabComponent
-                          status={github.status}
-                          app={api}
-                          bountyIssues={issues}
-                          bountySettings={bountySettings}
-                          tokens={tokens}
-                          activeIndex={activeIndex}
-                          changeActiveIndex={changeActiveIndex}
-                          setSelectedIssue={selectIssue}
-                          onLogin={handleGithubSignIn}
-                        />
-                      </React.Fragment>
-                    )
-                  }
-                </ErrorBoundary>
-                <PanelManager
-                  activePanel={panel}
-                  onClose={closePanel}
-                  {...panelProps}
-                />
-              </DecoratedReposProvider>
-            </IdentityProvider>
-          </PanelContext.Provider>
-        </ApolloProvider>
-      </AppLogicProvider>
-    </Main>
+              {selectedIssue
+                ? (
+                  <React.Fragment>
+                    <Bar>
+                      <BackButton onClick={() => selectIssue(null)} />
+                    </Bar>
+                    <IssueDetail issueId={selectedIssue} />
+                  </React.Fragment>
+                )
+                : (
+                  <React.Fragment>
+                    <Tabs
+                      items={tabs.map(t => t.name)}
+                      onChange={handleSelect}
+                      selected={activeIndex.tabIndex}
+                    />
+                    <TabComponent
+                      status={github.status}
+                      app={api}
+                      bountyIssues={issues}
+                      bountySettings={bountySettings}
+                      tokens={tokens}
+                      activeIndex={activeIndex}
+                      changeActiveIndex={changeActiveIndex}
+                      setSelectedIssue={selectIssue}
+                      onLogin={handleGithubSignIn}
+                    />
+                  </React.Fragment>
+                )
+              }
+            </ErrorBoundary>
+            <PanelManager
+              activePanel={panel}
+              onClose={closePanel}
+              {...panelProps}
+            />
+          </DecoratedReposProvider>
+        </IdentityProvider>
+      </PanelContext.Provider>
+    </ApolloProvider>
   )
 }
 
-export default App
+const Projects = () =>
+  <Main>
+    <AppLogicProvider>
+      <App />
+    </AppLogicProvider>
+  </Main>
+
+export default Projects
