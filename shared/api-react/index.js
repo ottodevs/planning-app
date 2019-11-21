@@ -3,6 +3,8 @@ import {
   useAragonApi as useProductionApi,
   useNetwork as useProductionNetwork,
 } from '@aragon/api-react'
+// TODO: This is importing the root @aragon/api-react so it is causing errors if the aragon/api-react version is not hoisted
+// the current implementation seems too brittle to be used
 
 export default ({ initialState = {}, functions = (() => {}) }) => {
   let useAragonApi = useProductionApi
