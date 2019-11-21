@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ApolloProvider } from 'react-apollo'
 
 import { useAragonApi } from './api-react'
+import { AppLogicProvider, useAppLogic } from './app-logic'
 import {
   Bar,
   Button,
@@ -36,7 +37,6 @@ const App = () => {
   const [ activeIndex, setActiveIndex ] = useState(
     { tabIndex: 0, tabData: {} }
   )
-  const [ selectedIssueId, setSelectedIssue ] = useState(null)
   const [ githubLoading, setGithubLoading ] = useState(false)
   const [ panel, setPanel ] = useState(null)
   const [ panelProps, setPanelProps ] = useState(null)
@@ -50,6 +50,8 @@ const App = () => {
     github = { status : STATUS.INITIAL },
     isSyncing = true,
   } = appState
+
+  const { selectedIssue, selectIssue } = useAppLogic(issues)
 
   const client = github.token ? initApolloClient(github.token) : null
 
@@ -171,61 +173,63 @@ const App = () => {
 
   return (
     <Main>
-      <ApolloProvider client={client}>
-        <PanelContext.Provider value={configurePanel}>
-          <IdentityProvider
-            onResolve={handleResolveLocalIdentity}
-            onShowLocalIdentityModal={handleShowLocalIdentityModal}
-          >
-            <DecoratedReposProvider>
-              <Header
-                primary="Projects"
-                secondary={
-                  <TabAction />
-                }
-              />
-              <ErrorBoundary>
+      <AppLogicProvider>
+        <ApolloProvider client={client}>
+          <PanelContext.Provider value={configurePanel}>
+            <IdentityProvider
+              onResolve={handleResolveLocalIdentity}
+              onShowLocalIdentityModal={handleShowLocalIdentityModal}
+            >
+              <DecoratedReposProvider>
+                <Header
+                  primary="Projects"
+                  secondary={
+                    <TabAction />
+                  }
+                />
+                <ErrorBoundary>
 
-                {selectedIssueId
-                  ? (
-                    <React.Fragment>
-                      <Bar>
-                        <BackButton onClick={() => setSelectedIssue(null)} />
-                      </Bar>
-                      <IssueDetail issueId={selectedIssueId} />
-                    </React.Fragment>
-                  )
-                  : (
-                    <React.Fragment>
-                      <Tabs
-                        items={tabs.map(t => t.name)}
-                        onChange={handleSelect}
-                        selected={activeIndex.tabIndex}
-                      />
-                      <TabComponent
-                        status={github.status}
-                        app={api}
-                        bountyIssues={issues}
-                        bountySettings={bountySettings}
-                        tokens={tokens}
-                        activeIndex={activeIndex}
-                        changeActiveIndex={changeActiveIndex}
-                        setSelectedIssue={setSelectedIssue}
-                        onLogin={handleGithubSignIn}
-                      />
-                    </React.Fragment>
-                  )
-                }
-              </ErrorBoundary>
-              <PanelManager
-                activePanel={panel}
-                onClose={closePanel}
-                {...panelProps}
-              />
-            </DecoratedReposProvider>
-          </IdentityProvider>
-        </PanelContext.Provider>
-      </ApolloProvider>
+                  {selectedIssue
+                    ? (
+                      <React.Fragment>
+                        <Bar>
+                          <BackButton onClick={() => selectIssue(null)} />
+                        </Bar>
+                        <IssueDetail issueId={selectedIssue.id} />
+                      </React.Fragment>
+                    )
+                    : (
+                      <React.Fragment>
+                        <Tabs
+                          items={tabs.map(t => t.name)}
+                          onChange={handleSelect}
+                          selected={activeIndex.tabIndex}
+                        />
+                        <TabComponent
+                          status={github.status}
+                          app={api}
+                          bountyIssues={issues}
+                          bountySettings={bountySettings}
+                          tokens={tokens}
+                          activeIndex={activeIndex}
+                          changeActiveIndex={changeActiveIndex}
+                          setSelectedIssue={selectIssue}
+                          onLogin={handleGithubSignIn}
+                        />
+                      </React.Fragment>
+                    )
+                  }
+                </ErrorBoundary>
+                <PanelManager
+                  activePanel={panel}
+                  onClose={closePanel}
+                  {...panelProps}
+                />
+              </DecoratedReposProvider>
+            </IdentityProvider>
+          </PanelContext.Provider>
+        </ApolloProvider>
+      </AppLogicProvider>
     </Main>
   )
 }
