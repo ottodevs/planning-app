@@ -8,13 +8,7 @@ import ReactDOM from 'react-dom'
 //   axe(React, ReactDOM, 1000)
 // }
 
-import { AragonApi } from './api-react'
-import appStateReducer from './app-state-reducer'
 import App from './App'
 
-ReactDOM.render(
-  <AragonApi reducer={appStateReducer}>
-    <App />
-  </AragonApi>,
-  document.querySelector('#projects')
+ReactDOM.render(<App />, document.querySelector('#projects')
 )
