@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ApolloProvider } from 'react-apollo'
 
 import { useAragonApi } from './api-react'
-import { AppLogicProvider, useAppLogic } from './app-logic'
+import { AppLogicProvider, useAppLogic, useSelectedTab } from './app-logic'
 import {
   Bar,
   Button,
@@ -35,7 +35,7 @@ import { DecoratedReposProvider } from './context/DecoratedRepos'
 const App = () => {
   const { api, appState } = useAragonApi()
   const [ activeIndex, setActiveIndex ] = useState(
-    { tabIndex: 0, tabData: {} }
+    { tabData: {} }
   )
   const [ githubLoading, setGithubLoading ] = useState(false)
   const [ panel, setPanel ] = useState(null)
@@ -52,6 +52,8 @@ const App = () => {
   } = appState
 
   const { selectedIssue, selectIssue } = useAppLogic(issues)
+  const { selectedTab, selectTab } = useSelectedTab()
+  console.log('selected tab', selectedTab)
 
   const client = github.token ? initApolloClient(github.token) : null
 
@@ -115,7 +117,10 @@ const App = () => {
   }
 
   const handleSelect = index => {
-    changeActiveIndex({ tabIndex: index, tabData: {} })
+    changeActiveIndex({ tabData: {} })
+    console.log('index', index)
+    
+    // selectTab(index)
   }
 
   const handleResolveLocalIdentity = address => {
@@ -151,16 +156,17 @@ const App = () => {
 
   // Tabs are not fixed
   const tabs = [{ name: 'Overview', body: Overview }]
+  // TODO: Check if removing the repos breaks this
   if (repos.length)
     tabs.push({ name: 'Issues', body: Issues })
   tabs.push({ name: 'Settings', body: Settings })
 
   // Determine current tab details
-  const TabComponent = tabs[activeIndex.tabIndex].body
+  const TabComponent = tabs[selectedTab].body
   const TabAction = () => {
     const { setupNewIssue, setupNewProject } = usePanelManagement()
 
-    switch (tabs[activeIndex.tabIndex].name) {
+    switch (tabs[selectedTab].name) {
     case 'Overview': return (
       <Button mode="strong" icon={<IconPlus />} onClick={setupNewProject} label="New Project" />
     )
@@ -201,7 +207,7 @@ const App = () => {
                     <Tabs
                       items={tabs.map(t => t.name)}
                       onChange={handleSelect}
-                      selected={activeIndex.tabIndex}
+                      selected={selectedTab}
                     />
                     <TabComponent
                       status={github.status}

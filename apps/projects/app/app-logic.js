@@ -2,18 +2,35 @@ import PropTypes from 'prop-types'
 import React, { useCallback, useMemo, } from 'react'
 import { AragonApi, usePath } from '@aragon/api-react'
 import appStateReducer from './app-state-reducer'
+import { fromPath } from './utils/path-utils'
 
-// const ISSUE_ID_PATH_RE = /^\/issue\/(?:[a-z0-9]{23}=\/?)$/i
-const ISSUE_ID_PATH_RE = /^\/issue\/([a-z0-9]{23}=)\/?$/i
-const NO_ISSUE_ID = '-1'
+const TABS = [ 'overview', 'issues', 'settings' ]
 
-const issueIdFromPath = path => {
-  if (!path) {
-    return NO_ISSUE_ID
-  }
-  const matches = path.match(ISSUE_ID_PATH_RE)
-  
-  return matches ? matches[1] : NO_ISSUE_ID
+// Get the tab currently selected, or null otherwise (which will load overview then)
+export const useSelectedTab = () => {
+  const [ path, requestPath ] = usePath()
+
+  // The memoized tab currently selected
+  const selectedTab = useMemo(() => {
+    const { tab } = fromPath(path)
+
+    if (!tab) {
+      return 0
+    }
+
+    return TABS.findIndex(tab)
+  }, [path])
+
+  const selectTab = useCallback(
+    tabIndex => {
+      const tab = TABS[tabIndex]
+      console.log('trying to select tab', tabIndex, tab)
+      requestPath(!tab ? '' : `/${tab}/`)
+    },
+    [requestPath]
+  )
+
+  return { selectedTab, selectTab }
 }
 
 // Get the issue currently selected, or null otherwise.
@@ -22,21 +39,26 @@ export const useSelectedIssue = issues => {
 
   // The memoized issue currently selected
   const selectedIssue = useMemo(() => {
-    const issueId = issueIdFromPath(path)
+    const { issueId } = fromPath(path)
 
-    // The `ready` check prevents the issue to be
-    // selected until the app state is fully ready.
     // TODO: Handle signed status / ready state
-    if (issueId === NO_ISSUE_ID) {
+    // A `ready` check prevents the issue to be
+    // selected until the app state is fully ready.
+    if (!issueId) {
       return null
     }
-
-    return issueId || null // issues.find(issue => issue.id === issueId) || null
+    
+    // TODO: Check why issues is not populated here (probably here it is issues from the contract, we need from the FE state)
+    // So issues.find is never finding a match
+    // We add the equal char here to the issue to avoid %3D escaped equal character in the URL (probably coming from aragon.js)
+    // TODO: Proper error when issue id in the path matches regex but does not exist
+    return issueId + '=' // issues.find(issue => issue.id === `${issueId}`) || null
   }, [ path, issues ])
 
   const selectIssue = useCallback(
     issueId => {
-      requestPath(String(issueId) === NO_ISSUE_ID ? '' : `/issue/${issueId}/`)
+      // The trailing equal char is sliced to avoid being escaped into ugly %3D in the url
+      requestPath(!issueId ? '' : `/issue/${issueId.slice(0, -1)}/`)
     },
     [requestPath]
   )
