@@ -12,7 +12,8 @@ const Link = ({ children, ...props }) => (
 )
 
 Link.propTypes = {
-  children: PropTypes.element.isRequired,
+  // TODO: verify why this was marked as element! (I changed to array to avoid warning msg)
+  children: PropTypes.array.isRequired,
 }
 
 const ListItem = ({ checked, children }) => {
@@ -30,8 +31,10 @@ const ListItem = ({ checked, children }) => {
 }
 
 ListItem.propTypes = {
-  checked: PropTypes.bool.isRequired,
-  children: PropTypes.element.isRequired,
+  // TODO: verify why this was marked as required! (I remove for now because is causing warning msg)
+  checked: PropTypes.bool,
+  // TODO: verify why this was marked as element! (I changed to array to avoid warning msg)
+  children: PropTypes.array.isRequired,
 }
 
 const Markdown = ({ content, style }) => {

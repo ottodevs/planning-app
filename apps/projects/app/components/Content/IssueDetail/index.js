@@ -15,6 +15,7 @@ const IssueDetail = ({ issueId }) => {
   const client = useMemo(() => initApolloClient(github.token), [])
   const { layoutName } = useLayout()
   const shapeIssue = useShapedIssue()
+  console.log('here is the issue:', issueId)
   const { loading, error, data } = useQuery(GET_ISSUE, {
     client,
     onError: console.error,

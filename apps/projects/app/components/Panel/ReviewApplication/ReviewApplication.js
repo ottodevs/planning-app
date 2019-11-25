@@ -33,6 +33,8 @@ const ReviewApplication = ({ issue, requestIndex }) => {
   const [ feedback, setFeedback ] = useState('')
   const [ index, setIndex ] = useState(requestIndex)
 
+  console.log('request index!', index)
+
   const updateFeedback = e => setFeedback(e.target.value)
 
   const buildReturnData = approved => {
