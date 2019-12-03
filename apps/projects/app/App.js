@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ApolloProvider } from 'react-apollo'
 
 import { useAragonApi } from './api-react'
-import { AppLogicProvider, useAppLogic, useSelectedTab } from './app-logic'
+import { AppLogicProvider, useAppLogic } from './app-logic'
 import {
   Bar,
   Button,
@@ -51,10 +51,7 @@ const App = () => {
     isSyncing = true,
   } = appState
 
-  const { selectedIssue, selectIssue } = useAppLogic(issues)
-  const { selectedTab, selectTab } = useSelectedTab()
-  console.log('selected tab', selectedTab)
-
+  const { fromPath: { selectedIssue, selectedPanel, selectedSubmissionId, selectedTab }, selectIssue, selectTab } = useAppLogic(issues)
   const client = github.token ? initApolloClient(github.token) : null
 
   useEffect(() => {
@@ -118,9 +115,9 @@ const App = () => {
 
   const handleSelect = index => {
     changeActiveIndex({ tabData: {} })
-    console.log('index', index)
+    console.log('[handleSelect], selected tab with index', index)
     
-    // selectTab(index)
+    selectTab(index)
   }
 
   const handleResolveLocalIdentity = address => {
@@ -156,7 +153,7 @@ const App = () => {
 
   // Tabs are not fixed
   const tabs = [{ name: 'Overview', body: Overview }]
-  // TODO: Check if removing the repos breaks this
+  // TODO: This is failing a lot, repos.length is empty every time the page is refreshed from the browser button
   if (repos.length)
     tabs.push({ name: 'Issues', body: Issues })
   tabs.push({ name: 'Settings', body: Settings })
