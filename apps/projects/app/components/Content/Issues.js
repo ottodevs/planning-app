@@ -48,7 +48,8 @@ class Issues extends React.PureComponent {
     }),
     graphqlQuery: PropTypes.shape({
       data: PropTypes.object,
-      error: PropTypes.string,
+      // TODO: Verify if error is always an object (it seems so)
+      error: PropTypes.oneOfType([ PropTypes.string, PropTypes.object ]),
       loading: PropTypes.bool.isRequired,
       refetch: PropTypes.func,
     }).isRequired,
@@ -349,7 +350,7 @@ class Issues extends React.PureComponent {
             {moreIssuesToShow && (
               <Button
                 style={{ margin: '12px 0 30px 0' }}
-                mode="secondary"
+                mode="normal"
                 onClick={() =>
                   this.showMoreIssues(downloadedIssues, downloadedRepos)
                 }

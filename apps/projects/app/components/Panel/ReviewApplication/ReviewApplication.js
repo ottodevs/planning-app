@@ -200,6 +200,7 @@ const ReviewApplication = ({ issueId, requestIndex = 0 }) => {
     </div>
   )
 }
+// TODO: Better typing for issueId (like 43 length, starts by M, etc)
 ReviewApplication.propTypes = {
   issueId: PropTypes.string.isRequired,
   requestIndex: PropTypes.number,

@@ -59,7 +59,7 @@ const GitHubConnect = ({ onLogin, onLogout, user, status }) => {
       <Button
         css={`margin-top: ${1 * GU}px`}
         wide
-        mode="secondary"
+        mode="normal"
         onClick={buttonAction}
       >
         {buttonText}
@@ -149,7 +149,7 @@ const ExperienceLevel = ({
       <Button
         disabled={!canAdd}
         compact
-        mode="secondary"
+        mode="normal"
         onClick={onAddExpLevel}
       >
         + Add Another

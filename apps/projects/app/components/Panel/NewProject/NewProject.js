@@ -83,7 +83,7 @@ const NewProject = () => {
           No results found.
         </Text.Block>
         <Text.Block>
-          We can&#39;t find any items mathing your search.
+          We can&#39;t find any items matching your search.
         </Text.Block>
         <Button
           size="mini"

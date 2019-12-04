@@ -109,7 +109,7 @@ class DropDownOptionsInput extends React.Component {
     </div>
 
     const hideOption = <div>
-      <Button compact mode="secondary" onClick={this.addOption}>+ Add Another</Button>
+      <Button compact mode="normal" onClick={this.addOption}>+ Add Another</Button>
     </div>
 
 

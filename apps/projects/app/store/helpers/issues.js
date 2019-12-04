@@ -69,7 +69,10 @@ export const loadIpfsData = async ipfsHash => {
     deadline,
     fundingHistory,
     hours,
-    key,
+    // TODO: Confirm key is not needed
+    // (it causes react warnings with issue list)
+    // Once confirmed, definitely remove this key
+    // key,
     repo,
     size,
     slots,
@@ -81,7 +84,8 @@ export const loadIpfsData = async ipfsHash => {
     deadline,
     fundingHistory,
     hours,
-    key,
+    // TODO: Confirm key is not needed and remove
+    // key,
     repo,
     size,
     slots,

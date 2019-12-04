@@ -48,9 +48,11 @@ const App = () => {
     github = { status : STATUS.INITIAL },
     isSyncing = true,
   } = appState
+  
+  const client = useMemo(() => github.token ? initApolloClient(github.token) : null, [github.token])
 
   const { fromPath: { selectedIssueId, selectedPanel, selectedSubmissionId, selectedTab }, selectIssue, selectTab } = useAppLogic(issues)
-  const client = github.token ? initApolloClient(github.token) : null
+  
   useEffect(() => {
     if (selectedPanel) {
       setPanel(selectedPanel)

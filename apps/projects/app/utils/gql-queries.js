@@ -103,6 +103,7 @@ export const getIssuesGQL = repos => {
   return gql`${q}`
 }
 
+// TODO: Make this query more granular, sometimes we don't want all the issueAttributes
 export const GET_ISSUE = gql`
   query GetIssue($id: ID!) {
     node(id: $id) {

@@ -28,6 +28,8 @@ export default () => {
 
       return {
         ...issue,
+        // FIXME: This is the same as data, this whole file fields redundancy needs URGENT ATTENTION
+        // This field is generating warnings in the browser when uncommented, why do we need to have data twice?
         ...bounties[issue.number].data,
         repoId: issue.repository.id,
         repo: issue.repository.name,
