@@ -34,9 +34,7 @@ import { DecoratedReposProvider } from './context/DecoratedRepos'
 
 const App = () => {
   const { api, appState } = useAragonApi()
-  const [ activeIndex, setActiveIndex ] = useState(
-    { tabData: {} }
-  )
+  const [ tabData, setTabData ] = useState({})
   const [ githubLoading, setGithubLoading ] = useState(false)
   const [ panel, setPanel ] = useState(null)
   const [ panelProps, setPanelProps ] = useState(null)
@@ -89,10 +87,6 @@ const App = () => {
     }
   }
 
-  const changeActiveIndex = data => {
-    setActiveIndex(data)
-  }
-
   const closePanel = () => {
     setPanel(null)
     setPanelProps(null)
@@ -113,11 +107,15 @@ const App = () => {
     window.addEventListener('message', handlePopupMessage)
   }
 
-  const handleSelect = index => {
-    changeActiveIndex({ tabData: {} })
-    console.log('[handleSelect], selected tab with index', index)
-    
-    selectTab(index)
+  const handleTabSelection = data => {
+    // When a project card is clicked, data is passed to the issues view
+    if (typeof data === 'object') {
+      selectTab(data.tabIndex)
+      setTabData(data.tabData)
+    } else {
+      // When a section is clicked on the TabBar no data is passed
+      selectTab(data)
+    }
   }
 
   const handleResolveLocalIdentity = address => {
@@ -203,19 +201,19 @@ const App = () => {
                   <React.Fragment>
                     <Tabs
                       items={tabs.map(t => t.name)}
-                      onChange={handleSelect}
+                      onChange={handleTabSelection}
                       selected={selectedTab}
                     />
                     <TabComponent
-                      status={github.status}
                       app={api}
                       bountyIssues={issues}
                       bountySettings={bountySettings}
-                      tokens={tokens}
-                      activeIndex={activeIndex}
-                      changeActiveIndex={changeActiveIndex}
-                      setSelectedIssue={selectIssue}
+                      onProjectClick={handleTabSelection}
                       onLogin={handleGithubSignIn}
+                      setSelectedIssue={selectIssue}
+                      status={github.status}
+                      tabData={tabData}
+                      tokens={tokens}
                     />
                   </React.Fragment>
                 )

@@ -7,7 +7,7 @@ import { useLayout } from '@aragon/ui'
 import { CARD_STRETCH_BREAKPOINT } from '../../utils/responsive'
 import { useDecoratedRepos } from '../../context/DecoratedRepos'
 
-const Overview = ({ changeActiveIndex }) => {
+const Overview = ({ onProjectClick }) => {
   const { width } = useLayout()
   const repos = useDecoratedRepos()
 
@@ -22,7 +22,7 @@ const Overview = ({ changeActiveIndex }) => {
       // TODO: Disabled for now
       // contributors={repo.metadata.collaborators}
       url={repo.metadata.url}
-      changeActiveIndex={changeActiveIndex}
+      onProjectClick={onProjectClick}
     />
   ), [repos]
   ))
@@ -39,7 +39,7 @@ const Overview = ({ changeActiveIndex }) => {
 }
 
 Overview.propTypes = {
-  changeActiveIndex: PropTypes.func.isRequired,
+  onProjectClick: PropTypes.func.isRequired,
 }
 
 const StyledProjects = styled.div`

@@ -26,7 +26,7 @@ const Project = ({
   description,
   commits,
   url,
-  changeActiveIndex,
+  onProjectClick,
 }) => {
   const {
     api: { removeRepo },
@@ -42,16 +42,16 @@ const Project = ({
 
   const clickMenu = e => e.stopPropagation()
 
-  const clickContext = e => {
+  const handleProjectClick = e => {
     e.stopPropagation()
-    changeActiveIndex({
+    onProjectClick({
       tabIndex: 1,
       tabData: { filterIssuesByRepoId: repoId },
     })
   }
 
   return (
-    <StyledCard onClick={clickContext} screenSize={width}>
+    <StyledCard onClick={handleProjectClick} screenSize={width}>
       <MenuContainer onClick={clickMenu}>
         <ContextMenu>
           <div css={`padding: ${GU}px`}>
@@ -118,7 +118,7 @@ Project.propTypes = {
   commits: PropTypes.number.isRequired,
   url: PropTypes.string.isRequired,
   contributors: PropTypes.array,
-  changeActiveIndex: PropTypes.func.isRequired,
+  onProjectClick: PropTypes.func.isRequired,
 }
 
 const StyledCard = styled(Card)`
