@@ -15,23 +15,33 @@ import {
 } from '@aragon/ui'
 import { FormField, FieldTitle } from '../../Form'
 import useGithubAuth from '../../../hooks/useGithubAuth'
+import useSingleIssue from '../../../hooks/useSingleIssue'
 import { useAragonApi } from '../../../api-react'
 import { usePanelManagement } from '../../Panel'
 import { ipfsAdd } from '../../../utils/ipfs-helpers'
 import { toHex } from 'web3-utils'
-import { issueShape } from '../../../utils/shapes.js'
 import { IssueTitle } from '../PanelComponents'
 
-const ReviewApplication = ({ issue, requestIndex }) => {
-  const githubCurrentUser = useGithubAuth()
-  const {
-    api: { reviewApplication },
-  } = useAragonApi()
-  const { closePanel } = usePanelManagement()
-  const theme = useTheme()
-
+const ReviewApplication = ({ issueId, requestIndex = 0 }) => {
   const [ feedback, setFeedback ] = useState('')
   const [ index, setIndex ] = useState(requestIndex)
+  const theme = useTheme()
+  const {
+    api: { reviewApplication },
+    appState: { issues }
+  } = useAragonApi()
+  const { closePanel } = usePanelManagement()
+  const githubCurrentUser = useGithubAuth()
+  const data = useSingleIssue(issueId)
+  // TODO: We should show loading here instead of null
+  if (!data || !issues || issues.length === 0) {
+    return null
+  } 
+  const { repository: { id: repoId }, number } = data
+  const issue = issues.find(({ data: i }) => repoId === i.repoId && number === i.number ).data
+  if (!issue) {
+    return null
+  }
 
   const updateFeedback = e => setFeedback(e.target.value)
 
@@ -191,8 +201,8 @@ const ReviewApplication = ({ issue, requestIndex }) => {
   )
 }
 ReviewApplication.propTypes = {
-  issue: issueShape,
-  requestIndex: PropTypes.number.isRequired,
+  issueId: PropTypes.string.isRequired,
+  requestIndex: PropTypes.number,
 }
 
 const UserLink = styled.div`

@@ -18,8 +18,8 @@ export const usePathSegments = () => {
 
     const pathSegments = {
       selectedTab: tab ? TABS.indexOf(tab) : 0,
-      selectedIssue: tab === 'issues' && issueId ? issueId + '=' : null,
-      selectedPanel: (panel && submissionId) ? 'review' + panel[0].toUpperCase() + panel.substr(1) : null,
+      selectedIssueId: tab === 'issues' && issueId ? issueId + '=' : null,
+      selectedPanel: (panel && submissionId) ? 'Review' + panel[0].toUpperCase() + panel.substr(1) : null,
       selectedSubmissionId: (tab === 'issues' && panel && submissionId) || null
     }
 
@@ -68,11 +68,9 @@ export const usePathSegments = () => {
     [requestPath]
   )
 
-  // // TODO: Implement these
-  // const selectedPanel = () => {}
-  // const selectPanel = () => {}
+  const selectPanel = () => {}
 
-  return { /*selectedIssue, selectedTab,*/ fromPath, selectIssue,  selectTab }
+  return { fromPath, selectIssue, selectPanel, selectTab }
 }
 
 // Handles the main logic of the app.

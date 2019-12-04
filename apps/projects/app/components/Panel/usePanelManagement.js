@@ -40,7 +40,7 @@ const usePanelManagement = () => {
     reviewApplication: (issue, requestIndex = 0) => {
       setActivePanel(PANELS.ReviewApplication)
       setPanelProps({
-        issue,
+        issueId: issue.id,
         requestIndex,
       })
     },

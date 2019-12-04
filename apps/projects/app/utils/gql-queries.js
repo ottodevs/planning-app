@@ -111,6 +111,19 @@ export const GET_ISSUE = gql`
   }
 `
 
+export const GET_ISSUE_NUMBER = gql`
+  query GetIssue($id: ID!) {
+    node(id: $id) {
+      ... on Issue {
+        number
+        repository {
+          id
+        }
+      }
+    }
+  }
+`
+
 export const NEW_ISSUE = gql`
   mutation create($title: String!, $description: String, $id: ID!) {
     createIssue(

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ApolloProvider } from 'react-apollo'
 
 import { useAragonApi } from './api-react'
@@ -49,8 +49,14 @@ const App = () => {
     isSyncing = true,
   } = appState
 
-  const { fromPath: { selectedIssue, selectedPanel, selectedSubmissionId, selectedTab }, selectIssue, selectTab } = useAppLogic(issues)
+  const { fromPath: { selectedIssueId, selectedPanel, selectedSubmissionId, selectedTab }, selectIssue, selectTab } = useAppLogic(issues)
   const client = github.token ? initApolloClient(github.token) : null
+  useEffect(() => {
+    if (selectedPanel) {
+      setPanel(selectedPanel)
+      setPanelProps({ issueId: selectedIssueId, requestedIndex: selectedSubmissionId })
+    }
+  }, [selectedPanel])
 
   useEffect(() => {
     const code = getURLParam('code')
@@ -151,7 +157,7 @@ const App = () => {
 
   // Tabs are not fixed
   const tabs = [{ name: 'Overview', body: Overview }]
-  // TODO: This is failing a lot, repos.length is empty every time the page is refreshed from the browser button
+
   if (repos.length)
     tabs.push({ name: 'Issues', body: Issues })
   tabs.push({ name: 'Settings', body: Settings })
@@ -188,13 +194,13 @@ const App = () => {
             />
             <ErrorBoundary>
 
-              {selectedIssue
+              {selectedIssueId
                 ? (
                   <React.Fragment>
                     <Bar>
                       <BackButton onClick={() => selectIssue(null)} />
                     </Bar>
-                    <IssueDetail issueId={selectedIssue} />
+                    <IssueDetail issueId={selectedIssueId} />
                   </React.Fragment>
                 )
                 : (
