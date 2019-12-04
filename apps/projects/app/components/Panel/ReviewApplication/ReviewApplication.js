@@ -35,13 +35,17 @@ const ReviewApplication = ({ issueId, requestIndex = 0 }) => {
   const data = useSingleIssue(issueId)
   // TODO: We should show loading here instead of null
   if (!data || !issues || issues.length === 0) {
+    console.log('TODO: should be loading here')
     return null
   } 
   const { repository: { id: repoId }, number } = data
   const issue = issues.find(({ data: i }) => repoId === i.repoId && number === i.number ).data
   if (!issue) {
+    console.log('TODO: should render 404 page here')
     return null
   }
+  console.log('issue got?', issue)
+  console.log('BIG TODO: SET SELECTED PANEL HERE !!!!')
 
   const updateFeedback = e => setFeedback(e.target.value)
 

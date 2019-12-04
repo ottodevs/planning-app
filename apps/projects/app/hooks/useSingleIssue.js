@@ -15,6 +15,7 @@ const useSingleIssue = (selectedSubmissionId) => {
     initApolloClient(token)
       .query({ query: GET_ISSUE_NUMBER, variables: { id: selectedSubmissionId } })
       .then(res => {
+        console.log('got data!', res)
         setSingleIssue(res.data.node)
       }
       )

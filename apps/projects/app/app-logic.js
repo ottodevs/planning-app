@@ -39,11 +39,13 @@ export const usePathSegments = () => {
     [requestPath]
   )
 
+  // TODO: Implement this
   const selectPanel = () => {}
 
   return { fromPath, selectIssue, selectPanel, selectTab }
 }
 
+// TODO: Add path helper
 // Handles the main logic of the app.
 export const useAppLogic = issues => {
   return usePathSegments(issues)

@@ -30,6 +30,7 @@ export const PanelContext = createContext({
 })
 
 export const PanelManager = ({ activePanel = null, onClose, ...panelProps }) => {
+  activePanel && console.log('the active panel:', activePanel, panelProps)
   const panelTitle = panelProps.title
     ? panelProps.title
     : activePanel && camel2title(activePanel)
