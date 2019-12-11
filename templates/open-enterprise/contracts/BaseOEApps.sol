@@ -31,8 +31,10 @@ contract BaseOEApps is BaseTemplate {
         address bounties;
         address finance;
         address dao;
-        address shareToken;
-        address tokenManager;
+        address firstToken;
+        address secondToken;
+        address firstTokenManager;
+        address secondTokenManager;
         address vault;
         address voting;
     }
@@ -204,15 +206,27 @@ contract BaseOEApps is BaseTemplate {
 
 /* CACHE */
 
-    function _cacheShareToken(MiniMeToken _shareToken) internal {
+    function _cacheTokens(MiniMeToken _firstToken, MiniMeToken _secondToken) internal {
         Cache storage c = cache[msg.sender];
-        c.shareToken = address(_shareToken);
+        c.firstToken = address(_firstToken);
+        c.secondToken = address(_secondToken);
     }
 
-    function _shareTokenCache() internal returns (MiniMeToken shareToken) {
+    // function _cacheToken(MiniMeToken _firstToken) internal {
+    //     Cache storage c = cache[msg.sender];
+    //     c.firstToken = address(_firstToken);
+    // }
+
+    function _tokensCache() internal returns (MiniMeToken firstToken, MiniMeToken secondToken) {
         Cache storage c = cache[msg.sender];
-        shareToken = MiniMeToken(c.shareToken);
+        firstToken = MiniMeToken(c.firstToken);
+        secondToken = MiniMeToken(c.secondToken);
     }
+
+    // function _tokenCache() internal returns (MiniMeToken firstToken) {
+    //     Cache storage c = cache[msg.sender];
+    //     firstToken = MiniMeToken(c.firstToken);
+    // }
 
     function _cacheDao(Kernel _dao) internal {
         Cache storage c = cache[msg.sender];
@@ -224,18 +238,34 @@ contract BaseOEApps is BaseTemplate {
         dao = Kernel(c.dao);
     }
 
-    function _cacheBaseApps(Finance _finance, TokenManager _tokenManager, Vault _vault, Voting _voting) internal {
+    function _cacheBaseApps(
+        Finance _finance,
+        TokenManager _firstTokenManager,
+        TokenManager _secondTokenManager,
+        Vault _vault,
+        Voting _voting
+    ) internal
+    {
         Cache storage c = cache[msg.sender];
         c.finance = address(_finance);
-        c.tokenManager = address(_tokenManager);
+        c.firstTokenManager = address(_firstTokenManager);
+        c.secondTokenManager = address(_secondTokenManager);
         c.vault = address(_vault);
         c.voting = address(_voting);
     }
 
-    function _baseAppsCache() internal returns (Finance finance, TokenManager tokenManager, Vault vault, Voting voting) {
+    function _baseAppsCache() internal returns (
+        Finance finance,
+        TokenManager firstTokenManager,
+        TokenManager secondTokenManager,
+        Vault vault,
+        Voting voting
+    )
+    {
         Cache storage c = cache[msg.sender];
         finance = Finance(c.finance);
-        tokenManager = TokenManager(c.tokenManager);
+        firstTokenManager = TokenManager(c.firstTokenManager);
+        secondTokenManager = TokenManager(c.secondTokenManager);
         vault = Vault(c.vault);
         voting = Voting(c.voting);
     }

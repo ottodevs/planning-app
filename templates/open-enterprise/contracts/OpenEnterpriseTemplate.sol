@@ -43,7 +43,7 @@ contract OpenEnterpriseTemplate is BaseOEApps {
         external
     {
         MiniMeToken token = _createToken(_tokenName, _tokenSymbol, TOKEN_DECIMALS);
-        _cacheShareToken(token);
+        _cacheTokens(token, MiniMeToken(address(0)));
         _newInstance(
             _id,
             _members,
@@ -70,7 +70,7 @@ contract OpenEnterpriseTemplate is BaseOEApps {
 
         Kernel dao = _daoCache();
         ACL acl = ACL(dao.acl());
-        (Finance finance, TokenManager tokenManager, Vault vault, Voting voting) = _baseAppsCache();
+        (Finance finance, TokenManager tokenManager, /* NOT_USED */, Vault vault, Voting voting) = _baseAppsCache();
 
         _setupOEApps(dao, acl, tokenManager, vault, voting, _dotVotingSettings, _allocationsPeriod, _useDiscussions);
         _transferCreatePaymentManagerFromTemplate(acl, finance, voting);
@@ -107,7 +107,7 @@ contract OpenEnterpriseTemplate is BaseOEApps {
             Vault vault
         ) = _setupApps(_members, _stakes, _votingSettings, _financePeriod, _tokenTransferable);
 
-        _cacheBaseApps(finance, tokenManager, vault, voting);
+        _cacheBaseApps(finance, tokenManager, TokenManager(address(0)), vault, voting);
         _registerID(_id, dao);
     }
 
@@ -121,10 +121,11 @@ contract OpenEnterpriseTemplate is BaseOEApps {
         internal
         returns (Finance, TokenManager, Voting, Vault)
     {
+        (MiniMeToken token,) = _tokensCache();
         Vault vault = _installVaultApp(_daoCache());
         Finance finance = _installFinanceApp(_daoCache(), vault, _financePeriod == 0 ? DEFAULT_PERIOD : _financePeriod);
-        TokenManager tokenManager = _installTokenManagerApp(_daoCache(), _shareTokenCache(), _tokenTransferable, TOKEN_MAX_PER_ACCOUNT);
-        Voting voting = _installVotingApp(_daoCache(), _shareTokenCache(), _votingSettings);
+        TokenManager tokenManager = _installTokenManagerApp(_daoCache(), token, _tokenTransferable, TOKEN_MAX_PER_ACCOUNT);
+        Voting voting = _installVotingApp(_daoCache(), token, _votingSettings);
 
         _mintTokens(ACL(_daoCache().acl()), tokenManager, _members, _stakes);
         _setupPermissions(ACL(_daoCache().acl()), vault, voting, finance, tokenManager);
@@ -149,7 +150,7 @@ contract OpenEnterpriseTemplate is BaseOEApps {
             _createDiscussionsPermissions(_acl, discussions, ANY_ENTITY, _voting);
         }
 
-        MiniMeToken token = _shareTokenCache();
+        (MiniMeToken token,) = _tokensCache();
         AddressBook addressBook = _installAddressBookApp(_dao);
         Allocations allocations = _installAllocationsApp(_dao, _vault, _allocationsPeriod == 0 ? DEFAULT_PERIOD : _allocationsPeriod);
         DotVoting dotVoting = _installDotVotingApp(_dao, token, _dotVotingSettings);
