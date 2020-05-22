@@ -19,86 +19,34 @@ import {
 } from '@aragon/ui'
 
 import { usePanel } from '../../context/Panel'
-import usePathHelpers from '../../hooks/usePathHelpers'
+import usePathHelpers from '../../../../../shared/utils/usePathHelpers'
+import usePeriod from '../../hooks/usePeriod'
 import { AllocationsHistory } from '.'
+import InfoBlock from './InfoBlock'
 import BudgetContextMenu from '../BudgetContextMenu'
 import { formatDate } from '../../utils/helpers'
+import * as types from '../../utils/prop-types'
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 const percentOf = (smaller, bigger) =>
   `${BigNumber(100 * smaller / bigger).dp(1).toString()}%`
 
-function CurrencyValue({ amount, context, token }) {
-  const theme = useTheme()
-
-  const main = BigNumber(amount)
-    .div(10 ** token.decimals)
+const displayCurrency = (amount, decimals) => {
+  return BigNumber(amount)
+    .div(10 ** decimals)
     .dp(3)
     .toNumber()
     .toLocaleString()
-
-  return (
-    <>
-      <Text.Block>
-        <Text size="xlarge">
-          {main + ' '}
-        </Text>
-        <Text size="small">{token.symbol}</Text>
-      </Text.Block>
-      <Text.Block size="small" color={`${theme.surfaceContentSecondary}`}>
-        {context}
-      </Text.Block>
-    </>
-  )
 }
 
-CurrencyValue.propTypes = {
-  amount: PropTypes.oneOfType([ PropTypes.string, PropTypes.number ]).isRequired,
-  token: PropTypes.shape({
-    decimals: PropTypes.oneOfType([ PropTypes.string, PropTypes.number ]).isRequired,
-    symbol: PropTypes.string.isRequired,
-  }).isRequired,
-  context: PropTypes.string.isRequired,
-}
-
-function InfoBlock({ children, className, title }) {
-  const theme = useTheme()
-  return (
-    <div className={className}>
-      <div css={`
-          ${textStyle('label2')};
-          margin-bottom: ${GU}px;
-          color: ${theme.surfaceContentSecondary};
-        `}
-      >
-        {title}
-      </div>
-      {children}
-    </div>
-  )
-}
-
-InfoBlock.propTypes = {
-  children: PropTypes.node,
-  className: PropTypes.string,
-  title: PropTypes.string,
-}
-
-function usePeriod() {
-  const { appState } = useAragonApi()
-  if (!appState.period) return {}
-
-  let { startDate, endDate } = appState.period
-  const duration = endDate - startDate
-
-  // if user visits page from the timeframe of what should be the *next*
-  // period, but the period has not yet been updated on-chain, show them the
-  // period as it will be calculated for their date
-  while (endDate < new Date()) {
-    startDate = new Date(endDate.getTime() + 1000)
-    endDate = new Date(startDate.getTime() + duration)
+const processTime = ms => {
+  const days = Math.round(ms/MS_PER_DAY)
+  if(days%7 === 0){
+    const weeks = days/7
+    return `per ${weeks === 1 ? 'week' : `${String(weeks)} weeks`}`
   }
-
-  return { startDate, endDate }
+  return `per ${days === 1 ? 'day' : `${String(days)} days`}`
 }
 
 const Grid = styled.div`
@@ -120,24 +68,16 @@ const Grid = styled.div`
   }
 `
 
-export default function BudgetDetail() {
+export default function BudgetDetail({ budget }) {
   const { appState } = useAragonApi()
-  const { parsePath, patientlyRequestPath, requestPath } = usePathHelpers()
+  const { requestPath } = usePathHelpers()
   const { newAllocation } = usePanel()
   const period = usePeriod()
   const theme = useTheme()
 
-  const { id } = parsePath('/budgets/:id')
-
-  const budget = appState.budgets.find(b => b.id === id)
-  if (!budget) {
-    patientlyRequestPath('/')
-    return null
-  }
-
-  const allocations = (appState.allocations || []).filter(a => a.accountId === id)
+  const allocations = (appState.allocations || [])
+    .filter(a => a.accountId === budget.id)
   const utilized = budget.amount - budget.remaining
-
   return (
     <>
       <Header
@@ -146,7 +86,7 @@ export default function BudgetDetail() {
           <Button
             mode="strong"
             icon={<IconPlus />}
-            onClick={() => newAllocation(id)}
+            onClick={() => newAllocation(budget.id)}
             label="New allocation"
           />
         )}
@@ -166,27 +106,27 @@ export default function BudgetDetail() {
             {budget.active && (
               <>
                 <div css="display: flex">
-                  <InfoBlock css="flex: 1" title="Budget">
-                    <CurrencyValue
-                      amount={budget.amount}
-                      token={budget.token}
-                      context="per 30 days"
-                    />
-                  </InfoBlock>
-                  <InfoBlock css="flex: 1" title="Utilized">
-                    <CurrencyValue
-                      amount={utilized}
-                      token={budget.token}
-                      context={percentOf(utilized, budget.amount)}
-                    />
-                  </InfoBlock>
-                  <InfoBlock css="flex: 1" title="Remaining">
-                    <CurrencyValue
-                      amount={budget.remaining}
-                      token={budget.token}
-                      context={percentOf(budget.remaining, budget.amount)}
-                    />
-                  </InfoBlock>
+                  <InfoBlock
+                    style={{ flex: 1 }}
+                    title="Budget"
+                    large={displayCurrency(budget.amount, budget.token.decimals)}
+                    small={budget.token.symbol}
+                    context={processTime(period.duration)}
+                  />
+                  <InfoBlock
+                    style={{ flex: 1 }}
+                    title="Utilized"
+                    large={displayCurrency(utilized, budget.token.decimals)}
+                    small={budget.token.symbol}
+                    context={percentOf(utilized, budget.amount)}
+                  />
+                  <InfoBlock
+                    style={{ flex: 1 }}
+                    title="Remaining"
+                    large={displayCurrency(budget.remaining, budget.token.decimals)}
+                    small={budget.token.symbol}
+                    context={percentOf(budget.remaining, budget.amount)}
+                  />
                 </div>
                 <div css={`margin-top: ${3 * GU}px; margin-bottom: ${GU}px`}>
                   <ProgressBar
@@ -203,9 +143,10 @@ export default function BudgetDetail() {
             css="margin-top: 0 !important"
             heading="Budget info"
           >
-            <InfoBlock title="Budget ID">
-              #{budget.id}
-            </InfoBlock>
+            <InfoBlock
+              title="Budget ID"
+              medium={'#'+budget.id}
+            />
           </Box>
         </div>
         {budget.active && (
@@ -214,12 +155,15 @@ export default function BudgetDetail() {
               css="margin-top: 0 !important"
               heading="Period info"
             >
-              <InfoBlock title="Start Date">
-                {formatDate({ date: period.startDate })}
-              </InfoBlock>
-              <InfoBlock css={`margin-top: ${2 * GU}px`} title="End Date">
-                {formatDate({ date: period.endDate })}
-              </InfoBlock>
+              <InfoBlock
+                title="Start Date"
+                medium={formatDate({ date: period.startDate })}
+              />
+              <InfoBlock
+                style={{ marginTop: `${2 * GU}px` }}
+                title="End Date"
+                medium={formatDate({ date: period.endDate })}
+              />
             </Box>
           </div>
         )}
@@ -234,4 +178,8 @@ export default function BudgetDetail() {
       </Grid>
     </>
   )
+}
+
+BudgetDetail.propTypes = {
+  budget: types.budget,
 }

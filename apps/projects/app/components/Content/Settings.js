@@ -8,7 +8,9 @@ import {
   Button,
   Field,
   GU,
+  Header,
   Info,
+  IconPlus,
   IconRemove,
   Link,
   Text,
@@ -23,7 +25,7 @@ import { STATUS } from '../../utils/github'
 import { fromUtf8, toHex } from 'web3-utils'
 import { REQUESTED_GITHUB_DISCONNECT } from '../../store/eventTypes'
 import useGithubAuth from '../../hooks/useGithubAuth'
-import { LoadingAnimation } from '../Shared'
+import { LoadingAnimation, Tabs } from '../Shared'
 import { EmptyWrapper } from '../Shared'
 import NumberInput from '../Shared/NumberInput'
 
@@ -141,12 +143,14 @@ const ExperienceLevel = ({
                   value={exp.mul}
                   allowNegative={false}
                   onChange={generateExpLevelHandler(index, 'M')}
+                  aria-label="Experience level multiplier"
                 />
                 <TextInput
                   type="text"
                   css="font-size: 16px; width: 65%"
                   value={exp.name}
                   onChange={generateExpLevelHandler(index, 'N')}
+                  aria-label="Experience level name"
                 />
                 <IconContainer
                   theme={theme}
@@ -168,6 +172,7 @@ const ExperienceLevel = ({
                 css="font-size: 16px; flex-grow: 1"
                 value={exp.name}
                 onChange={generateExpLevelHandler(index, 'N')}
+                aria-label="Experience level name"
               />
               <IconContainer
                 theme={theme}
@@ -184,12 +189,17 @@ const ExperienceLevel = ({
       ))}
       <Button
         disabled={!canAdd}
-        compact
-        mode="secondary"
+        icon={
+          <IconPlus
+            css={`
+              color: ${theme.accent};
+            `}
+          />
+        }
+        label='Add more'
+        title='Click to add'
         onClick={onAddExpLevel}
-      >
-        + Add another
-      </Button>
+      />
     </React.Fragment>
   )
 }
@@ -218,6 +228,7 @@ const BaseRate = ({
         allowNegative={false}
         onChange={onChangeRate}
         style={{ marginRight: '0' }}
+        aria-label="Base rate"
       />
       <DropDown
         items={bountyCurrencies}
@@ -252,6 +263,7 @@ const BountyDeadline = ({
         allowNegative={false}
         onChange={onChangeT}
         style={{ marginRight: '0' }}
+        aria-label="Default work deadline"
       />
       <DropDown
         items={bountyDeadlines}
@@ -294,6 +306,20 @@ const getExactIndex = (bountyDeadline, bountyDeadlinesMul) => {
     }
   }
   return -1
+}
+
+function Wrap({ children }) {
+  return (
+    <>
+      <Header primary="Projects" />
+      <Tabs />
+      {children}
+    </>
+  )
+}
+
+Wrap.propTypes = {
+  children: PropTypes.node.isRequired,
 }
 
 const Settings = ({ onLogin }) => {
@@ -406,85 +432,89 @@ const Settings = ({ onLogin }) => {
 
   if (!settingsLoaded  || !user.avatarUrl)
     return (
-      <EmptyWrapper>
-        <Text size="large" css={`margin-bottom: ${3 * GU}px`}>
-          Loading...
-        </Text>
-        <LoadingAnimation />
-      </EmptyWrapper>
+      <Wrap>
+        <EmptyWrapper>
+          <Text size="large" css={`margin-bottom: ${3 * GU}px`}>
+            Loading...
+          </Text>
+          <LoadingAnimation />
+        </EmptyWrapper>
+      </Wrap>
     )
 
   return (
-    <SettingsMain layoutName={layoutName}>
-      <div css="grid-area: contract">
-        <BountyContractAddress
-          bountyAllocator={bountyAllocator}
-          networkType={network.type}
-          layoutName={layoutName}
-        />
-      </div>
-      <div css="grid-area: github">
-        <GitHubConnect
-          onLogin={onLogin}
-          onLogout={handleLogout}
-          user={user}
-          status={github.status}
-        />
-      </div>
-      <div css="grid-area: funding">
-        <Box
-          heading="Funding Settings"
-        >
-          <SettingsFunding layoutName={layoutName}>
-            <Column>
-              <SettingLabel text="Funding Model" />
-              <DropDown
-                css={`margin-bottom: ${3 * GU}px`}
-                items={fundingModels}
-                selected={selectedFundingModelIndex}
-                onChange={i => setFundingModel(i)}
-                wide
-              />
-              {fundingModels[selectedFundingModelIndex] === 'Hourly' && (
-                <React.Fragment>
-                  <Info css={`margin-bottom: ${3 * GU}px`}>
-                    In hourly funding, the hourly rate per issue is the base
-                    rate multiplied by the difficulty level selected for the
-                    issue.
-                  </Info>
-                  <BaseRate
-                    baseRate={baseRate}
-                    onChangeRate={baseRateChange}
-                    bountyCurrencies={bountyCurrencies}
-                    bountyCurrency={bountyCurrency}
-                    onChangeCurrency={bountyCurrencyChange}
-                  />
-                </React.Fragment>
-              )}
-              <BountyDeadline
-                bountyDeadlineT={bountyDeadlineT}
-                onChangeT={bountyDeadlineChangeT}
-                bountyDeadlineD={bountyDeadlineD}
-                onChangeD={bountyDeadlineChangeD}
-              />
-            </Column>
-            <Column>
-              <ExperienceLevel
-                expLevels={expLevels}
-                onAddExpLevel={addExpLevel}
-                onRemoveExpLevel={removeExpLevel}
-                generateExpLevelHandler={generateExpLevelHandler}
-                fundingModel={fundingModels[selectedFundingModelIndex]}
-              />
-            </Column>
-          </SettingsFunding>
+    <Wrap>
+      <SettingsMain layoutName={layoutName}>
+        <div css="grid-area: contract">
+          <BountyContractAddress
+            bountyAllocator={bountyAllocator}
+            networkType={network.type}
+            layoutName={layoutName}
+          />
+        </div>
+        <div css="grid-area: github">
+          <GitHubConnect
+            onLogin={onLogin}
+            onLogout={handleLogout}
+            user={user}
+            status={github.status}
+          />
+        </div>
+        <div css="grid-area: funding">
+          <Box
+            heading="Funding Settings"
+          >
+            <SettingsFunding layoutName={layoutName}>
+              <Column>
+                <SettingLabel text="Funding Model" />
+                <DropDown
+                  css={`margin-bottom: ${3 * GU}px`}
+                  items={fundingModels}
+                  selected={selectedFundingModelIndex}
+                  onChange={i => setFundingModel(i)}
+                  wide
+                />
+                {fundingModels[selectedFundingModelIndex] === 'Hourly' && (
+                  <React.Fragment>
+                    <Info css={`margin-bottom: ${3 * GU}px`}>
+                      In hourly funding, the hourly rate per issue is the base
+                      rate multiplied by the difficulty level selected for the
+                      issue.
+                    </Info>
+                    <BaseRate
+                      baseRate={baseRate}
+                      onChangeRate={baseRateChange}
+                      bountyCurrencies={bountyCurrencies}
+                      bountyCurrency={bountyCurrency}
+                      onChangeCurrency={bountyCurrencyChange}
+                    />
+                  </React.Fragment>
+                )}
+                <BountyDeadline
+                  bountyDeadlineT={bountyDeadlineT}
+                  onChangeT={bountyDeadlineChangeT}
+                  bountyDeadlineD={bountyDeadlineD}
+                  onChangeD={bountyDeadlineChangeD}
+                />
+              </Column>
+              <Column>
+                <ExperienceLevel
+                  expLevels={expLevels}
+                  onAddExpLevel={addExpLevel}
+                  onRemoveExpLevel={removeExpLevel}
+                  generateExpLevelHandler={generateExpLevelHandler}
+                  fundingModel={fundingModels[selectedFundingModelIndex]}
+                />
+              </Column>
+            </SettingsFunding>
 
-          <Button mode="strong" onClick={submitChanges}>
+            <Button mode="strong" onClick={submitChanges}>
               Save changes
-          </Button>
-        </Box>
-      </div>
-    </SettingsMain>
+            </Button>
+          </Box>
+        </div>
+      </SettingsMain>
+    </Wrap>
   )
 }
 

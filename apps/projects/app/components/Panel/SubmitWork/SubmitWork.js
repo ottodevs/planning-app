@@ -10,7 +10,7 @@ import { usePanelManagement } from '../../Panel'
 import { ipfsAdd } from '../../../utils/ipfs-helpers'
 import { issueShape } from '../../../utils/shapes.js'
 import standardBounties from '../../../abi/StandardBounties.json'
-import { IssueTitle } from '../PanelComponents'
+import { IssueTitle, PanelContent } from '../PanelComponents'
 
 const SubmitWork = ({ issue }) => {
   const githubCurrentUser = useGithubAuth()
@@ -59,7 +59,7 @@ const SubmitWork = ({ issue }) => {
   const canSubmit = () => !(ack1 && ack2 && proof)
 
   return (
-    <div css={`margin: ${2 * GU}px 0`}>
+    <PanelContent>
       <Form
         onSubmit={onSubmitWork}
         submitText="Submit Work"
@@ -79,6 +79,7 @@ const SubmitWork = ({ issue }) => {
               onChange={updateProof}
               placeholder="Add a link to your work, such as a document or a pull request."
               wide
+              aria-label="Proof of work"
             />
           }
         />
@@ -92,6 +93,7 @@ const SubmitWork = ({ issue }) => {
               onChange={updateComments}
               placeholder="Comments or details that haven’t already been described elsewhere."
               wide
+              aria-label="Comments"
             />
           }
         />
@@ -104,6 +106,7 @@ const SubmitWork = ({ issue }) => {
               value={hours}
               onChange={updateHours}
               wide
+              aria-label="Hours worked"
             />
           }
         />
@@ -127,7 +130,7 @@ const SubmitWork = ({ issue }) => {
           </AckText>
         </AckRow>
       </Form>
-    </div>
+    </PanelContent>
   )
 }
 

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Button, GU, IconCheck, IconCross, Link, Text, useTheme } from '@aragon/ui'
 import { IconGitHub } from '../Shared'
-import { issueShape } from '../../utils/shapes.js'
+import { issueShape, userGitHubShape } from '../../utils/shapes.js'
 import { format as formatDate } from 'date-fns'
 
 export const IssueTitleLink = ({ issue }) => {
@@ -50,6 +50,7 @@ export const Avatar = ({ user }) => {
       href={user.url}
       target="_blank"
       css={`text-decoration: none; color: ${theme.link}; margin-right: ${.7 * GU}px`}
+      aria-label={`${user.login}'s GitHub account`}
     >
       <img
         alt=""
@@ -59,21 +60,16 @@ export const Avatar = ({ user }) => {
     </Link>
   )
 }
-Avatar.propTypes = {
-  user: PropTypes.shape({
-    url: PropTypes.string.isRequired,
-    avatarUrl: PropTypes.string.isRequired,
-  }).isRequired,
-}
+Avatar.propTypes = userGitHubShape
 
 const statuses = [
   { color: 'negative', text: 'Rejected' },
   { color: 'positive', text: 'Accepted' },
 ]
 
-export const Status = ({ review }) => {
+export const Status = ({ reviewDate, approved }) => {
   const theme = useTheme()
-  const status = statuses[Number(review.approved)]
+  const status = statuses[Number(approved)]
   const text = status.text
   const color = theme[status.color]
   return (
@@ -81,16 +77,14 @@ export const Status = ({ review }) => {
       <IconCheck color={color} css={`margin-top: -${0.5 * GU}px; margin-right: ${GU}px`} />
       <Text color={`${color}`}>{text}</Text>
       <Text color={`${theme.contentSecondary}`} css={`margin-left: ${GU}px`}>
-        {formatDate(new Date(review.reviewDate), 'd MMM yy, h:MM a (z)')}
+        {formatDate(new Date(reviewDate), 'd MMM yy, h:MM a (z)')}
       </Text>
     </div>
   )
 }
 Status.propTypes = {
-  review: PropTypes.shape({
-    approved: PropTypes.bool.isRequired,
-    reviewDate: PropTypes.string.isRequired,
-  }).isRequired,
+  approved: PropTypes.bool.isRequired,
+  reviewDate: PropTypes.string.isRequired,
 }
 
 export const ReviewButtons = ({ onAccept, onReject, disabled }) => (
@@ -149,4 +143,16 @@ export const SubmissionDetails = styled.div`
   padding: ${3 * GU}px;
   margin-bottom: ${2 * GU}px;
   border-radius: 3px;
+`
+export const PanelContent = styled.div`
+  margin-top: ${2 * GU}px;
+`
+export const TypeFilters = styled.div`
+  display: flex;
+  margin-bottom: ${3 * GU}px;
+`
+export const SwitchRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: ${GU}px 0 ${2 * GU}px 0;
 `

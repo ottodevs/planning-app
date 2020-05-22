@@ -1,22 +1,18 @@
 // eslint-disable-next-line import/no-unused-modules
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { AppLogicProvider } from './app-logic'
 
-// eslint-disable-next-line no-process-env
-if (process.env.NODE_ENV !== 'production') {
-  // eslint-disable-next-line global-require
-  const axe = require('react-axe')
-  // eslint-disable-next-line no-magic-numbers
-  axe(React, ReactDOM, 1000)
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   var axe = require('react-axe')
+//   axe(React, ReactDOM, 1000)
+// }
 
-import { AragonApi } from './api-react'
-import appStateReducer from './app-state-reducer'
 import App from './App'
 
 ReactDOM.render(
-  <AragonApi reducer={appStateReducer}>
+  <AppLogicProvider>
     <App />
-  </AragonApi>,
+  </AppLogicProvider>,
   document.querySelector('#dot-voting')
 )

@@ -1,4 +1,3 @@
-const HDWalletProvider = require('truffle-hdwallet-provider')
 const fs = require('fs')
 
 // First read in the secrets.json to get our mnemonic
@@ -25,7 +24,7 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: '*',
-      gas: 8.2e6,
+      gas: 8e6,
       gasPrice: 2000000000, // same as latest on Mainnet https://ethstats.net/
     },
     coverage: {
@@ -44,11 +43,6 @@ module.exports = {
       // gas
       // gasPrice
       // from - default address to use for any transaction Truffle makes during migrations
-    },
-    ropsten: {
-      provider: new HDWalletProvider(mnemonic, 'https://ropsten.infura.io'),
-      network_id: '3',
-      gas: 4600000
     },
     testrpc: {
       network_id: 'default',

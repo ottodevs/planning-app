@@ -2,20 +2,27 @@ import React from 'react'
 import { useAppState, useNetwork } from '@aragon/api-react'
 import {
   DataView,
-  IconCheck,
   IconCross,
   ProgressBar,
   Text,
   useLayout,
   useTheme,
 } from '@aragon/ui'
+import IconDoubleCheck
+  from '../../../../../shared/ui/components/assets/svg/IconDoubleCheck'
 import LocalIdentityBadge from '../LocalIdentityBadge/LocalIdentityBadge'
 import { BigNumber } from 'bignumber.js'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import { STATUSES } from '../../utils/constants'
-import { displayCurrency } from '../../utils/helpers'
+import {
+  STATUSES,
+  STATUS_APPROVED,
+  STATUS_ENACTED,
+  STATUS_REJECTED,
+  STATUS_UNDERGOING_VOTE,
+} from '../../utils/constants'
+import { displayCurrency } from '../../../../../shared/ui/helpers'
 import { addressesEqual } from '../../../../../shared/lib/web3-utils'
 
 const AllocationsHistory = ({ allocations, skipBudgetColumn }) => {
@@ -57,7 +64,8 @@ const AllocationsHistory = ({ allocations, skipBudgetColumn }) => {
         description,
         status,
         amount,
-        token
+        token,
+        tokenDecimal
       }, index) => {
         const entry = [
           new Date(Number(date)).toLocaleDateString(),
@@ -66,7 +74,7 @@ const AllocationsHistory = ({ allocations, skipBudgetColumn }) => {
           description,
           <Status key={index} code={status} />,
           <Amount key={index} theme={theme} >
-            { displayCurrency(BigNumber(-amount)) } { getTokenSymbol(token) }
+            { displayCurrency(-amount, tokenDecimal) } { getTokenSymbol(token) }
           </Amount>
         ]
         if (!skipBudgetColumn) {
@@ -78,7 +86,7 @@ const AllocationsHistory = ({ allocations, skipBudgetColumn }) => {
         }
         return entry
       }}
-      renderEntryExpansion={({ recipients, amount, token }) => {
+      renderEntryExpansion={({ recipients, amount, token, tokenDecimal }) => {
         const totalSupports = recipients.reduce((total, recipient) => {
           return total + Number(recipient.supports)
         }, 0)
@@ -100,7 +108,7 @@ const AllocationsHistory = ({ allocations, skipBudgetColumn }) => {
                 />
               </RecipientProgress>
               <RecipientAmount theme={theme}>
-                { displayCurrency(BigNumber(amount).times(allocated)) } {' '}
+                { displayCurrency(BigNumber(amount).times(allocated), tokenDecimal) } {' '}
                 {getTokenSymbol(token)} {' • '}
                 { allocated.times(100).dp(0).toNumber() }{'%'}
               </RecipientAmount>
@@ -121,8 +129,12 @@ const Status = ({ code }) => {
   const theme = useTheme()
   return (
     <StatusContent theme={theme} code={code}>
-      { code === 1 && <IconCross size="medium" color={theme.negative} /> }
-      { code > 1 && <IconCheck size="medium" color={theme.positive} /> }
+      { code === STATUS_REJECTED &&
+        <IconCross size="medium" color={theme.negative} />
+      }
+      { (code === STATUS_APPROVED || code === STATUS_ENACTED) &&
+        <IconDoubleCheck size="medium" color={theme.positive} />
+      }
       <StatusText>
         {STATUSES[code]}
       </StatusText>
@@ -131,7 +143,7 @@ const Status = ({ code }) => {
 }
 
 Status.propTypes = {
-  code: PropTypes.number.isRequired,
+  code: PropTypes.string.isRequired,
 }
 
 const Amount = styled.div`
@@ -159,8 +171,11 @@ const RecipientAmount = styled.div`
  `
 
 const StatusContent = styled.div`
-  color: ${({ code, theme }) => code === 0 ?
-    theme.contentSecondary : theme.content};
+  color: ${({ code, theme }) => code === STATUS_UNDERGOING_VOTE
+    ? theme.contentSecondary
+    : code === STATUS_REJECTED
+      ? theme.negative
+      : theme.positive };
   display: flex;
   align-items: center;
 `

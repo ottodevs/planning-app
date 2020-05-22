@@ -9,7 +9,7 @@ import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 
 // TODO: Revert import path when changes get merged into aragon/os
 // import "@aragon/os/contracts/common/ADynamicForwarder.sol";
-import "@tps/test-helpers/contracts/common/ADynamicForwarder.sol";
+import "@autarklabs/test-helpers/contracts/common/ADynamicForwarder.sol";
 
 
 contract DotVoting is ADynamicForwarder, AragonApp {
@@ -112,7 +112,7 @@ contract DotVoting is ADynamicForwarder, AragonApp {
 
 
     /**
-    * @notice Create a new dot vote about "`_metadata`."
+    * @notice Create a new dot vote for "`_metadata`". 
     * @param _executionScript EVM script to be executed on approval
     * @param _metadata Vote metadata
     * @return voteId Id for newly created vote

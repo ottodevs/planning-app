@@ -2,10 +2,10 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
-import { displayCurrency } from '../../utils/helpers'
+import { displayCurrency } from '../../../../../shared/ui/helpers'
 import * as types from '../../utils/prop-types'
 
-import { usePath } from '../../api-react'
+import usePathHelpers from '../../../../../shared/utils/usePathHelpers'
 import {
   Card,
   IconCheck,
@@ -34,7 +34,7 @@ const Budget = ({ budget }) => {
             color: theme.content,
             paddingTop: '8px',
           }}>
-            {displayCurrency(tokensSpent)}
+            {displayCurrency(tokensSpent, token.decimals)}
             <Text>{' ' + token.symbol + ' utilized'}</Text>
           </StatsValueSmall>
         </React.Fragment>
@@ -48,10 +48,13 @@ Budget.propTypes = {
 }
 
 const Wrapper = ({ budget, children, theme }) => {
-  const [ , requestPath ] = usePath()
+  const { requestPath } = usePathHelpers()
   const { active, amount, id, name, token } = budget
   return (
-    <Link onClick={() => requestPath(`/budgets/${id}`)}>
+    <Link
+      css="white-space: normal"
+      onClick={() => requestPath(`/budgets/${id}`)}
+    >
       <StyledCard theme={theme}>
         <CardTop>
           <CardTitle theme={theme}>{name}</CardTitle>
@@ -60,7 +63,7 @@ const Wrapper = ({ budget, children, theme }) => {
           </StatsContainer>
         </CardTop>
         <CardBottom theme={theme}>
-          <Text>{displayCurrency(BigNumber(amount)) + ' ' + token.symbol + ' / PERIOD'}</Text>
+          <Text>{displayCurrency(amount, token.decimals) + ' ' + token.symbol + ' / PERIOD'}</Text>
           {active ? (
             <Status
               color={theme.positive}
@@ -135,11 +138,6 @@ const CardBottom = styled.div`
   vertical-align: middle;
   color: ${({ theme }) => theme.contentSecondary};
   border-top: 1px solid ${({ theme }) => theme.border};
-`
-
-const MenuContainer = styled.div`
-  align-self: flex-end;
-  align-items: center;
 `
 
 const CardTitle = styled(Text.Block).attrs({

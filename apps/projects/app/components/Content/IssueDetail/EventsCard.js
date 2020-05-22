@@ -7,25 +7,27 @@ import {
   useTheme,
   GU,
   Link,
+  IdentityBadge
 } from '@aragon/ui'
 import { formatDistance } from 'date-fns'
 import { usePanelManagement } from '../../Panel'
 import { Avatar } from '../../Panel/PanelComponents'
-import { issueShape, userGitHubShape } from '../../../utils/shapes.js'
+import { issueShape, userGitHubShape, userDecoupledShape } from '../../../utils/shapes.js'
 
 const calculateAgo = pastDate => formatDistance(pastDate, Date.now(), { addSuffix: true })
 
-const IssueEvent = ({ user, ...props }) => {
+const IssueEvent = ({ user, decoupled, ...props }) => {
   const theme = useTheme()
 
   return (
     <IssueEventMain>
       <div css="display: flex">
-        <Avatar user={user} />
+        {!decoupled && <Avatar user={user} />}
         <IssueEventDetails>
-          <Text.Block size="small">
+          {decoupled && <IdentityBadge entity={user.addr || user.login} />}
+          <Text size="small">
             {props.eventDescription}
-          </Text.Block>
+          </Text>
           <Text.Block size="xsmall" color={`${theme.surfaceContentSecondary}`}>
             {calculateAgo(props.date)}
           </Text.Block>
@@ -41,28 +43,36 @@ const IssueEvent = ({ user, ...props }) => {
 }
 
 IssueEvent.propTypes = {
-  user: userGitHubShape,
+  user: PropTypes.oneOfType([
+    userGitHubShape,
+    userDecoupledShape
+  ]),
   eventDescription: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object,
   ]).isRequired,
   eventAction: PropTypes.object,
   date: PropTypes.string.isRequired,
+  decoupled: PropTypes.bool,
 }
 
-const applicationLink = (user, onReviewApplication, issue, index) => (
+const applicationLink = (user, onReviewApplication, issue, requestIndex) => (
   <React.Fragment>
-    {user} submitted <Link onClick={() =>
-      onReviewApplication({ issue, index, readOnly: true })
-    }>an application for review</Link>
+    {user} submitted <WrappedLink href="#" onClick={e => {
+      e.preventDefault()
+      onReviewApplication({ issue, requestIndex, readOnly: true })
+    }
+    }>an application for review</WrappedLink>
   </React.Fragment>
 )
 
-const workLink = (user, onReviewWork, issue, index) => (
+const workLink = (user, onReviewWork, issue, submissionIndex) => (
   <React.Fragment>
-    {user} submitted <Link onClick={() =>
-      onReviewWork({ issue, index, readOnly: true })
-    }>work for review</Link>
+    {user} submitted <WrappedLink href="#" onClick={e => {
+      e.preventDefault()
+      onReviewWork({ issue, submissionIndex, readOnly: true })
+    }
+    }>work for review</WrappedLink>
   </React.Fragment>
 )
 
@@ -75,11 +85,15 @@ const activities = (
   onReviewApplication,
   onReviewWork
 ) => {
+  const decoupled = issue.repository && issue.repository.decoupled
+  const getLogin = (login) => {
+    return decoupled ? '' : login
+  }
   const events = {
     createdAt: {
       date: createdAt,
       user: issue.author,
-      eventDescription: issue.author.login + ' opened this issue'
+      eventDescription: getLogin(issue.author.login) + ' opened this issue'
     }
   }
 
@@ -88,7 +102,7 @@ const activities = (
       events[data.applicationDate] = {
         date: data.applicationDate,
         user: data.user,
-        eventDescription: applicationLink(data.user.login, onReviewApplication, issue, index),
+        eventDescription: applicationLink(getLogin(data.user.login), onReviewApplication, issue, index),
       }
 
       if ('review' in data) {
@@ -96,7 +110,7 @@ const activities = (
           date: data.review.reviewDate,
           user: data.user,
           eventDescription: (
-            data.user.login + (data.review.approved ?
+            getLogin(data.user.login) + (data.review.approved ?
               ' was assigned to this task'
               :
               '\'s application was rejected'
@@ -108,22 +122,29 @@ const activities = (
   }
 
   if (workSubmissions) {
-    workSubmissions.forEach((data, index) => {
+    workSubmissions.forEach((data, submissionIndex) => {
       events[data.submissionDate] = {
         date: data.submissionDate,
-        user: data.user,
-        eventDescription: workLink(data.user.login, onReviewWork, issue, index),
+        user: { ...data.user, addr: data.submitter },
+        eventDescription: workLink(getLogin(data.user.login), onReviewWork, issue, submissionIndex),
       }
 
       if ('review' in data) {
         events[data.review.reviewDate] = {
           date: data.review.reviewDate,
-          user: data.user,
-          eventDescription: (
-            data.user.login + (data.review.accepted ?
-              '\'s work was accepted'
-              :
-              '\'s work was rejected'
+          user: { ...data.user, addr: data.submitter },
+          eventDescription: ( 
+            decoupled ? (
+              data.review.accepted ?
+                'had work accepted'
+                :
+                'had work rejected'
+            ) : ( 
+              data.user.login + (data.review.accepted ?
+                '\'s work was accepted'
+                :
+                '\'s work was rejected'
+              )
             )
           ),
         }
@@ -136,7 +157,7 @@ const activities = (
       events[data.date] = {
         date: data.date,
         user: data.user,
-        eventDescription: data.user.login + (i ? ' updated the' : ' placed a') + ' bounty',
+        eventDescription: getLogin(data.user.login) + (i ? ' updated the' : ' placed a') + ' bounty',
       }
     })
   }
@@ -147,6 +168,7 @@ const activities = (
 const EventsCard = ({ issue }) => {
   const theme = useTheme()
   const { reviewApplication, reviewWork } = usePanelManagement()
+  const decoupled = issue.repository && issue.repository.decoupled
   const issueEvents = activities(
     issue,
     issue.createdAt,
@@ -176,7 +198,7 @@ const EventsCard = ({ issue }) => {
           Object.keys(issueEvents)
             .sort((a, b) => new Date(a) - new Date(b))
             .map((eventDate, i) => {
-              return <IssueEvent key={i} user={issueEvents[eventDate].user} {...issueEvents[eventDate]} />
+              return <IssueEvent key={i} decoupled={decoupled} user={issueEvents[eventDate].user} {...issueEvents[eventDate]} />
             })
         ) : (
           <IssueEventMain>
@@ -202,6 +224,11 @@ const IssueEventDetails = styled.div`
   > :not(:last-child) {
     margin-bottom: ${GU}px;
   }
+`
+const WrappedLink = styled(Link)`
+  display: inline;
+  text-decoration: none;
+  white-space: normal;
 `
 
 // eslint-disable-next-line import/no-unused-modules

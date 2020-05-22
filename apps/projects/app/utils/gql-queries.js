@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost'
 
-const issueAttributes = `
+export const issueAttributes = `
   number
   id
   title
@@ -11,6 +11,7 @@ const issueAttributes = `
     url
   }
   createdAt
+  updatedAt
   repository {
     id
     name
@@ -25,39 +26,28 @@ const issueAttributes = `
       }
     }
   }
-  milestone {
-    id
-    title
-  }
   state
   url
 `
 
-export const getIssuesGQL = repos => {
-  const queries = Object.keys(repos).map((repoId, i) => `
-    node${i}: node(id: "${repoId}") {
-      id
-      ... on Repository {
-        issues(
-          states:OPEN,
-          first: ${repos[repoId].fetch},
-          ${repos[repoId].showMore ? `after: "${repos[repoId].endCursor}",` : ''}
-         orderBy: {field: CREATED_AT, direction: DESC}
-        ) {
-          totalCount
-          pageInfo {
-            endCursor
-            hasNextPage
-          }
-          nodes { ${issueAttributes} }
-        }
+export const SEARCH_ISSUES = gql`
+  query SearchIssues($after: String, $query: String!) {
+    search(
+      after:$after,
+      first:25,
+      query:$query,
+      type:ISSUE,
+    ) {
+      pageInfo {
+        endCursor
+        hasNextPage
       }
-    }`
-  )
-  return gql`query getIssuesForRepos {
-    ${queries.join('')}
-  }`
-}
+      issues:nodes {
+        ... on Issue { ${ issueAttributes } }
+      }
+    }
+  }
+`
 
 export const GET_ISSUE = gql`
   query GetIssue($id: ID!) {

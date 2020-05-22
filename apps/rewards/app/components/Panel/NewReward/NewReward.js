@@ -487,6 +487,7 @@ class NewRewardClass extends React.Component {
               this.state.disbursementUnit,
             )
           }}
+          label="Start date"
         />
       </Field>
       <Field
@@ -508,6 +509,7 @@ class NewRewardClass extends React.Component {
               this.state.disbursementUnit,
             )
           }}
+          label="End date"
         />
       </Field>
     </HorizontalContainer>
@@ -534,6 +536,7 @@ class NewRewardClass extends React.Component {
             this.setErrors({ dateReference })
           }}
           wide
+          label="Reference date"
         />
       </Field>
     </VerticalContainer>
@@ -765,7 +768,7 @@ class NewRewardClass extends React.Component {
     return (
       <VerticalContainer>
         <VerticalSpace />
-        <GreyBox>
+        <GreyBox theme={this.props.theme}>
           <Title>{description}</Title>
           <SubTitle>{rewardType}</SubTitle>
           <Heading>Reference Token</Heading>
@@ -858,8 +861,8 @@ const VerticalSpace = styled.div`
   height: 24px;
 `
 const GreyBox = styled.div`
-  background-color: #f9fafc;
-  border: 1px solid #dde4e9;
+  background-color: ${({ theme }) => theme.background};
+  border: 1px solid ${({ theme }) => theme.border};
   padding: 24px;
   display: flex;
   flex-direction: column;

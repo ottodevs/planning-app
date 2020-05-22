@@ -1,21 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { ApolloProvider } from 'react-apollo'
+import React, { useCallback, useEffect, useState } from 'react'
+import { ApolloProvider } from '@apollo/react-hooks'
 
 import { useAragonApi } from './api-react'
-import {
-  Bar,
-  Button,
-  BackButton,
-  Header,
-  IconPlus,
-  Main,
-  Tabs,
-} from '@aragon/ui'
+import { Main } from '@aragon/ui'
 
 import ErrorBoundary from './components/App/ErrorBoundary'
-import { Issues, Overview, Settings } from './components/Content'
-import IssueDetail from './components/Content/IssueDetail'
-import { PanelManager, PanelContext, usePanelManagement } from './components/Panel'
+import { PanelManager, PanelContext } from './components/Panel'
 
 import { IdentityProvider } from '../../../shared/identity'
 import {
@@ -24,61 +14,47 @@ import {
 } from './store/eventTypes'
 
 import { initApolloClient } from './utils/apollo-client'
-import { getToken, getURLParam, githubPopup, STATUS } from './utils/github'
+import { getToken, githubPopup, STATUS } from './utils/github'
 import Unauthorized from './components/Content/Unauthorized'
 import { LoadingAnimation } from './components/Shared'
 import { EmptyWrapper } from './components/Shared'
 import { Error } from './components/Card'
 import { DecoratedReposProvider } from './context/DecoratedRepos'
+import { BountyIssuesProvider } from './context/BountyIssues'
+import Routes from './Routes'
+
+let popupRef = null
 
 const App = () => {
-  const { api, appState } = useAragonApi()
-  const [ activeIndex, setActiveIndex ] = useState(
-    { tabIndex: 0, tabData: {} }
-  )
-  const [ selectedIssueId, setSelectedIssue ] = useState(null)
+  const { api, appState, guiStyle } = useAragonApi()
+  const { appearance } = guiStyle
   const [ githubLoading, setGithubLoading ] = useState(false)
   const [ panel, setPanel ] = useState(null)
   const [ panelProps, setPanelProps ] = useState(null)
-  const [ popupRef, setPopupRef ] = useState(null)
 
   const {
-    repos = [],
-    bountySettings = {},
-    issues = [],
-    tokens = [],
     github = { status : STATUS.INITIAL },
     isSyncing = true,
   } = appState
 
   const client = github.token ? initApolloClient(github.token) : null
 
-  useEffect(() => {
-    const code = getURLParam('code')
-    code &&
-      window.opener.postMessage(
-        { from: 'popup', name: 'code', value: code },
-        '*'
-      )
-    window.close()
-  })
-
-  const handlePopupMessage = async message => {
+  const handlePopupMessage = useCallback(message => {
+    if (!popupRef) return
     if (message.data.from !== 'popup') return
-    if (message.data.name === 'code') {
-      // TODO: Optimize the listeners lifecycle, ie: remove on unmount
-      window.removeEventListener('message', handlePopupMessage)
 
-      const code = message.data.value
+    popupRef = null
+
+    async function processCode() {
       try {
-        const token = await getToken(code)
+        const token = await getToken(message.data.value)
         setGithubLoading(false)
         api.emitTrigger(REQUESTED_GITHUB_TOKEN_SUCCESS, {
           status: STATUS.AUTHENTICATED,
           token
         })
-
       } catch (err) {
+        console.error(err)
         setGithubLoading(false)
         api.emitTrigger(REQUESTED_GITHUB_TOKEN_FAILURE, {
           status: STATUS.FAILED,
@@ -86,11 +62,16 @@ const App = () => {
         })
       }
     }
-  }
 
-  const changeActiveIndex = data => {
-    setActiveIndex(data)
-  }
+    processCode()
+  }, [api])
+
+  useEffect(() => {
+    window.addEventListener('message', handlePopupMessage)
+    return () => {
+      window.removeEventListener('message', handlePopupMessage)
+    }
+  }, [handlePopupMessage])
 
   const closePanel = () => {
     setPanel(null)
@@ -103,17 +84,8 @@ const App = () => {
   }
 
   const handleGithubSignIn = () => {
-    // The popup is launched, its ref is checked and saved in the state in one step
     setGithubLoading(true)
-
-    setPopupRef(githubPopup(popupRef))
-
-    // Listen for the github redirection with the auth-code encoded as url param
-    window.addEventListener('message', handlePopupMessage)
-  }
-
-  const handleSelect = index => {
-    changeActiveIndex({ tabIndex: index, tabData: {} })
+    popupRef = githubPopup(popupRef)
   }
 
   const handleResolveLocalIdentity = address => {
@@ -129,48 +101,28 @@ const App = () => {
   const noop = () => {}
   if (githubLoading) {
     return (
-      <EmptyWrapper>
-        <LoadingAnimation />
-      </EmptyWrapper>
+      <Main theme={appearance}>
+        <EmptyWrapper>
+          <LoadingAnimation />
+        </EmptyWrapper>
+      </Main>
     )
   } else if (github.status === STATUS.INITIAL) {
     return (
-      <Main>
+      <Main role="main" theme={appearance}>
         <Unauthorized onLogin={handleGithubSignIn} isSyncing={isSyncing} />
       </Main>
     )
   } else if (github.status === STATUS.FAILED) {
     return (
-      <Main>
+      <Main theme={appearance}>
         <Error action={noop} />
       </Main>
     )
   }
 
-  // Tabs are not fixed
-  const tabs = [{ name: 'Overview', body: Overview }]
-  if (repos.length)
-    tabs.push({ name: 'Issues', body: Issues })
-  tabs.push({ name: 'Settings', body: Settings })
-
-  // Determine current tab details
-  const TabComponent = tabs[activeIndex.tabIndex].body
-  const TabAction = () => {
-    const { setupNewIssue, setupNewProject } = usePanelManagement()
-
-    switch (tabs[activeIndex.tabIndex].name) {
-    case 'Overview': return (
-      <Button mode="strong" icon={<IconPlus />} onClick={setupNewProject} label="New project" />
-    )
-    case 'Issues': return (
-      <Button mode="strong" icon={<IconPlus />} onClick={setupNewIssue} label="New issue" />
-    )
-    default: return null
-    }
-  }
-
   return (
-    <Main>
+    <Main theme={appearance}>
       <ApolloProvider client={client}>
         <PanelContext.Provider value={configurePanel}>
           <IdentityProvider
@@ -178,48 +130,17 @@ const App = () => {
             onShowLocalIdentityModal={handleShowLocalIdentityModal}
           >
             <DecoratedReposProvider>
-              <Header
-                primary="Projects"
-                secondary={
-                  <TabAction />
-                }
-              />
-              <ErrorBoundary>
-
-                {selectedIssueId
-                  ? (
-                    <React.Fragment>
-                      <Bar>
-                        <BackButton onClick={() => setSelectedIssue(null)} />
-                      </Bar>
-                      <IssueDetail issueId={selectedIssueId} />
-                    </React.Fragment>
-                  )
-                  : (
-                    <React.Fragment>
-                      <Tabs
-                        items={tabs.map(t => t.name)}
-                        onChange={handleSelect}
-                        selected={activeIndex.tabIndex}
-                      />
-                      <TabComponent
-                        status={github.status}
-                        app={api}
-                        bountyIssues={issues}
-                        bountySettings={bountySettings}
-                        tokens={tokens}
-                        activeIndex={activeIndex}
-                        changeActiveIndex={changeActiveIndex}
-                        setSelectedIssue={setSelectedIssue}
-                        onLogin={handleGithubSignIn}
-                      />
-                    </React.Fragment>
-                  )
-                }
-              </ErrorBoundary>
+              <BountyIssuesProvider>
+                <main>
+                  <ErrorBoundary>
+                    <Routes handleGithubSignIn={handleGithubSignIn} />
+                  </ErrorBoundary>
+                </main>
+              </BountyIssuesProvider>
               <PanelManager
                 activePanel={panel}
                 onClose={closePanel}
+                handleGithubSignIn={handleGithubSignIn}
                 {...panelProps}
               />
             </DecoratedReposProvider>

@@ -30,6 +30,14 @@ const usePanelManagement = () => {
         mode: 'update',
       })
     },
+    editProject: (repoId, label, description) => {
+      setActivePanel(PANELS.EditProject)
+      setPanelProps({
+        repoId,
+        label,
+        description,
+      })
+    },
     requestAssignment: issue => {
       setActivePanel(PANELS.RequestAssignment)
       setPanelProps({
@@ -46,11 +54,11 @@ const usePanelManagement = () => {
         title: 'View application',
       })
     },
-    reviewWork: ({ issue, index = 0, readOnly = false }) => {
+    reviewWork: ({ issue, submissionIndex = 0, readOnly = false }) => {
       setActivePanel(PANELS.ReviewWork)
       setPanelProps({
         issue,
-        index,
+        submissionIndex,
         readOnly,
         title: 'View work'
       })

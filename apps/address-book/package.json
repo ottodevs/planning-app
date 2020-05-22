@@ -1,5 +1,5 @@
 {
-  "name": "@tps/apps-address-book",
+  "name": "@autarklabs/apps-address-book",
   "version": "0.0.1",
   "description": "Address book app from Planning Suite",
   "scripts": {
@@ -30,9 +30,9 @@
     "test": "cross-env TRUFFLE_TEST=true npm run ganache-cli:test"
   },
   "dependencies": {
-    "@aragon/api": "2.0.0-beta.8",
-    "@aragon/api-react": "2.0.0-beta.8",
-    "@aragon/ui": "^1.0.0-alpha.26",
+    "@aragon/api": "2.0.0-beta.9",
+    "@aragon/api-react": "2.0.0-beta.9",
+    "@aragon/ui": "1.2.1",
     "axios": "^0.18.0",
     "ipfs-http-client": "29.1.0",
     "prop-types": "^15.7.2",
@@ -48,7 +48,7 @@
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "@tps/test-helpers": "^0.0.1",
+    "@autarklabs/test-helpers": "^0.0.1",
     "babel-eslint": "^10.0.1",
     "babel-plugin-styled-components": "^1.10.0",
     "cross-env": "^5.2.0",

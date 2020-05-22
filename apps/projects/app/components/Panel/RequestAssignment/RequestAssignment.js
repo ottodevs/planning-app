@@ -3,18 +3,19 @@ import styled from 'styled-components'
 
 import { Checkbox, Text, TextInput, GU, useTheme } from '@aragon/ui'
 
-import { Form, FormField, DateInput } from '../../Form'
+import { Form, FormField } from '../../Form'
+import { DateInput } from '../../../../../../shared/ui'
 import { useAragonApi } from '../../../api-react'
 import useGithubAuth from '../../../hooks/useGithubAuth'
 import { usePanelManagement } from '..'
 import { ipfsAdd } from '../../../utils/ipfs-helpers'
 import { toHex } from 'web3-utils'
 import { issueShape } from '../../../utils/shapes.js'
-import { IssueTitle } from '../PanelComponents'
+import { IssueTitle, PanelContent } from '../PanelComponents'
 
 const RequestAssignment = ({ issue }) => {
   const githubCurrentUser = useGithubAuth()
-  const { api } = useAragonApi()
+  const { api, connectedAccount } = useAragonApi()
   const theme = useTheme()
 
   const { closePanel } = usePanelManagement()
@@ -44,17 +45,20 @@ const RequestAssignment = ({ issue }) => {
       eta: date,
       ack1,
       ack2,
-      user: githubCurrentUser,
+      user: {
+        ...githubCurrentUser,
+        addr: connectedAccount,
+      },
       applicationDate: today.toISOString(),
     }
     const hash = await ipfsAdd(data)
-    api.requestAssignment(toHex(issue.repoId), issue.number, hash).toPromise()
+    api.requestAssignment(issue.repoHexId || toHex(issue.repoId), issue.number, hash).toPromise()
   }
 
   const canSubmit = () => !(ack1 && ack2 && workplan)
 
   return (
-    <div css={`margin: ${2 * GU}px 0`}>
+    <PanelContent>
       <Form
         onSubmit={onRequestAssignment}
         submitText="Submit application"
@@ -74,6 +78,7 @@ const RequestAssignment = ({ issue }) => {
               onChange={updateWorkplan}
               placeholder="Describe how you plan to accomplish the task and any questions you may have."
               wide
+              aria-label="Work plan"
             />
           }
         />
@@ -87,6 +92,7 @@ const RequestAssignment = ({ issue }) => {
                 value={hours}
                 onChange={updateHours}
                 wide
+                aria-label="Estimated hours"
               />
             }
           />
@@ -98,6 +104,7 @@ const RequestAssignment = ({ issue }) => {
                 value={eta}
                 onChange={updateEta}
                 width="100%"
+                label="Estimated completion"
               />
             }
           />
@@ -122,7 +129,7 @@ const RequestAssignment = ({ issue }) => {
           </AckText>
         </AckRow>
       </Form>
-    </div>
+    </PanelContent>
   )
 }
 

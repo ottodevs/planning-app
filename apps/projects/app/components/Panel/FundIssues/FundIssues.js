@@ -22,13 +22,13 @@ import {
   TextInput,
   useTheme,
 } from '@aragon/ui'
-
-import { Form, FormField, DateInput } from '../../Form'
+import { SwitchRow } from '../PanelComponents'
+import { Form, FormField } from '../../Form'
+import { DateInput } from '../../../../../../shared/ui'
 import { issueShape } from '../../../utils/shapes.js'
 import EditBounty from './EditBounty'
 import {
   AmountInput,
-  HorizontalInputGroup,
   HoursInput,
   IssueTitleCompact,
   TokenInput,
@@ -48,7 +48,10 @@ const errorMessages = {
 
 const bountiesFor = ({ bountySettings, issues, tokens }) => issues.reduce(
   (bounties, issue) => {
+    const data = issue.repository.decoupled ? issue : {}
+
     bounties[issue.id] = {
+      ...data,
       fundingHistory: issue.fundingHistory || [],
       issueId: issue.id,
       repo: issue.repo,
@@ -132,7 +135,7 @@ const BountyUpdate = ({
                   <FormField
                     label="Amount"
                     input={
-                      <HorizontalInputGroup>
+                      <div css="display: flex">
                         <AmountInput
                           name="amount"
                           value={bounty.payout}
@@ -145,7 +148,7 @@ const BountyUpdate = ({
                           selected={tokens.indexOf(bounty.token)}
                           onChange={i => updateBounty({ token: tokens[i] })}
                         />
-                      </HorizontalInputGroup>
+                      </div>
                     }
                   />
                 ) : (
@@ -189,6 +192,7 @@ const BountyUpdate = ({
                       value={bounty.deadline}
                       onChange={deadline => updateBounty({ deadline })}
                       width="100%"
+                      label="Deadline"
                     />
                   }
                 />
@@ -305,17 +309,14 @@ const FundForm = ({
               onChange={descriptionChange}
               value={description}
               wide
+              aria-label="Description"
             />
           }
         />
         <FormField
           label="Work terms"
           input={
-            <div css={`
-              display: flex;
-              justify-content: space-between;
-              margin: ${GU}px 0 ${2 * GU}px 0;
-            `}>
+            <SwitchRow>
               <Text css="display: flex">
                 Applications required to work on issues&nbsp;
                 <Help hint="The work terms" css={`margin-left: ${.5 * GU}`}>
@@ -328,7 +329,7 @@ const FundForm = ({
                 checked={!openSubmission}
                 onChange={() => setOpenSubmission(!openSubmission)}
               />
-            </div>
+            </SwitchRow>
           }
         />
 
@@ -347,7 +348,7 @@ const FundForm = ({
                     issue={issue}
                     bounty={bounties[issue.id]}
                     tokens={tokens}
-                    onBlur={() => setValidate(true)}
+                    onFocus={() => setValidate(true)}
                     updateBounty={updateBounty(issue.id)}
                   />
                 ))}
@@ -387,7 +388,7 @@ FundForm.propTypes = {
 
 const FundIssues = ({ issues, mode }) => {
   const githubCurrentUser = useGithubAuth()
-  const { api, appState } = useAragonApi()
+  const { api, appState, connectedAccount } = useAragonApi()
   const { bountySettings } = appState
   const { closePanel } = usePanelManagement()
   const [ submitting, setSubmitting ] = useState(false)
@@ -427,7 +428,7 @@ const FundIssues = ({ issues, mode }) => {
       }
     }
 
-    if (update.hours !== undefined || update.exp) {
+    if (bountySettings.fundingModel !== 'Fixed' && (update.hours !== undefined || update.exp)) {
       const { exp, hours } = newBounties[issueId]
       const { baseRate, expLvls } = bountySettings
       newBounties[issueId].payout = hours * baseRate * expLvls[exp].mul
@@ -438,7 +439,6 @@ const FundIssues = ({ issues, mode }) => {
 
   const submitBounties = useCallback(async e => {
     e.preventDefault()
-
     setSubmitting(true)
 
     const repoIds = []
@@ -458,12 +458,16 @@ const FundIssues = ({ issues, mode }) => {
       )
       deadlines.push(bounty.deadline.getTime())
       ipfsData.push({
+        ...bounty,
         issueId: bounty.issueId,
         exp: bounty.exp,
         fundingHistory: [
           ...bounty.fundingHistory,
           {
-            user: githubCurrentUser,
+            user: {
+              ...githubCurrentUser,
+              addr: connectedAccount,
+            },
             date: new Date().toISOString(),
             description,
           },
@@ -487,7 +491,7 @@ const FundIssues = ({ issues, mode }) => {
     ).toPromise()
 
     closePanel()
-  }, [bounties])
+  }, [ bounties, openSubmission ])
 
   if (fundsAvailable.toString() === '0') {
     return (

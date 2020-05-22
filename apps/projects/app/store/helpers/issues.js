@@ -3,16 +3,15 @@ import { app } from '../app'
 import { ipfsGet } from '../../utils/ipfs-helpers'
 import standardBounties from '../../abi/StandardBounties.json'
 
-const assignmentRequestStatus = [ 'Unreviewed', 'Accepted', 'Rejected' ]
-
 export const loadIssueData = async ({ repoId, issueNumber }) => {
   const {
-    hasBounty,
     standardBountyId,
     balance,
     assignee,
+    fulfilled,
+    data: ipfsHash
   } = await app.call('getIssue', repoId, issueNumber).toPromise()
-
+  const hasBounty = !!balance
   const bountiesRegistry = await app.call('bountiesRegistry').toPromise()
   const bountyContract = app.external(bountiesRegistry, standardBounties.abi)
   const {
@@ -48,22 +47,24 @@ export const loadIssueData = async ({ repoId, issueNumber }) => {
     // passed in
     number: Number(issueNumber),
     repoId: hexToAscii(repoId),
-
+    repoHexId: repoId,
     // from Projects.sol
     assignee,
     balance,
+    fulfilled,
     hasBounty,
     standardBountyId,
+    openSubmission: /^0xf{40}$/i.test(assignee),
+    ipfsHash,
 
     // from StandardBounties.sol
     deadline: new Date(Number(deadline)).toISOString(),
     token,
     workStatus,
-    openSubmission: /^0xf{40}$/i.test(assignee),
   }
 }
 
-export const loadIpfsData = async ipfsHash => {
+export const loadIpfsData = async ({ ipfsHash }) => {
   const {
     issueId,
     exp,
@@ -77,6 +78,27 @@ export const loadIpfsData = async ipfsHash => {
     fundingHistory,
     hours,
     repo,
+  }
+}
+
+export const loadDecoupledIssueData = async ({ repoId, issueNumber }) => {
+  const {
+    standardBountyId,
+    balance,
+    assignee,
+    fulfilled,
+    data: ipfsHash
+  } = await app.call('getIssue', repoId, issueNumber).toPromise()
+  let ipfsData = await ipfsGet(ipfsHash)
+  return {
+    ...ipfsData,
+    standardBountyId,
+    balance,
+    assignee,
+    fulfilled,
+    repoId: hexToAscii(repoId),
+    repoHexId: repoId,
+    token: ipfsData.token ? ipfsData.token.addr : undefined
   }
 }
 
@@ -146,7 +168,6 @@ const getRequest = (repoId, issueNumber, applicantId) => {
       const bountyData = await ipfsGet(response.application)
       resolve({
         contributorAddr: response.applicant,
-        status: assignmentRequestStatus[parseInt(response.status)],
         requestIPFSHash: response.application,
         ...bountyData
       })
@@ -185,7 +206,6 @@ export const buildSubmission = async ({ fulfillmentId, fulfillers, ipfsHash, sub
     fulfillers,
     hours,
     proof,
-    status: '0',
     submissionDate,
     submissionIPFSHash: ipfsHash,
     submitter,
@@ -195,7 +215,8 @@ export const buildSubmission = async ({ fulfillmentId, fulfillers, ipfsHash, sub
 
 export const updateIssueDetail = async data => {
   let returnData = { ...data }
-  const repoId = toHex(data.repoId)
+  // keep hex conversion for compatibility with older issues
+  const repoId = data.repoHexId || toHex(data.repoId)
   const issueNumber = String(data.number)
   const requestsData = await loadRequestsData({ repoId, issueNumber })
   returnData.requestsData = requestsData
@@ -203,12 +224,13 @@ export const updateIssueDetail = async data => {
 }
 
 const checkIssuesLoaded = (issues, issueNumber, data) => {
-  const issueIndex = issues.findIndex(issue => issue.issueNumber === issueNumber)
+  const issueIndex = issues.findIndex(issue => issue.issueId === data.issueId)
 
   if (issueIndex === -1) {
     // If we can't find it, load its data, perform the transformation, and concat
     return issues.concat({
       issueNumber,
+      issueId: data.issueId,
       data: data
     })
   }
@@ -216,6 +238,7 @@ const checkIssuesLoaded = (issues, issueNumber, data) => {
   const nextIssues = Array.from(issues)
   nextIssues[issueIndex] = {
     issueNumber,
+    issueId: data.issueId,
     data: {
       ...nextIssues[issueIndex].data,
       ...data,

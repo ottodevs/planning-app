@@ -14,7 +14,8 @@ const ASSETS_URL = './aragon-ui'
 
 const App = () => {
   const [ panelVisible, setPanelVisible ] = useState(false)
-  const { api, appState = {} } = useAragonApi()
+  const { api, appState = {}, guiStyle } = useAragonApi()
+  const { appearance } = guiStyle
 
   const { entries = [], isSyncing = true } = appState
 
@@ -61,30 +62,32 @@ const App = () => {
   const addressList = entries.map(entry => entry.addr)
 
   return (
-    <Main assetsUrl={ASSETS_URL}>
+    <Main assetsUrl={ASSETS_URL} theme={appearance}>
       <IdentityProvider
         onResolve={handleResolveLocalIdentity}
         onShowLocalIdentityModal={handleShowLocalIdentityModal}
       >
-        { entries.length === 0
-          ? <Empty action={newEntity} isSyncing={isSyncing} />
-          : (
-            <React.Fragment>
-              <Header
-                primary="Address Book"
-                secondary={
-                  <Button mode="strong" icon={<IconPlus />} onClick={newEntity} label="New entity" />
-                }
-              />
-              <Entities
-                entities={entries}
-                onNewEntity={newEntity}
-                onRemoveEntity={removeEntity}
-              />
-              <SyncIndicator visible={isSyncing} />
-            </React.Fragment>
-          )
-        }
+        <main>
+          { entries.length === 0
+            ? <Empty action={newEntity} isSyncing={isSyncing} />
+            : (
+              <React.Fragment>
+                <Header
+                  primary="Address Book"
+                  secondary={
+                    <Button mode="strong" icon={<IconPlus />} onClick={newEntity} label="New entity" />
+                  }
+                />
+                <Entities
+                  entities={entries}
+                  onNewEntity={newEntity}
+                  onRemoveEntity={removeEntity}
+                />
+                <SyncIndicator visible={isSyncing} />
+              </React.Fragment>
+            )
+          }
+        </main>
         <SidePanel onClose={closePanel} opened={panelVisible} title="New entity">
           <NewEntity onCreateEntity={createEntity} addressList={addressList} />
         </SidePanel>

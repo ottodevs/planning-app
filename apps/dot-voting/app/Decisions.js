@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState }  from 'react'
+import React, { useCallback, useEffect, useMemo, useState }  from 'react'
 import PropTypes from 'prop-types'
 import Votes from './components/Votes'
 import { isBefore } from 'date-fns'
 import { useAragonApi } from './api-react'
+import { useAppLogic } from './app-logic'
 import {
   BackButton,
   Bar,
@@ -30,7 +31,8 @@ const OUTCOME_FILTER_REJECTED = 2
 const OUTCOME_FILTER_ENACTED = 3
 const OUTCOME_FILTER_PENDING = 4
 const APP_FILTER_ALLOCATIONS = 1
-const APP_FILTER_PROJECTS = 2
+const APP_FILTER_DOT = 2
+const APP_FILTER_PROJECTS = 3
 
 const useFilterVotes = (votes, voteTime) => {
   const { appState: { globalMinQuorum = 0 } } = useAragonApi()
@@ -66,6 +68,9 @@ const useFilterVotes = (votes, voteTime) => {
       if (appFilter !== NULL_FILTER_STATE) {
         if (appFilter === APP_FILTER_ALLOCATIONS &&
           type !== 'allocation'
+        ) return false
+        if (appFilter === APP_FILTER_DOT &&
+          type !== 'information'
         ) return false
         if (appFilter === APP_FILTER_PROJECTS &&
           type !== 'curation'
@@ -126,26 +131,23 @@ const useFilterVotes = (votes, voteTime) => {
   }
 }
 
-const Decisions = ({ decorateVote }) => {
+const Decisions = () => {
   const { api: app, appState, connectedAccount } = useAragonApi()
-  const { votes, voteTime } = appState
-
+  const { decorateVote, selectVote, selectedVote, votes, voteTime } = useAppLogic()
   const { layoutName } = useLayout()
   const theme = useTheme()
 
-  // TODO: accomplish this with routing (put routes in App.js, not here)
-  const [ currentVoteId, setCurrentVoteId ] = useState(-1)
   const handleVote = useCallback(async (voteId, supports) => {
     await app.vote(voteId, supports).toPromise()
-    setCurrentVoteId(-1) // is this correct?
+    selectVote(-1) // is this correct?
   }, [app])
   const handleBackClick = useCallback(() => {
-    setCurrentVoteId(-1)
+    selectVote(-1)
   }, [])
   const handleVoteOpen = useCallback(voteId => {
     const exists = votes.some(vote => voteId === vote.voteId)
     if (!exists) return
-    setCurrentVoteId(voteId)
+    selectVote(voteId)
   }, [votes])
 
   const {
@@ -160,10 +162,10 @@ const Decisions = ({ decorateVote }) => {
   } = useFilterVotes(votes, voteTime)
 
   const currentVote =
-      currentVoteId === -1
+      selectedVote === '-1'
         ? null
         : decorateVote(
-          filteredVotes.find(vote => vote.voteId === currentVoteId)
+          filteredVotes.find(vote => vote.voteId === selectedVote)
         )
 
   if (currentVote) {
@@ -219,7 +221,6 @@ const Decisions = ({ decorateVote }) => {
                 'Open',
                 'Closed',
               ]}
-              width="128px"
             />
             {voteStatusFilter !== STATUS_FILTER_OPEN && (
               <DropDown
@@ -228,7 +229,6 @@ const Decisions = ({ decorateVote }) => {
                 selected={voteOutcomeFilter}
                 onChange={handleVoteOutcomeFilterChange}
                 items={[ 'All', 'Passed', 'Rejected', 'Enacted', 'Pending' ]}
-                width="128px"
               />
             )}
             <DropDown
@@ -236,8 +236,7 @@ const Decisions = ({ decorateVote }) => {
               placeholder="App"
               selected={voteAppFilter}
               onChange={handleVoteAppFilterChange}
-              items={[ 'All', 'Allocations', 'Projects' ]}
-              width="128px"
+              items={[ 'All', 'Allocations', 'Dot Voting', 'Projects' ]}
             />
           </div>
         </Bar>
@@ -256,10 +255,6 @@ const Decisions = ({ decorateVote }) => {
       }
     </React.Fragment>
   )
-}
-
-Decisions.propTypes = {
-  decorateVote: PropTypes.func.isRequired,
 }
 
 export default Decisions
